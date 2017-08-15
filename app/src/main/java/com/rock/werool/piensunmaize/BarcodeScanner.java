@@ -2,6 +2,8 @@ package com.rock.werool.piensunmaize;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +12,10 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import java.lang.reflect.Field;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -20,7 +25,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 public class BarcodeScanner extends AppCompatActivity {
-
+    CameraSource cameraSource;
     final int cameraPermissionCode = 1;
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -90,14 +95,36 @@ public class BarcodeScanner extends AppCompatActivity {
                     .setRequestedPreviewSize(1600, 1024)
                     .setAutoFocusEnabled(true)
                     .setRequestedFps(30.0f);
-            final CameraSource cameraSource = builder.build();
+            cameraSource = builder.build();
 
+
+            ImageView flash = (ImageView)findViewById(R.id.flash);
+
+            flash.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    flashOnButton();
+                }
+            });
+
+            cameraView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                                                            //empty
+                }
+            });
 
             cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
                 @Override
                 public void surfaceCreated(SurfaceHolder holder) {
                     try {
                         cameraSource.start(cameraView.getHolder());   //ignore
+                        /*
+                        camera = getCamera(cameraSource);
+                        Camera.Parameters param = camera.getParameters();
+                        param.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
+                        camera.setParameters(param);
+                        */
                     } catch (IOException e) {
                         Log.e("CAMERA SOURCE", e.getMessage());
                     }
@@ -124,9 +151,7 @@ public class BarcodeScanner extends AppCompatActivity {
 
                     if (barcodes.size() != 0) {
                         BarcodeAction barAction = new BarcodeAction();
-                        barAction.executeActionFromBarcode(barAction.getNecessaryAction(),
-                                barcodes.valueAt(0).displayValue);
-
+                        //barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);
                         barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
                             public void run() {
                                 barcodeInfo.setText(    // Update the TextView
@@ -137,6 +162,42 @@ public class BarcodeScanner extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+    private static Camera getCamera(@NonNull CameraSource cameraSource) {
+        Field[] declaredFields = CameraSource.class.getDeclaredFields();
+
+        for (Field field : declaredFields) {
+            if (field.getType() == Camera.class) {
+                field.setAccessible(true);
+                try {
+                    Camera camera = (Camera) field.get(cameraSource);
+                    if (camera != null) {
+                        return camera;
+                    }
+                    return null;
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+        return null;
+    }
+    private Camera camera = null;
+    boolean flashmode=false;
+    private void flashOnButton() {
+        camera=getCamera(cameraSource);
+        if (camera != null) {
+            try {
+                Camera.Parameters param = camera.getParameters();
+                param.setFlashMode(!flashmode?Camera.Parameters.FLASH_MODE_TORCH :Camera.Parameters.FLASH_MODE_OFF);
+                camera.setParameters(param);
+                flashmode = !flashmode;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

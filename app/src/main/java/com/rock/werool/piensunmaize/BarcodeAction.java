@@ -19,8 +19,8 @@ public class BarcodeAction {
         this.necessaryAction = necessaryAction;
     }
 
-    public static void executeActionFromBarcode(BarcodeDetectedAction action, String barcodeContent) {
-        switch (action) {
+    public void executeActionFromBarcode(String barcodeContent) {
+        switch (this.necessaryAction) {
             case UPDATE_PRODUCT : {
 
                 break;
@@ -30,6 +30,8 @@ public class BarcodeAction {
             } case FIND_PRODUCT_COMPARE: {
 
                 break;
+            } default: {
+
             }
         }
     }
