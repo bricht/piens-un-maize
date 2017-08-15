@@ -20,7 +20,6 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 public class BarcodeScanner extends AppCompatActivity {
-    SparseArray<Barcode> barcodes;
 
     final int cameraPermissionCode = 1;
     @Override
@@ -86,8 +85,6 @@ public class BarcodeScanner extends AppCompatActivity {
             BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).build();
             final SurfaceView cameraView = (SurfaceView) findViewById(R.id.camera_view);
             final TextView barcodeInfo = (TextView) findViewById(R.id.code_info);
-            //final CameraSource cameraSource = new CameraSource.Builder(this, barcodeDetector)
-            //        .setRequestedPreviewSize(1024, 768).build();
             CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
                     .setRequestedPreviewSize(1600, 1024)
@@ -100,7 +97,7 @@ public class BarcodeScanner extends AppCompatActivity {
                 @Override
                 public void surfaceCreated(SurfaceHolder holder) {
                     try {
-                        cameraSource.start(cameraView.getHolder());         //ignore
+                        cameraSource.start(cameraView.getHolder());   //ignore
                     } catch (IOException e) {
                         Log.e("CAMERA SOURCE", e.getMessage());
                     }
@@ -123,9 +120,13 @@ public class BarcodeScanner extends AppCompatActivity {
 
                 @Override
                 public void receiveDetections(Detector.Detections<Barcode> detections) {
-                    barcodes = detections.getDetectedItems();
+                    final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
                     if (barcodes.size() != 0) {
+                        BarcodeAction barAction = new BarcodeAction();
+                        barAction.executeActionFromBarcode(barAction.getNecessaryAction(),
+                                barcodes.valueAt(0).displayValue);
+
                         barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
                             public void run() {
                                 barcodeInfo.setText(    // Update the TextView
