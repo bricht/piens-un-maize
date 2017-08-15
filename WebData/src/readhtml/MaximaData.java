@@ -10,20 +10,31 @@ import java.util.regex.Pattern;
 
 public class MaximaData {
 
-	private List<String> products = new ArrayList<>();
-	private List<Double> prices = new ArrayList<>();
+	private List<String> products;
+	private List<Double> prices;
+	private List<String> url;
 
-	// main method for testing
+	// temporary main method for testing
 	public static void main(String[] args) {
+		@SuppressWarnings("unused")
+		MaximaData data = new MaximaData();
+	}
+
+	public MaximaData() {
+		products = new ArrayList<>();
+		prices = new ArrayList<>();
+		url = new ArrayList<>();
+
+		collectURLs();
 		try {
-			@SuppressWarnings("unused")
-			MaximaData data = new MaximaData();
+			collectData();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public MaximaData() throws Exception {
+	private void collectData() throws Exception {
+		// TODO: for each URL in List url ...
 		// Test URL
 		URL url = new URL(
 				"https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/salati_garsaugi/svaigi_salati.aspx");
@@ -52,7 +63,7 @@ public class MaximaData {
 							matcher = namePattern.matcher(inputLine);
 							matcher.find();
 							products.add(matcher.group());
-							// output for testing
+							// temporary output for testing
 							System.out.println(matcher.group());
 						}
 						if ((inputLine.replaceAll("\\s", ""))
@@ -62,7 +73,7 @@ public class MaximaData {
 							matcher.find();
 							prices.add(Double.parseDouble((matcher.group())
 									.replaceAll(",", ".")));
-							// output for testing
+							// temporary output for testing
 							System.out.println(matcher.group());
 						}
 					}
@@ -81,4 +92,12 @@ public class MaximaData {
 		}
 		in.close();
 	}
+
+	private void collectURLs() {
+		// TODO: get all the necessary URLs from e-Maxima
+	}
+
+	// TODO: Method that returns collected data
+	// Return type to be determined (special class, list ...)
+	// private (returnType) getData () { }
 }
