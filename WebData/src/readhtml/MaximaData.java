@@ -100,4 +100,8 @@ public class MaximaData {
 	// TODO: Method that returns collected data
 	// Return type to be determined (special class, list ...)
 	// private (returnType) getData () { }
+	
+	// https://stackoverflow.com/questions/14865283/proper-git-workflow-scheme-with-multiple-developers-working-on-same-task
+	// https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow
+	// https://stackoverflow.com/questions/4556467/git-pull-or-git-merge-between-master-and-development-branches
 }
