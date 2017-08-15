@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "670539304072",
+    "firebase_url": "https://milk-and-bread.firebaseio.com",
+    "project_id": "milk-and-bread",
+    "storage_bucket": "milk-and-bread.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670539304072:android:d4fa60f5a5ced2e3",
+        "android_client_info": {
+          "package_name": "com.rock.werool.piensunmaize"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670539304072-ho3fcm5h6lv7ti2i3ngjo9kai4fln4op.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW8lwaA5ntYdNPLL22jETEuUGiepKRAFg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
