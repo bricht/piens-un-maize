@@ -15,6 +15,7 @@ public class HtmlReader {
 	
 	public static void main(String[] args) throws Exception {
 		
+		//Test URL
 		URL url = new URL("https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/salati_garsaugi/svaigi_salati.aspx");
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		
@@ -26,6 +27,7 @@ public class HtmlReader {
 		while((inputLine = in.readLine()) != null) {
 			boolean isTable = false;
 			boolean isContent = false;
+			//Removes spaces from HTML source
 			if((inputLine.replaceAll("\\s","")).equals("<divid=\"main-content\">")){
 				while((inputLine = in.readLine()) != null) {
 					if(isContent) {
