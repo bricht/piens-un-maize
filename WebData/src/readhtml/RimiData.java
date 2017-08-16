@@ -10,9 +10,13 @@ import java.util.regex.Pattern;
 
 public class RimiData {
 
+	// TODO: check if server returns answer, if not handle exception and delay
+	// search for ~5 minutes.
+	// TODO: read categories of groceries
 	private List<String> products;
 	private List<Double> prices;
 	private List<String> urlList;
+	private List<String> categoryIDs;
 
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
@@ -23,6 +27,7 @@ public class RimiData {
 		products = new ArrayList<>();
 		prices = new ArrayList<>();
 		urlList = new ArrayList<>();
+		categoryIDs = new ArrayList<>();
 
 		try {
 			collectURLs();
@@ -35,13 +40,14 @@ public class RimiData {
 	private void collectData() throws Exception {
 		for (String string : urlList) {
 			URL url = new URL(string);
-			// 1. check if product has multiple pages
 			String inputLine;
 			int pagesCount = 0;
-			Pattern pageCount = Pattern.compile("(?<=<b>1 / )(\\d{1,2})(?=</b>)");
+			Pattern pageCount = Pattern
+					.compile("(?<=<b>1 / )(\\d{1,2})(?=</b>)");
 			Matcher matcher;
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					url.openStream()));
+
 			while ((inputLine = in.readLine()) != null) {
 				if ((inputLine.replaceAll("\\s", ""))
 						.equals("<divclass=\"category-itemsjs-cat-items\">")) {
@@ -52,6 +58,7 @@ public class RimiData {
 					break;
 				}
 			}
+
 			for (int i = 1; i <= pagesCount; i++) {
 				if (pagesCount == 1) {
 					readPage(url);
@@ -60,11 +67,7 @@ public class RimiData {
 					readPage(url);
 				}
 			}
-			// 2. if it has, get the amount
-			// 3. create a new URL with page number for each page in a for loop
-			// 4. call readPage with the new URL in the loop
-			// 5. if product doesnt have multiple pages, call readPage with URL
-			// from urlList
+			in.close();
 		}
 	}
 
@@ -100,7 +103,7 @@ public class RimiData {
 							matcher.find();
 							products.add(matcher.group());
 							// temporary output for testing
-							System.out.println(matcher.group());
+							// System.out.println(matcher.group());
 						}
 						if ((inputLine.replaceAll("\\s", ""))
 								.equals("<divclass=\"price-bubble\">")) {
@@ -123,7 +126,7 @@ public class RimiData {
 							allPrice = wholePrice + "." + decimalPrice;
 							prices.add(Double.parseDouble(allPrice));
 							// temporary output for testing
-							System.out.println(allPrice);
+							// System.out.println(allPrice);
 						}
 					}
 					if (isTable) {
@@ -142,13 +145,45 @@ public class RimiData {
 				break;
 			}
 		}
-
 		in.close();
 	}
 
-	private void collectURLs() {
-		// TODO: get all the necessary URLs from app.rimi.lv
-		urlList.add("https://app.rimi.lv/products/1426");
+	private void collectURLs() throws Exception {
+		String homeURL = "https://app.rimi.lv/products";
+		URL url = new URL(homeURL);
+		String inputLine;
+		Pattern categoryIdPattern = Pattern
+				.compile("(?<=data-category-id=\")(.+?)(?=\" class)");
+		Matcher matcher;
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				url.openStream()));
+
+		while ((inputLine = in.readLine()) != null) {
+			matcher = categoryIdPattern.matcher(inputLine);
+			if (matcher.find()) {
+				categoryIDs.add(matcher.group());
+				// temporary output for testing
+				// System.out.println(matcher.group());
+			}
+		}
+		in.close();
+
+		for (String string : categoryIDs) {
+			url = new URL(homeURL + "/" + string);
+			Pattern subCategoryPattern = Pattern
+					.compile("(?<=data-category-id=\")(.+?)(?=\" class)");
+			in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			while ((inputLine = in.readLine()) != null) {
+				matcher = subCategoryPattern.matcher(inputLine);
+				if (matcher.find()) {
+					urlList.add(homeURL + "/" + matcher.group());
+					// temporary output for testing
+					// System.out.println(matcher.group());
+				}
+			}
+			in.close();
+		}
 	}
 
 	// TODO: Method that returns collected data
