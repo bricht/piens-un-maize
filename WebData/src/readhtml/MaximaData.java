@@ -9,10 +9,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MaximaData {
+	// TODO: (?) boolean field to identify discounts
+	private BufferedReader in;
 
+	private List<String> urlCategorys;
+	private List<String> urlList;
 	private List<String> products;
 	private List<Double> prices;
-	private List<String> url;
 
 	// temporary main method for testing
 	public static void main(String[] args) {
@@ -21,32 +24,42 @@ public class MaximaData {
 	}
 
 	public MaximaData() {
+		urlCategorys = new ArrayList<>();
+		urlList = new ArrayList<>();
 		products = new ArrayList<>();
 		prices = new ArrayList<>();
-		url = new ArrayList<>();
 
-		collectURLs();
 		try {
-			collectData();
+			collectURLs();
+			// collectData();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void collectData() throws Exception {
-		// TODO: for each URL in List url ...
-		// Test URL
-		URL url = new URL(
-				"https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/salati_garsaugi/svaigi_salati.aspx");
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				url.openStream()));
+		for (String string : urlList) {
+			URL url = new URL(string);
+			// 1. check if product has multiple pages
+			// 2. if it has, get the amount
+			// 3. create a new URL with page number for each page in a for loop
+			// 4. call readPage with the new URL in the loop
+			// 5. if product doesnt have multiple pages, call readPage with URL
+			// from urlList
+			readPage(url);
+		}
+	}
 
+	// TODO: sporta_uzturs has no subcategorys
+	// Add special support for it
+	private void readPage(URL url) throws Exception {
 		String inputLine;
+		Matcher matcher;
 		Pattern namePattern = Pattern.compile("(?<=>)(.+?)(?=</a>)");
 		Pattern pricePattern = Pattern
 				.compile("(?<=<strong>)(\\d{1,3})(,)(\\d{2})(?= €</strong>)");
-		Matcher matcher;
-
+		
+		in = new BufferedReader(new InputStreamReader(url.openStream()));
 		while ((inputLine = in.readLine()) != null) {
 			boolean isTable = false;
 			boolean isContent = false;
@@ -93,15 +106,74 @@ public class MaximaData {
 		in.close();
 	}
 
-	private void collectURLs() {
-		// TODO: get all the necessary URLs from e-Maxima
+	private void collectURLs() throws Exception {
+		String homeURL = "https://www.e-maxima.lv";
+		// Page to get all the categories and products
+		String indexPage = homeURL + "/Produkti/partika_dzerieni.aspx";
+		URL url = new URL(indexPage);
+		String inputLine;
+		Matcher matcher;
+		Pattern urlPattern = Pattern
+				.compile("(?<=(<a href=\"))(/Produkti/partika_dzerieni/[^/]+?)(?=(\\.aspx\">.+?</a>))");
+		
+		// gets category URLs
+		in = new BufferedReader(new InputStreamReader(url.openStream()));
+		while ((inputLine = in.readLine()) != null) {
+			if ((inputLine.replaceAll("\\s", ""))
+					.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
+				while ((inputLine = in.readLine()) != null) {
+					// TODO: (?) get product category names
+					// into a separate list/class field for database
+					if ((inputLine.replaceAll("\\s", "")).equals("</ul></span>")) {
+						break;
+					}
+
+					matcher = urlPattern.matcher(inputLine);
+					if (matcher.find()) {
+						urlCategorys.add(matcher.group());
+						// temporary output for testing
+						System.out.println(matcher.group());
+					}
+				}
+				break;
+			}
+		}
+		in.close();
+		
+		// TODO: maybe reopen BufferedReader
+		// gets product URLs (subcategories) for each category
+		for (String category : urlCategorys) {
+			in = new BufferedReader(new InputStreamReader(url.openStream()));
+			String pattern = "(?<=(<a href=\"))(" + category + "/.+?\\.aspx)(?=(\">.+?</a>))";
+			urlPattern = Pattern.compile(pattern);
+			while ((inputLine = in.readLine()) != null) {
+				if ((inputLine.replaceAll("\\s", ""))
+						.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
+					while ((inputLine = in.readLine()) != null) {
+						// TODO: (?) get product subcategory names
+						// into a separate list/class field for database
+						if ((inputLine.replaceAll("\\s", "")).equals("</ul></span>")) {
+							break;
+						}
+						
+						// TODO: remove favorites from urlList
+						matcher = urlPattern.matcher(inputLine);
+						if (matcher.find()) {
+							urlList.add(matcher.group());
+							// temporary output for testing
+							System.out.println(matcher.group());
+						}
+					}
+					break;
+				}
+			}
+			in.close();
+		}
+		in.close();
 	}
+	
 
 	// TODO: Method that returns collected data
 	// Return type to be determined (special class, list ...)
 	// private (returnType) getData () { }
-	
-	// https://stackoverflow.com/questions/14865283/proper-git-workflow-scheme-with-multiple-developers-working-on-same-task
-	// https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow
-	// https://stackoverflow.com/questions/4556467/git-pull-or-git-merge-between-master-and-development-branches
 }
