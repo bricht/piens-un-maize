@@ -36,12 +36,35 @@ public class RimiData {
 		for (String string : urlList) {
 			URL url = new URL(string);
 			// 1. check if product has multiple pages
+			String inputLine;
+			int pagesCount = 0;
+			Pattern pageCount = Pattern.compile("(?<=<b>1 / )(\\d{1,2})(?=</b>)");
+			Matcher matcher;
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					url.openStream()));
+			while ((inputLine = in.readLine()) != null) {
+				if ((inputLine.replaceAll("\\s", ""))
+						.equals("<divclass=\"category-itemsjs-cat-items\">")) {
+					inputLine = in.readLine();
+					matcher = pageCount.matcher(inputLine);
+					matcher.find();
+					pagesCount = Integer.parseInt(matcher.group());
+					break;
+				}
+			}
+			for (int i = 1; i <= pagesCount; i++) {
+				if (pagesCount == 1) {
+					readPage(url);
+				} else {
+					url = new URL(string + "/page/" + i);
+					readPage(url);
+				}
+			}
 			// 2. if it has, get the amount
 			// 3. create a new URL with page number for each page in a for loop
 			// 4. call readPage with the new URL in the loop
 			// 5. if product doesnt have multiple pages, call readPage with URL
 			// from urlList
-			readPage(url);
 		}
 	}
 
@@ -125,7 +148,7 @@ public class RimiData {
 
 	private void collectURLs() {
 		// TODO: get all the necessary URLs from app.rimi.lv
-		urlList.add("https://app.rimi.lv/products/793");
+		urlList.add("https://app.rimi.lv/products/1426");
 	}
 
 	// TODO: Method that returns collected data
