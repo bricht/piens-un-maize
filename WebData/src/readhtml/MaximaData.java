@@ -13,7 +13,7 @@ public class MaximaData {
 	private BufferedReader in;
 
 	private List<String> urlCategory;
-	private List<String> urlList;
+	private List<URL> urlList;
 	private List<String> products;
 	private List<Double> prices;
 
@@ -37,67 +37,70 @@ public class MaximaData {
 		}
 	}
 
+	private void collectData() throws Exception {
+		for (URL url : urlList) {
+			
+			readPage(url);
+		}
+	}
+
 	// TODO: sporta_uzturs has no subcategorys
 	// Add special support for it
-	private void collectData() throws Exception {
-		for (String string : urlList) {
-			// TODO: check if URL has multiple pages
-			URL url = new URL(string);
-			in = new BufferedReader(new InputStreamReader(url.openStream()));
+	private void readPage(URL url) throws Exception {
+		// TODO: check if URL has multiple pages
+		in = new BufferedReader(new InputStreamReader(url.openStream()));
 
-			String inputLine;
-			Matcher matcher;
-			Pattern namePattern = Pattern.compile("(?<=>)(.+?)(?=</a>)");
-			Pattern pricePattern = Pattern
-					.compile("(?<=<strong>)(\\d{1,3})(,)(\\d{2})(?= €</strong>)");
+		String inputLine;
+		Matcher matcher;
+		Pattern namePattern = Pattern.compile("(?<=>)(.+?)(?=</a>)");
+		Pattern pricePattern = Pattern
+				.compile("(?<=<strong>)(\\d{1,3})(,)(\\d{2})(?= €</strong>)");
 
-			while ((inputLine = in.readLine()) != null) {
-				boolean isTable = false;
-				boolean isContent = false;
-				if ((inputLine.replaceAll("\\s", ""))
-						.equals("<divid=\"main-content\">")) {
-					while ((inputLine = in.readLine()) != null) {
-						if (isContent) {
-							if ((inputLine.replaceAll("\\s", ""))
-									.equals("</tbody></table>")) {
-								break;
-							}
-							if ((inputLine.replaceAll("\\s", ""))
-									.equals("<h3>")) {
-								inputLine = in.readLine();
-								matcher = namePattern.matcher(inputLine);
-								matcher.find();
-								products.add(matcher.group());
-								// temporary output for testing
-								System.out.println(matcher.group());
-							}
-							if ((inputLine.replaceAll("\\s", ""))
-									.equals("<pclass=\"guide\">")) {
-								inputLine = in.readLine();
-								matcher = pricePattern.matcher(inputLine);
-								matcher.find();
-								prices.add(Double.parseDouble((matcher.group())
-										.replaceAll(",", ".")));
-								// temporary output for testing
-								System.out.println(matcher.group());
-							}
+		while ((inputLine = in.readLine()) != null) {
+			boolean isTable = false;
+			boolean isContent = false;
+			if ((inputLine.replaceAll("\\s", ""))
+					.equals("<divid=\"main-content\">")) {
+				while ((inputLine = in.readLine()) != null) {
+					if (isContent) {
+						if ((inputLine.replaceAll("\\s", ""))
+								.equals("</tbody></table>")) {
+							break;
 						}
-						if (isTable) {
-							if ((inputLine.replaceAll("\\s", ""))
-									.equals("<tr>")) {
-								isContent = true;
-							}
+						if ((inputLine.replaceAll("\\s", "")).equals("<h3>")) {
+							inputLine = in.readLine();
+							matcher = namePattern.matcher(inputLine);
+							matcher.find();
+							products.add(matcher.group());
+							// temporary output for testing
+							System.out.println(matcher.group());
 						}
 						if ((inputLine.replaceAll("\\s", ""))
-								.equals("<tableclass='datatype1'>")) {
-							isTable = true;
+								.equals("<pclass=\"guide\">")) {
+							inputLine = in.readLine();
+							matcher = pricePattern.matcher(inputLine);
+							matcher.find();
+							prices.add(Double.parseDouble((matcher.group())
+									.replaceAll(",", ".")));
+							// temporary output for testing
+							System.out.println(matcher.group());
 						}
 					}
-					break;
+					if (isTable) {
+						if ((inputLine.replaceAll("\\s", "")).equals("<tr>")) {
+							isContent = true;
+						}
+					}
+					if ((inputLine.replaceAll("\\s", ""))
+							.equals("<tableclass='datatype1'>")) {
+						isTable = true;
+					}
 				}
+				break;
 			}
-			in.close();
 		}
+		in.close();
+
 	}
 
 	private void collectURLs() throws Exception {
@@ -156,7 +159,7 @@ public class MaximaData {
 		}
 		in.close();
 
-		urlList.add("https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/augli.aspx");
+		urlList.add(new URL("https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/augli.aspx"));
 	}
 
 	// TODO: Method that returns collected data
