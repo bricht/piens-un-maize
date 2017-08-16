@@ -12,7 +12,7 @@ public class RimiData {
 
 	private List<String> products;
 	private List<Double> prices;
-	private List<String> url;
+	private List<String> urlList;
 
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
@@ -22,10 +22,10 @@ public class RimiData {
 	public RimiData() {
 		products = new ArrayList<>();
 		prices = new ArrayList<>();
-		url = new ArrayList<>();
+		urlList = new ArrayList<>();
 
-		collectURLs();
 		try {
+			collectURLs();
 			collectData();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -33,8 +33,19 @@ public class RimiData {
 	}
 
 	private void collectData() throws Exception {
-		// Test URL for now
-		URL url = new URL("https://app.rimi.lv/products/794");
+		for (String string : urlList) {
+			URL url = new URL(string);
+			// 1. check if product has multiple pages
+			// 2. if it has, get the amount
+			// 3. create a new URL with page number for each page in a for loop
+			// 4. call readPage with the new URL in the loop
+			// 5. if product doesnt have multiple pages, call readPage with URL
+			// from urlList
+			readPage(url);
+		}
+	}
+
+	private void readPage(URL url) throws Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				url.openStream()));
 		String inputLine;
@@ -114,6 +125,7 @@ public class RimiData {
 
 	private void collectURLs() {
 		// TODO: get all the necessary URLs from app.rimi.lv
+		urlList.add("https://app.rimi.lv/products/793");
 	}
 
 	// TODO: Method that returns collected data
