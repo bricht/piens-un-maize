@@ -8,24 +8,37 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class for collecting product info from e-maxima.lv
+ */
 public class MaximaData {
-	// TODO: (?) boolean field to identify discounts
+	// (?) add boolean field to identify discounts
+	String homeURL = "https://www.e-maxima.lv";
 	private BufferedReader in;
 
 	private List<String> urlCategorys;
 	private List<String> urlList;
+	private List<String> urlSecondaryList;
 	private List<String> products;
 	private List<Double> prices;
 
-	// temporary main method for testing
+	/**
+	 * Temporary main method for testing
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		MaximaData data = new MaximaData();
 	}
 
+	/**
+	 * Constructor of MaximaData. Collects product info from e-maxima.lv
+	 */
 	public MaximaData() {
 		urlCategorys = new ArrayList<>();
 		urlList = new ArrayList<>();
+		urlSecondaryList = new ArrayList<>();
 		products = new ArrayList<>();
 		prices = new ArrayList<>();
 
@@ -38,13 +51,68 @@ public class MaximaData {
 	}
 
 	private void collectData() throws Exception {
+		URL url;
+		String inputLine;
+		Matcher matcher;
+		Pattern IdPattern = Pattern.compile("id=\"ctl00_MainContent_pager\"");
+		Pattern countPattern = Pattern.compile("(?<=1. lapa no )(\\d+?)");
+
 		for (String string : urlList) {
-			URL url = new URL(string + ".aspx");
-			String inputLine;
-			Matcher matcher;
-			Pattern IdPattern = Pattern
-					.compile("id=\"ctl00_MainContent_pager\"");
-			Pattern countPattern = Pattern.compile("(?<=1. lapa no )(\\d+?)");
+			url = new URL(homeURL + string + ".aspx");
+			int pagesCount = 1;
+			boolean hasCategories = true;
+
+			in = new BufferedReader(new InputStreamReader(url.openStream()));
+			while ((inputLine = in.readLine()) != null) {
+				matcher = IdPattern.matcher(inputLine);
+				if (matcher.find()) {
+					matcher = countPattern.matcher(inputLine);
+					matcher.find();
+					pagesCount = Integer.parseInt(matcher.group());
+					// temporary output for testing
+					System.out.println(string + ": " + matcher.group());
+					hasCategories = false;
+					break;
+				}
+			}
+			in.close();
+
+			if (hasCategories) {
+				Pattern urlPattern = Pattern.compile("(?<=(<a href=\"))("
+						+ string + "/.+?)(?=(\\.aspx\">.+?</a>))");
+
+				in = new BufferedReader(new InputStreamReader(url.openStream()));
+				while ((inputLine = in.readLine()) != null) {
+					// find a start and finish for search
+					// if (finish) {
+					// break;
+					// }
+					matcher = urlPattern.matcher(inputLine);
+					if (matcher.find()) {
+						// (?) add product sub-subcategory names into WebProduct
+						// fields
+						urlSecondaryList.add(matcher.group());
+					}
+				}
+			}
+			in.close();
+
+			if (pagesCount != 1) {
+				for (int i = 2; i <= pagesCount; i++) {
+					// temporary output for testing
+					System.out.println(string + "/" + i);
+					readPage(new URL(homeURL + string + "/" + i + ".aspx"));
+				}
+			} else {
+				// temporary output for testing
+				System.out.println(string);
+				readPage(url);
+			}
+		}
+
+		// collects data from pages found in sub-subcategories
+		for (String string : urlSecondaryList) {
+			url = new URL(homeURL + string + ".aspx");
 			int pagesCount = 1;
 
 			in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -55,21 +123,26 @@ public class MaximaData {
 					matcher.find();
 					pagesCount = Integer.parseInt(matcher.group());
 					// temporary output for testing
-					System.out.println(matcher.group());
+					System.out.println(string + ": " + matcher.group());
 					break;
 				}
 			}
 			in.close();
-			
-			//for ()
-			// 3. create a new URL with page number for each page in a for loop
-			// 4. call readPage with the new URL in the loop
-			// 5. if product doesnt have multiple pages, call readPage with URL
-			// from urlList
-			// readPage(url);
+
+			if (pagesCount != 1) {
+				for (int i = 2; i <= pagesCount; i++) {
+					// temporary output for testing
+					System.out.println(string + "/" + i);
+					readPage(new URL(homeURL + string + "/" + i + ".aspx"));
+				}
+			} else {
+				// temporary output for testing
+				System.out.println(string);
+				readPage(url);
+			}
 		}
 	}
-	
+
 	private void readPage(URL url) throws Exception {
 		String inputLine;
 		Matcher matcher;
@@ -81,6 +154,8 @@ public class MaximaData {
 		while ((inputLine = in.readLine()) != null) {
 			boolean isTable = false;
 			boolean isContent = false;
+
+			// TODO: content of some pages is't read correctly. Should fix it
 			if ((inputLine.replaceAll("\\s", ""))
 					.equals("<divid=\"main-content\">")) {
 				while ((inputLine = in.readLine()) != null) {
@@ -95,7 +170,7 @@ public class MaximaData {
 							matcher.find();
 							products.add(matcher.group());
 							// temporary output for testing
-							System.out.println(matcher.group());
+							System.out.print(matcher.group() + " = ");
 						}
 						if ((inputLine.replaceAll("\\s", ""))
 								.equals("<pclass=\"guide\">")) {
@@ -122,11 +197,11 @@ public class MaximaData {
 			}
 		}
 		in.close();
+		// temporary output for testing
+		System.out.println(products.size());
 	}
 
 	private void collectURLs() throws Exception {
-		String homeURL = "https://www.e-maxima.lv";
-		// Page to get all the categories and products
 		String indexPage = homeURL + "/Produkti/partika_dzerieni.aspx";
 		URL url = new URL(indexPage);
 		String inputLine;
@@ -134,14 +209,12 @@ public class MaximaData {
 		Pattern urlPattern = Pattern
 				.compile("(?<=(<a href=\"))(/Produkti/partika_dzerieni/[^/]+?)(?=(\\.aspx\">.+?</a>))");
 
-		// gets category URLs
 		in = new BufferedReader(new InputStreamReader(url.openStream()));
 		while ((inputLine = in.readLine()) != null) {
 			if ((inputLine.replaceAll("\\s", ""))
 					.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
 				while ((inputLine = in.readLine()) != null) {
-					// TODO: (?) get product category names
-					// into a separate list/class field for database
+					// (?) add product category names into WebProduct fields
 					if ((inputLine.replaceAll("\\s", ""))
 							.equals("</ul></span>")) {
 						break;
@@ -151,7 +224,7 @@ public class MaximaData {
 					if (matcher.find()) {
 						urlCategorys.add(matcher.group());
 						// temporary output for testing
-						//System.out.println(matcher.group());
+						System.out.println(matcher.group());
 					}
 				}
 				break;
@@ -159,7 +232,6 @@ public class MaximaData {
 		}
 		in.close();
 
-		// gets product URLs (subcategories) for each category
 		for (String category : urlCategorys) {
 			in = new BufferedReader(new InputStreamReader(url.openStream()));
 			String pattern = "(?<=(<a href=\"))(" + category
@@ -169,31 +241,30 @@ public class MaximaData {
 				if ((inputLine.replaceAll("\\s", ""))
 						.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
 					while ((inputLine = in.readLine()) != null) {
-						// TODO: (?) get product subcategory names
-						// into a separate list/class field for database
+						// (?) add product subcategory names into WebProduct
+						// fields
 						if ((inputLine.replaceAll("\\s", ""))
 								.equals("</ul></span>")) {
 							break;
 						}
-						
+
 						matcher = urlPattern.matcher(inputLine);
 						if (matcher.find()) {
-							if (!(matcher.group().contains("Favorites"))){
-								urlList.add(homeURL + matcher.group());
+							if (!(matcher.group().contains("Favorites"))) {
+								urlList.add(matcher.group());
+								// temporary output for testing
+								System.out.println(matcher.group());
 							}
-							// temporary output for testing
-							//System.out.println(homeURL + matcher.group());
 						}
 					}
 					break;
 				}
 			}
 			in.close();
-			urlList.add("https://www.e-maxima.lv/Produkti/partika_dzerieni/sporta_uzturs");
+			urlList.add("/Produkti/partika_dzerieni/sporta_uzturs");
 		}
 	}
 
 	// TODO: Method that returns collected data
-	// Return type to be determined (special class, list ...)
-	// private (returnType) getData () { }
+	// private WebProduct getData () { }
 }
