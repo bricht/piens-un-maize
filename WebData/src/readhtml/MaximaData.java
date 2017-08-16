@@ -13,7 +13,7 @@ public class MaximaData {
 	private BufferedReader in;
 
 	private List<String> urlCategory;
-	private List<URL> urlList;
+	private List<String> urlList;
 	private List<String> products;
 	private List<Double> prices;
 
@@ -38,8 +38,13 @@ public class MaximaData {
 	}
 
 	private void collectData() throws Exception {
-		for (URL url : urlList) {
-			
+		for (String string : urlList) {
+			URL url = new URL(string);
+			// 1. check if product has multiple pages
+			// 2. if it has, get the amount
+			// 3. create a new URL with page number for each page in a for loop
+			// 4. call readPage with the new URL in the loop
+			// 5. if product doesnt have multiple pages, call readPage with URL from urlList
 			readPage(url);
 		}
 	}
@@ -159,7 +164,7 @@ public class MaximaData {
 		}
 		in.close();
 
-		urlList.add(new URL("https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/augli.aspx"));
+		urlList.add("https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/augli.aspx");
 	}
 
 	// TODO: Method that returns collected data
