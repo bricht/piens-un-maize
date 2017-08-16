@@ -12,7 +12,7 @@ public class MaximaData {
 	// TODO: (?) boolean field to identify discounts
 	private BufferedReader in;
 
-	private List<String> urlCategory;
+	private List<String> urlCategorys;
 	private List<String> urlList;
 	private List<String> products;
 	private List<Double> prices;
@@ -24,7 +24,7 @@ public class MaximaData {
 	}
 
 	public MaximaData() {
-		urlCategory = new ArrayList<>();
+		urlCategorys = new ArrayList<>();
 		urlList = new ArrayList<>();
 		products = new ArrayList<>();
 		prices = new ArrayList<>();
@@ -44,7 +44,8 @@ public class MaximaData {
 			// 2. if it has, get the amount
 			// 3. create a new URL with page number for each page in a for loop
 			// 4. call readPage with the new URL in the loop
-			// 5. if product doesnt have multiple pages, call readPage with URL from urlList
+			// 5. if product doesnt have multiple pages, call readPage with URL
+			// from urlList
 			readPage(url);
 		}
 	}
@@ -52,15 +53,13 @@ public class MaximaData {
 	// TODO: sporta_uzturs has no subcategorys
 	// Add special support for it
 	private void readPage(URL url) throws Exception {
-		// TODO: check if URL has multiple pages
-		in = new BufferedReader(new InputStreamReader(url.openStream()));
-
 		String inputLine;
 		Matcher matcher;
 		Pattern namePattern = Pattern.compile("(?<=>)(.+?)(?=</a>)");
 		Pattern pricePattern = Pattern
 				.compile("(?<=<strong>)(\\d{1,3})(,)(\\d{2})(?= €</strong>)");
-
+		
+		in = new BufferedReader(new InputStreamReader(url.openStream()));
 		while ((inputLine = in.readLine()) != null) {
 			boolean isTable = false;
 			boolean isContent = false;
@@ -105,7 +104,6 @@ public class MaximaData {
 			}
 		}
 		in.close();
-
 	}
 
 	private void collectURLs() throws Exception {
@@ -113,27 +111,26 @@ public class MaximaData {
 		// Page to get all the categories and products
 		String indexPage = homeURL + "/Produkti/partika_dzerieni.aspx";
 		URL url = new URL(indexPage);
-		in = new BufferedReader(new InputStreamReader(url.openStream()));
-
 		String inputLine;
 		Matcher matcher;
-		Pattern categoryPattern = Pattern
-				.compile("(?<=(<a href=\"/Produkti/partika_dzerieni))(/[^/]+?)(?=(\\.aspx\">.+?)</a>)");
+		Pattern urlPattern = Pattern
+				.compile("(?<=(<a href=\"))(/Produkti/partika_dzerieni/[^/]+?)(?=(\\.aspx\">.+?</a>))");
+		
 		// gets category URLs
+		in = new BufferedReader(new InputStreamReader(url.openStream()));
 		while ((inputLine = in.readLine()) != null) {
-			// test
 			if ((inputLine.replaceAll("\\s", ""))
 					.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
 				while ((inputLine = in.readLine()) != null) {
 					// TODO: (?) get product category names
 					// into a separate list/class field for database
-					if ((inputLine.replaceAll("\\s", "")).equals("</span>")) {
+					if ((inputLine.replaceAll("\\s", "")).equals("</ul></span>")) {
 						break;
 					}
 
-					matcher = categoryPattern.matcher(inputLine);
+					matcher = urlPattern.matcher(inputLine);
 					if (matcher.find()) {
-						urlCategory.add(matcher.group());
+						urlCategorys.add(matcher.group());
 						// temporary output for testing
 						System.out.println(matcher.group());
 					}
@@ -142,36 +139,41 @@ public class MaximaData {
 			}
 		}
 		in.close();
-
-		// TODO: for each category in urlCategory
-		Pattern urlPattern = Pattern.compile("");
-		in = new BufferedReader(new InputStreamReader(url.openStream()));
-		// gets product URLs (subcategories)
-		while ((inputLine = in.readLine()) != null) {
-			if ((inputLine.replaceAll("\\s", ""))
-					.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
-				// TODO: (?) get product subcategory names
-				// into a separate list/class field for database
-				if ((inputLine.replaceAll("\\s", "")).equals("</span>")) {
+		
+		// TODO: maybe reopen BufferedReader
+		// gets product URLs (subcategories) for each category
+		for (String category : urlCategorys) {
+			in = new BufferedReader(new InputStreamReader(url.openStream()));
+			String pattern = "(?<=(<a href=\"))(" + category + "/.+?\\.aspx)(?=(\">.+?</a>))";
+			urlPattern = Pattern.compile(pattern);
+			while ((inputLine = in.readLine()) != null) {
+				if ((inputLine.replaceAll("\\s", ""))
+						.equals("<spanid=\"ctl00_phSiteMapMenu_menuCategory_menuSitemap\">")) {
+					while ((inputLine = in.readLine()) != null) {
+						// TODO: (?) get product subcategory names
+						// into a separate list/class field for database
+						if ((inputLine.replaceAll("\\s", "")).equals("</ul></span>")) {
+							break;
+						}
+						
+						// TODO: remove favorites from urlList
+						matcher = urlPattern.matcher(inputLine);
+						if (matcher.find()) {
+							urlList.add(matcher.group());
+							// temporary output for testing
+							System.out.println(matcher.group());
+						}
+					}
 					break;
 				}
-
-				matcher = urlPattern.matcher(inputLine);
-				if (matcher.find()) {
-
-				}
 			}
+			in.close();
 		}
 		in.close();
-
-		urlList.add("https://www.e-maxima.lv/Produkti/partika_dzerieni/augli_darzeni/augli.aspx");
 	}
+	
 
 	// TODO: Method that returns collected data
 	// Return type to be determined (special class, list ...)
 	// private (returnType) getData () { }
-
-	// https://stackoverflow.com/questions/14865283/proper-git-workflow-scheme-with-multiple-developers-working-on-same-task
-	// https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow
-	// https://stackoverflow.com/questions/4556467/git-pull-or-git-merge-between-master-and-development-branches
 }
