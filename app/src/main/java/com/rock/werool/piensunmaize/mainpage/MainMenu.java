@@ -1,9 +1,10 @@
-package com.rock.werool.piensunmaize;
+package com.rock.werool.piensunmaize.mainpage;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
 
 public class MainMenu extends AppCompatActivity {
