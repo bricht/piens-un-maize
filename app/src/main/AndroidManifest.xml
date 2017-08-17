@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainMenu">
+        <activity android:name=".mainpage.MainMenu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +25,11 @@
         <activity android:name=".barcode.BarcodeScanner" />
         <activity android:name=".search.SearchMenu" />
         <activity android:name=".search.SearchByProductActivity" />
-        <activity android:name=".search.SearchByStoreActivity"></activity>
+        <activity android:name=".search.SearchByStoreActivity">
+        <activity android:name=".add.addProductChoosePage" />
+        <activity android:name=".mainpage.GreetingsActivity" />
+        <activity android:name=".add.FillWithHandActivity" />
+        <activity android:name=".add.ThankActivity"></activity>
     </application>
 
 </manifest>
