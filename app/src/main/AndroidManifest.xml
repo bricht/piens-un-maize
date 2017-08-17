@@ -25,6 +25,7 @@
         <activity android:name=".barcode.BarcodeScanner" />
         <activity android:name=".search.SearchMenu" />
         <activity android:name=".search.SearchByProductActivity" />
+        <activity android:name=".search.SearchByStoreActivity"></activity>
     </application>
 
 </manifest>

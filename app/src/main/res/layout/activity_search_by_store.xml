@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rock.werool.piensunmaize.search.SearchByProductActivity">
+    tools:context="com.rock.werool.piensunmaize.search.SearchByStoreActivity">
 
     <EditText
         android:id="@+id/searchStoreText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
         android:ems="10"
         android:hint="Product name"
         android:inputType="textPersonName"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        android:layout_marginTop="8dp" />
 
     <Switch
         android:id="@+id/switch1"
@@ -60,7 +60,7 @@
         android:divider="@android:color/white"
         android:isScrollContainer="false"
         android:dividerHeight="1dp"
-        android:id="@+id/listviewproduct"
+        android:id="@+id/listviewstore"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"

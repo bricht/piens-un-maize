@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
+import com.rock.werool.piensunmaize.search.SearchByProductActivity;
+import com.rock.werool.piensunmaize.search.SearchByStoreActivity;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -12,10 +14,7 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        //setContentView(R.layout.checkbox_list);
-        //Intent intent = new Intent(this, BarcodeScanner.class);
-        //startActivity(intent);
-        startActivity(new Intent(MainMenu.this, BarcodeScanner.class));
-
+        startActivity(new Intent(MainMenu.this, SearchByStoreActivity.class));
+        //startActivity(new Intent(MainMenu.this, BarcodeScanner.class));
     }
 }

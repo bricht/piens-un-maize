@@ -6,8 +6,12 @@ package com.rock.werool.piensunmaize.search;
 
 public class Product {
     String name = null;
-    //String price = null;
-    Boolean isChecked = false;
+    String price = null;
+
+    public Product(String name, String price) {
+        this.name = name;
+        this.price = price;
+    }
 
     public String getName() {
         return name;
@@ -17,16 +21,11 @@ public class Product {
         this.name = name;
     }
 
-    public Boolean getChecked() {
-        return isChecked;
+    public String getPrice() {
+        return price;
     }
 
-    public void setChecked(Boolean checked) {
-        isChecked = checked;
-    }
-
-    public Product(String name) {
-        this.name = name;
-
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

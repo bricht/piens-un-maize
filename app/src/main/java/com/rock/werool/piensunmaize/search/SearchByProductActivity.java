@@ -1,47 +1,57 @@
 package com.rock.werool.piensunmaize.search;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rock.werool.piensunmaize.R;
 
 import java.util.ArrayList;
 
-public class SearchByProductActivity extends AppCompatActivity {
+public class SearchByProductActivity extends AppCompatActivity {              //TODO implement action for clicking on a row
+    MyCustomAdapter dataAdapter;
+    ArrayList<Product> products = new ArrayList<>();
+    ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_product);
-    }
-    private void displayListView() {
-        ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Apple"));
-        products.add(new Product("Orange"));
-        products.add(new Product("Pear"));
-        products.add(new Product("Banana"));
 
-        MyCustomAdapter dataAdapter = new MyCustomAdapter(this, R.layout.checkbox_list, products);
+        products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
+        products.add(new Product("Orange", "42"));
+        products.add(new Product("Apple", "21"));
+        products.add(new Product("Orange", "42"));
+        products.add(new Product("Apple", "21"));
+        products.add(new Product("Orange", "42"));
+        products.add(new Product("Apple", "21"));
+        products.add(new Product("Orange", "42"));
+        products.add(new Product("Apple", "21"));
+        products.add(new Product("Orange", "42"));
+        products.add(new Product("Apple", "21"));
+        products.add(new Product("Orange", "42"));
+        products.add(new Product("Apple", "21"));
+        products.add(new Product("Orange", "42"));
+
+        productSearchResults.addAll(products);                 //ListView initially shows all products
+        displayListView(productSearchResults);
+        addSearchBarListener();
+    }
+    private void displayListView(ArrayList<Product> inputList) {
+
+        dataAdapter = new MyCustomAdapter(this, R.layout.itemname_price, inputList);
         ListView listView = (ListView)findViewById(R.id.listviewproduct);
         listView.setAdapter(dataAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                Product product = (Product) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(),
-                        "Clicked on Row: " + product.getName(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
     }
     private class MyCustomAdapter extends ArrayAdapter<Product> {
 
@@ -55,8 +65,8 @@ public class SearchByProductActivity extends AppCompatActivity {
         }
 
         private class ViewHolder {
-            TextView code;
-            CheckBox name;
+            TextView name;
+            TextView price;
         }
 
         @Override
@@ -68,14 +78,14 @@ public class SearchByProductActivity extends AppCompatActivity {
             if (convertView == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
-                convertView = vi.inflate(R.layout.product_info, null);
+                convertView = vi.inflate(R.layout.itemname_price, null);
 
-                holder = new ViewHolder();
-                holder.code = (TextView) convertView.findViewById(R.id.code);
-                holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
-                convertView.setTag(holder);
-
-                holder.name.setOnClickListener( new View.OnClickListener() {
+                holder = new ViewHolder();                                                //makes holder object with the values of the fields
+                holder.name = (TextView) convertView.findViewById(R.id.productName);
+                holder.price = (TextView) convertView.findViewById(R.id.productPrice);
+                convertView.setTag(holder);                     //Important! Stores the holder in the View (row)
+                /*
+                holder.check.setOnClickListener(new View.OnClickListener() {        //Ignore this don't delete
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v ;
                         Product product = (Product) cb.getTag();
@@ -83,53 +93,48 @@ public class SearchByProductActivity extends AppCompatActivity {
                                 "Clicked on Checkbox: " + cb.getText() +
                                         " is " + cb.isChecked(),
                                 Toast.LENGTH_LONG).show();
-                        product.setSelected(cb.isChecked());
+                        product.setChecked(cb.isChecked());
                     }
                 });
+                */
             }
             else {
-                holder = (ViewHolder) convertView.getTag();
+                holder = (ViewHolder) convertView.getTag();                         //If row is already created then get the holder from it
             }
-
             Product product = productList.get(position);
-            //holder.code.setText(" (" +  product.getCode() + ")");
             holder.name.setText(product.getName());
-            holder.name.setChecked(product.isChecked());
-            holder.name.setTag(product);
+            holder.price.setText(product.getPrice());
+            //holder.check.setChecked(product.getChecked());                //Ignore this
+            //holder.check.setTag(product);
 
             return convertView;
-
         }
-
     }
 
-    private void checkButtonClick() {
+    private void addSearchBarListener() {                       //Updates results in ListView
+        final EditText search = (EditText)findViewById(R.id.searchStoreText);
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-
-        Button myButton = (Button) findViewById(R.id.findSelected);
-        myButton.setOnClickListener(new View.OnClickListener() {
+            }
 
             @Override
-            public void onClick(View v) {
-
-                StringBuffer responseText = new StringBuffer();
-                responseText.append("The following were selected...\n");
-
-                ArrayList<Product> productList = dataAdapter.productList;
-                for(int i=0;i<productList.size();i++){
-                    Product product = productList.get(i);
-                    if(product.isSelected()){
-                        responseText.append("\n" + product.getName());
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                productSearchResults.clear();                      //Clears results so the right ones could be readded
+                for(int n = 0; n < products.size(); n++) {
+                    if(products.get(n).name.toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {  //.matches() is a regular expression
+                        productSearchResults.add(products.get(n));    //If product name matches. Not case or index sensitive
                     }
                 }
+                displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
+            }
 
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
-
     }
+}
 
-}
-}
