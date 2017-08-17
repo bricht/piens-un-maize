@@ -12,7 +12,7 @@ import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
 
 public class MainMenu extends AppCompatActivity {
 
-    Button buttonShare;
+    Button buttonShare, buttonScanBarcode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
