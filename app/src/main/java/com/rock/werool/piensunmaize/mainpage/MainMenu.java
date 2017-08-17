@@ -16,7 +16,7 @@ public class MainMenu extends AppCompatActivity {
         //setContentView(R.layout.checkbox_list);
         //Intent intent = new Intent(this, BarcodeScanner.class);
         //startActivity(intent);
-        startActivity(new Intent(MainMenu.this, BarcodeScanner.class));
+//        startActivity(new Intent(MainMenu.this, BarcodeScanner.class));
 
     }
 }
