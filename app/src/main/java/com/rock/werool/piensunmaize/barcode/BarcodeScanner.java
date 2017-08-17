@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
@@ -91,9 +92,11 @@ public class BarcodeScanner extends AppCompatActivity {
             BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).build();
             final SurfaceView cameraView = (SurfaceView) findViewById(R.id.camera_view);
             final TextView barcodeInfo = (TextView) findViewById(R.id.code_info);
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
             CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)
-                    .setRequestedPreviewSize(1600, 1024)
+                    .setRequestedPreviewSize(metrics.widthPixels, metrics.heightPixels)
                     .setAutoFocusEnabled(true)
                     .setRequestedFps(30.0f);
             cameraSource = builder.build();

@@ -11,7 +11,7 @@ import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
 
 public class addProductChoosePage extends AppCompatActivity {
 
-    Button buttonScanBarcode;
+    Button buttonScanBarcode, buttonFillByHand;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +21,14 @@ public class addProductChoosePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(addProductChoosePage.this, BarcodeScanner.class);
+                startActivity(intent);
+            }
+        });
+        buttonFillByHand = (Button) findViewById(R.id.refreshBarcode);
+        buttonFillByHand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(addProductChoosePage.this, FillWithHandActivity.class);
                 startActivity(intent);
             }
         });

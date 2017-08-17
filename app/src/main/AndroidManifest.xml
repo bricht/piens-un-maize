@@ -26,7 +26,8 @@
         <activity android:name=".search.SearchMenu" />
         <activity android:name=".search.SearchByProductActivity" />
         <activity android:name=".add.addProductChoosePage" />
-        <activity android:name=".mainpage.GreetingsActivity"></activity>
+        <activity android:name=".mainpage.GreetingsActivity" />
+        <activity android:name=".add.FillWithHandActivity"></activity>
     </application>
 
 </manifest>
