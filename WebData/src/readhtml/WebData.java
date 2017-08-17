@@ -1,19 +1,27 @@
 package readhtml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Class for calling MaximaData and RimiData to write WebProducts to DB
+ * Class for calling MaximaData and RimiData to write WebProducts to DB. !!! Not
+ * reading data from e-maxima.lv (for now)
  */
 public class WebData {
+	private List<WebProduct> products;
 
-	/**
-	 * main method of WebData
-	 * 
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		// TODO #1: call MaximaData and store product info in List<WebProduct>
-		// TODO #2: call RimiData and store product info in List<WebProduct>
-		// TODO #3: write data to DB
+		@SuppressWarnings("unused")
+		WebData data = new WebData(); 
+	}
+	
+	public WebData(){
+		products = new ArrayList<>();
+		
+		// MaximaData maximaData = new MaximaData();
+		RimiData rimiData = new RimiData();
+		// TODO: call getData of RimiData
+		// TODO: write data to DB
 	}
 
 }

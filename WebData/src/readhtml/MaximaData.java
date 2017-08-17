@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class for collecting product info from e-maxima.lv
+ * Class for collecting product info from e-maxima.lv. !!! Not uesed (for now)
  */
 public class MaximaData {
 	// (?) add boolean field to identify discounts
@@ -22,19 +22,6 @@ public class MaximaData {
 	private List<String> products;
 	private List<Double> prices;
 
-	/**
-	 * Temporary main method for testing
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		@SuppressWarnings("unused")
-		MaximaData data = new MaximaData();
-	}
-
-	/**
-	 * Constructor of MaximaData. Collects product info from e-maxima.lv
-	 */
 	public MaximaData() {
 		urlCategorys = new ArrayList<>();
 		urlList = new ArrayList<>();
@@ -94,19 +81,20 @@ public class MaximaData {
 						urlSecondaryList.add(matcher.group());
 					}
 				}
-			}
-			in.close();
-
-			if (pagesCount != 1) {
-				for (int i = 2; i <= pagesCount; i++) {
-					// temporary output for testing
-					System.out.println(string + "/" + i);
-					readPage(new URL(homeURL + string + "/" + i + ".aspx"));
-				}
+				in.close();
 			} else {
-				// temporary output for testing
-				System.out.println(string);
-				readPage(url);
+
+				if (pagesCount != 1) {
+					for (int i = 2; i <= pagesCount; i++) {
+						// temporary output for testing
+						System.out.println(string + "/" + i);
+						readPage(new URL(homeURL + string + "/" + i + ".aspx"));
+					}
+				} else {
+					// temporary output for testing
+					System.out.println(string);
+					readPage(url);
+				}
 			}
 		}
 
