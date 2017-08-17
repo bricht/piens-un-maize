@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize;
+package com.rock.werool.piensunmaize.barcode;
 
 /**
  * Created by Martin on 15-Aug-17.

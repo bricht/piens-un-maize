@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize;
+package com.rock.werool.piensunmaize.barcode;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -21,6 +21,7 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.rock.werool.piensunmaize.R;
 
 import java.io.IOException;
 
@@ -98,12 +99,17 @@ public class BarcodeScanner extends AppCompatActivity {
             cameraSource = builder.build();
 
 
-            ImageView flash = (ImageView)findViewById(R.id.flash);
+            final ImageView flash = (ImageView)findViewById(R.id.flash);
 
             flash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     flashOnButton();
+                    if (flashmode) {
+                        flash.setImageResource(R.drawable.flash_outline_yellow);
+                    } else {
+                        flash.setImageResource(R.drawable.flash_outline_grey);
+                    }
                 }
             });
 
