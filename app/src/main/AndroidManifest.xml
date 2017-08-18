@@ -25,11 +25,12 @@
         <activity android:name=".barcode.BarcodeScanner" />
         <activity android:name=".search.SearchMenu" />
         <activity android:name=".search.SearchByProductActivity" />
-        <activity android:name=".search.SearchByStoreActivity"/>
+        <activity android:name=".search.SearchByStoreActivity" />
         <activity android:name=".add.addProductChoosePage" />
         <activity android:name=".mainpage.GreetingsActivity" />
         <activity android:name=".add.FillWithHandActivity" />
-        <activity android:name=".add.ThankActivity"></activity>
+        <activity android:name=".add.ThankActivity" />
+        <activity android:name=".favourites.FavouriteStoresActivity"></activity>
     </application>
 
 </manifest>
