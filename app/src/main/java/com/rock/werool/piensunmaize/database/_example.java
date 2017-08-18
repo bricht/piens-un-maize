@@ -16,7 +16,6 @@ public class _example extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
 
         RemoteDatabase db = new RemoteDatabase("", this);
         db.FindProductByCategory("piens", new IRemoteDatabaseResponseHandler<Product>() {
