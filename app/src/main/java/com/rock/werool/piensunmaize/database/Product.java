@@ -22,10 +22,13 @@ public class Product {
         this.setDescription(description);
         this.setAvaragePricePrice(avaragePrice);
     }
+    public Product(String name, String category, String description, double avaragePrice) {
+        this(0, name, category, description, avaragePrice);
+    }
 
     public Product (JSONObject jobj) throws JSONException {
-        this(jobj.getInt(TAG_ID), jobj.getString(TAG_NAME), jobj.getString(TAG_CATEGORY),
-                jobj.getString(TAG_DESCRIPTION), jobj.getDouble(TAG_PRICE));
+        this(jobj.getInt("p_id"), jobj.getString("p_name"), jobj.getString("p_category"),
+                jobj.getString("p_descript"), jobj.getDouble("p_price"));
     }
 
     public long getId() {
@@ -63,6 +66,15 @@ public class Product {
     public double getAvaragePricePrice() { return avaragePrice; }
 
     public void setAvaragePricePrice(double avaragePrice) { this.avaragePrice = avaragePrice; }
+
+    @Override
+    public String toString() {
+        return "p_id:" + this.getId() + " p_name:" + this.getName() +
+                " p_category:" + this.getCategory() +
+                " p_descript:" + this.getDescription() +
+                " p_av_price:" + this.getAvaragePricePrice();
+
+    }
 
     private long id;
     private String name;

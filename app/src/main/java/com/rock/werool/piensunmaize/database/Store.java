@@ -23,8 +23,13 @@ public class Store {
         this.location = location;
     }
 
+    public Store(String name, String location) {
+        this.name = name;
+        this.location = location;
+    }
+
     public Store(JSONObject jobj) throws JSONException {
-        this(jobj.getInt(TAG_ID), jobj.getString(TAG_NAME), jobj.getString(TAG_LOCATION));
+        this(jobj.getInt("s_id"), jobj.getString("s_name"), jobj.getString("s_location"));
     }
 
     public String getName() {
@@ -49,5 +54,10 @@ public class Store {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "s_id:" + this.getId() + " s_name:" + this.getName() + " s_location" + this.getLocation();
     }
 }
