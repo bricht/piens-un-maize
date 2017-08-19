@@ -4,10 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rock.werool.piensunmaize.search.SearchByProductActivity">
+    tools:context="com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity">
+
+    <Space
+        android:id="@+id/searchProductClickSpace"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/productName"
+        android:id="@+id/searchProductName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -23,21 +36,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/productPrice"
+        app:layout_constraintRight_toLeftOf="@+id/searchProductPrice"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.501" />
 
     <TextView
-        android:id="@+id/productPrice"
+        android:id="@+id/searchProductPrice"
         android:inputType="textNoSuggestions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/productName"
+        app:layout_constraintTop_toTopOf="@+id/searchProductName"
         android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/productName"
+        app:layout_constraintBottom_toBottomOf="@+id/searchProductName"
         android:layout_marginBottom="0dp"
         app:layout_constraintVertical_bias="0.5" />
 

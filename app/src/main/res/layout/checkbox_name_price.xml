@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rock.werool.piensunmaize.search.SearchByProductActivity">
+    tools:context="com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity">
 
     <TextView
         android:id="@+id/storeName"

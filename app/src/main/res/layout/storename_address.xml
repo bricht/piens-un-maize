@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rock.werool.piensunmaize.search.SearchByProductActivity">
+    tools:context="com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity">
 
     <TextView
         android:id="@+id/storeName"
@@ -43,14 +43,14 @@
         app:layout_constraintTop_toBottomOf="@+id/storeName" />
 
     <Space
-        android:id="@+id/storeClickSpace"
+        android:id="@+id/storeSearchClickSpace"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/storeAddress"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
