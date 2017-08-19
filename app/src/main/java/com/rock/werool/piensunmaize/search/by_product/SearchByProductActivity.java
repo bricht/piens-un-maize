@@ -31,6 +31,11 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_product);
+        if (getIntent().hasExtra("scannedProductName")) {
+            String scannedProductName = getIntent().getExtras().getString("scannedProductName");     //Recieves the passed parameters
+            TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
+            productNameTextView.setText(scannedProductName);
+        }
 
         products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
         products.add(new Product("Orange", "42"));

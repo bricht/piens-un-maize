@@ -97,9 +97,6 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                 holder.name = (TextView) convertView.findViewById(R.id.storeName);
                 holder.address = (TextView) convertView.findViewById(R.id.storeAddress);
 
-                final String clickedStoreName = holder.name.getText().toString();
-                final String clickedStoreAddress = holder.address.getText().toString();
-
                 convertView.setTag(holder);                             //Important! Stores the holder in the View (row)
 
                 Store store = storeList.get(position);
@@ -107,6 +104,9 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                 //holder.check.setTag(store);
                 holder.name.setText(store.getName());
                 holder.address.setText(store.getAddress());
+
+                final String clickedStoreName = holder.name.getText().toString();
+                final String clickedStoreAddress = holder.address.getText().toString();
 
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override

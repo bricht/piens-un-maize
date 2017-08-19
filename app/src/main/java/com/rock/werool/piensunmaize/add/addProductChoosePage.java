@@ -16,14 +16,17 @@ public class addProductChoosePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product_choose_page);
+
         buttonScanBarcode = (Button) findViewById(R.id.scanButton);
         buttonScanBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(addProductChoosePage.this, BarcodeScanner.class);
+                intent.putExtra("necessaryAction", "UPDATE_PRODUCT");
                 startActivity(intent);
             }
         });
+
         buttonFillByHand = (Button) findViewById(R.id.refreshBarcode);
         buttonFillByHand.setOnClickListener(new View.OnClickListener() {
             @Override

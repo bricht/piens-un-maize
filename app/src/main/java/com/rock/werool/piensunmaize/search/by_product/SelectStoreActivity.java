@@ -30,8 +30,7 @@ public class SelectStoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_store);
-        Bundle extras = getIntent().getExtras();            //Recieves the passed parameters in a bundle
-        String clickedProductName = extras.getString("clickedProductName");     //Gets the specified param from the bundle
+        String clickedProductName = getIntent().getExtras().getString("clickedProductName");     //Gets the passed parameter
         //String clickedProductAveragePrice = extras.getString("clickedAveragePrice");
         TextView productNameTextView = (TextView) findViewById(R.id.selectedProductName);
         productNameTextView.setText(clickedProductName);
