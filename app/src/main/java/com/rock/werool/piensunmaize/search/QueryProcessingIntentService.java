@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -27,13 +28,22 @@ public class QueryProcessingIntentService extends IntentService{      //TODO Fin
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        //intent.getParcelableExtra("QUERY_RESULT");        //TODO get object containing the cursor
-        if (intent.hasExtra("currentQuery")) {
-            currentQuery = intent.getStringExtra("currentQuery");
+    protected void onHandleIntent(Intent recievedIntent) {
+        if (recievedIntent.hasExtra("currentQuery") && recievedIntent.hasExtra("Cursor")) {
+            currentQuery = recievedIntent.getStringExtra("currentQuery");
+            Cursor cursor = (Cursor) recievedIntent.getSerializableExtra("Cursor");
+
             switch (currentQuery) {
                 case ("SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE") : {      //1.2 SearchByProductActivity
 
+                    ArrayList<Product> products = new ArrayList<>();
+                    while (cursor.moveToNext()){
+                        products.add(new Product(cursor.getString(1), cursor.getString(2)));    //TODO may be incorrect
+                    }
+                    Intent sendableIntent = new Intent();
+                    sendableIntent.setAction("ProcessedQueryResult");
+                    sendableIntent.putExtra("ArrayList<Product>", (Serializable) products);
+                    sendBroadcast(sendableIntent);
                     break;
                 }
                 case ("SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_STORENAME_STOREADDRESS_PRODUCTPRICE") : {        //1.2.1 SelectStoreActivity
@@ -52,7 +62,5 @@ public class QueryProcessingIntentService extends IntentService{      //TODO Fin
         }
     }
 
-    public ArrayList<Product> productAvgPrice(Cursor cursor) {
-        return null;                //TODO implement method that makes an ArrayList<Product> from the recieved Cursor
-    }
+
 }
