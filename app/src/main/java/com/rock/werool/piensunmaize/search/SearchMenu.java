@@ -1,9 +1,15 @@
 package com.rock.werool.piensunmaize.search;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
+import com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity;
+import com.rock.werool.piensunmaize.search.by_store.SearchByStoreActivity;
 
 public class SearchMenu extends AppCompatActivity {
 
@@ -11,5 +17,33 @@ public class SearchMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_menu);
+
+        Button buttonSearchByBarcode = (Button) findViewById(R.id.searchByBarcodeButton);
+        buttonSearchByBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchMenu.this, BarcodeScanner.class);
+                intent.putExtra("necessaryAction", "FIND_PRODUCT_INFO");
+                startActivity(intent);
+            }
+        });
+
+        Button buttonSearchByProductName = (Button) findViewById(R.id.searchByProductNameButton);
+        buttonSearchByProductName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchMenu.this, SearchByProductActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button buttonSearchByStore = (Button) findViewById(R.id.searchByStoreButton);
+        buttonSearchByStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchMenu.this, SearchByStoreActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

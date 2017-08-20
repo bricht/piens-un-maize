@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".barcode.BarcodeScanner" />
+        <activity android:name=".barcode.BarcodeScanner"
+            android:theme="@style/BarcodeScannerTheme"/>
         <activity android:name=".search.SearchMenu" />
         <activity android:name=".search.by_product.SearchByProductActivity" />
         <activity android:name=".search.by_store.SearchByStoreActivity" />
@@ -31,7 +32,7 @@
         <activity android:name=".add.FillWithHandActivity" />
         <activity android:name=".add.ThankActivity" />
         <activity android:name=".search.by_product.SelectStoreActivity" />
-        <activity android:name=".search.by_store.SelectProductActivity"></activity>
+        <activity android:name=".search.by_store.SelectProductActivity" />
         <activity android:name=".favourites.FavouriteStoresActivity"></activity>
     </application>
 

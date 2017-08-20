@@ -8,7 +8,6 @@ import android.widget.Button;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
-import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
 import com.rock.werool.piensunmaize.search.SearchMenu;
 
@@ -23,7 +22,7 @@ public class MainMenu extends AppCompatActivity {
         //Intent intent = new Intent(this, BarcodeScanner.class);
         //startActivity(intent);
 //        startActivity(new Intent(MainMenu.this, BarcodeScanner.class));
-        buttonShare = (Button) findViewById(R.id.button19);
+        buttonShare = (Button) findViewById(R.id.mainMenuShare);
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -31,7 +30,7 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        buttonSearch = (Button) findViewById(R.id.button20);
+        buttonSearch = (Button) findViewById(R.id.mainMenuSearch);
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,7 +38,7 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        buttonFavourites = (Button) findViewById(R.id.button21);
+        buttonFavourites = (Button) findViewById(R.id.mainMenuFavourites);
         buttonFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

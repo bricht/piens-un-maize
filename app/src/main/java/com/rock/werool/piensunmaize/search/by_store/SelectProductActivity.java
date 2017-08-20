@@ -36,7 +36,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
         Bundle extras = getIntent().getExtras();            //Recieves the passed parameters in a bundle
         String clickedStoreName = extras.getString("clickedStoreName");     //Gets the specified param from the bundle
-        String clickedStoreAddress = extras.getString("clickedStringName");
+        String clickedStoreAddress = extras.getString("clickedStoreAddress");
         TextView storeNameAddressTextView = (TextView) findViewById(R.id.selectedStoreNameAddress);
         storeNameAddressTextView.setText(clickedStoreName + " " + clickedStoreAddress);
 

@@ -165,9 +165,15 @@ public class BarcodeScanner extends AppCompatActivity {
                     final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
                     if (barcodes.size() != 0) {
+                        Bundle bundle = getIntent().getExtras();            //getExtras() is a way to pass parameters to activities
+                        String necessaryAction = bundle.getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
                         BarcodeAction barAction = new BarcodeAction();
-                        barAction.setNecessaryAction(BarcodeAction.BarcodeDetectedAction.UPDATE_PRODUCT);
-//                        barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);
+                        //String necessaryAction = "UPDATE_PRODUCT";
+                        barAction.setContextAndNecessaryAction(getApplicationContext(), necessaryAction);
+
+                        barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);       //BarcodeAction executes necessary action
+
+                        /*
 //                        barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
 //                            public void run() {
                         barcodeInfo.setText(    // Update the TextView
@@ -180,8 +186,7 @@ public class BarcodeScanner extends AppCompatActivity {
 //                            }
 //                        });
                         Barcode barc = barcodes.valueAt(0);
-
-
+                        */
                     }
                 }
             });
