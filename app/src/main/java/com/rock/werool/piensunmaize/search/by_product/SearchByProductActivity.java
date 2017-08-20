@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Product;
+import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 
 import java.util.ArrayList;
 
@@ -197,7 +198,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                 }
                 displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
                 */
-                Intent intentForSQL = new Intent();
+                Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
                 intentForSQL.putExtra("type", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
                 intentForSQL.putExtra("queryproductName", search.getText().toString());     //TODO may need to turn to lowercase
                 startService(intentForSQL);             //Starts SQLite intent service
