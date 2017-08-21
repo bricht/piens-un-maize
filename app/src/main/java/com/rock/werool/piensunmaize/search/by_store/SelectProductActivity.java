@@ -14,12 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Product;
-import com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity;
 import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
 import java.util.ArrayList;
@@ -160,7 +158,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     }
 
     private void addSearchBarListener() {                       //Updates results in ListView
-        final EditText search = (EditText)findViewById(R.id.selectProductName);
+        final EditText search = (EditText)findViewById(R.id.selectProductNameText);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

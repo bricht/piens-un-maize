@@ -1,6 +1,5 @@
 package com.rock.werool.piensunmaize.search.by_store;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,17 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Store;
-import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
 import java.util.ArrayList;
 
@@ -165,7 +160,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     }
 
     private void addSearchBarListener() {                               //Updates results in ListView
-        final EditText search = (EditText)findViewById(R.id.searchStoreText);
+        final EditText search = (EditText)findViewById(R.id.searchStoreNameText);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

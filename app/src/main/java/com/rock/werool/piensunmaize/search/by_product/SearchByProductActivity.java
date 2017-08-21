@@ -31,10 +31,17 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(SearchProductList , new IntentFilter ("ProcessedQueryResult"));         //Registers BroadcastReceivers
+        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
-        unregisterReceiver(SearchProductSQL);
+            unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
+            unregisterReceiver(SearchProductSQL);
     }
 
     @Override
@@ -46,9 +53,6 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
             productNameTextView.setText(scannedProductName);
         }
-
-        registerReceiver(SearchProductList , new IntentFilter ("ProcessedQueryResult"));         //Registers BroadcastReceivers
-        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
 
         products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
         products.add(new Product("Orange", "42"));
@@ -200,8 +204,9 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                 */
                 Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
                 intentForSQL.putExtra("type", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
-                intentForSQL.putExtra("queryproductName", search.getText().toString());     //TODO may need to turn to lowercase
+                intentForSQL.putExtra("queryProductName", search.getText().toString());     //TODO may need to turn to lowercase
                 startService(intentForSQL);             //Starts SQLite intent service
+                Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
             }
 
             @Override
@@ -220,7 +225,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
     };
 
-    BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {
+    BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent intentForService = new Intent();

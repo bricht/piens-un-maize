@@ -7,10 +7,16 @@ package com.rock.werool.piensunmaize.search;
 public class Store {
     String name = null;
     String address = null;
+    String priceForProduct = null;
 
     public Store(String name, String address) {
         this.name = name;
         this.address = address;
+    }
+    public Store(String name, String address, String priceForProduct) {
+        this.name = name;
+        this.address = address;
+        this.priceForProduct = priceForProduct;     //For SelectStoreActivity
     }
 
     public String getName() {
