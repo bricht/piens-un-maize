@@ -37,6 +37,7 @@
         <activity android:name=".search.by_product.SelectStoreActivity" />
         <activity android:name=".search.by_store.SelectProductActivity" />
         <activity android:name=".favourites.FavouriteStoresActivity" />
+        <activity android:name=".shoppingList.ShoppingListActivity" />
 
         <service
             android:name=".SQLiteLocal_DB.SQLiteQuery"
