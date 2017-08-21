@@ -20,6 +20,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
+        // Store shopping list in the local DB??
         // TODO: implement a method + button to add products to the shopping list
         // TODO: implement a method + button to add a shopping list for a separate store
         shoppingList.add(new Product("Orange", "42"));
