@@ -31,8 +31,8 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(StoreContract.DELETE_TABLE_STORES);
         db.execSQL(ProductContract.DELETE_TABLE_PRODUCTS);
+        db.execSQL(StoreContract.DELETE_TABLE_STORES);
         db.execSQL(BarcodeContract.DELETE_TABLE_BARCODES);
         db.execSQL(StoreProductPriceContract.DELETE_TABLE_STOREPRODUCTPRICE);
 
