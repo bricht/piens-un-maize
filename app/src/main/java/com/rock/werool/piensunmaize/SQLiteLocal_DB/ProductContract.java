@@ -7,19 +7,18 @@ package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 public class ProductContract {
     private ProductContract(){}
 
-    public static final String TABLE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract.products";
-    private static final String COLUMN_PK = "_com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract.primary_key";
-    public static final String COLUMN_PRODUCT_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract.id";
-    public static final String COLUMN_PRODUCT_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract.name";
-    public static final String COLUMN_AVG_PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract.price";
-    public static final String COLUMN_CATEGORY = "com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract.category";
+    public static final String TABLE_NAME = "products";
+    private static final String COLUMN_PK = "_primaryKey";
+    public static final String COLUMN_PRODUCT_ID = "productId";
+    public static final String COLUMN_PRODUCT_NAME = "productName";
+    public static final String COLUMN_AVG_PRICE = "productPrice";
+    public static final String COLUMN_CATEGORY = "productCategory";
 
     public static final String CREATE_TABLE_PRODUCTS =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_PK + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_PRODUCT_ID + " INTEGER AUTOINCREMENT, " +
                     COLUMN_PRODUCT_NAME + " TEXT, " +
-                    COLUMN_AVG_PRICE + " REAL, " +
                     COLUMN_CATEGORY + " TEXT)";
 
     public static final String DELETE_TABLE_PRODUCTS =

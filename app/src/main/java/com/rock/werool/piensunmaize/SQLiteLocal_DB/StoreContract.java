@@ -7,11 +7,11 @@ package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 public final class StoreContract {
     private StoreContract(){}
 
-    public static final String TABLE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreContract.shops";
-    private static final String COLUMN_PK = "_com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreContract.primary_key";
-    public static final String COLUMN_STORE_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreContract.id";
-    public static final String COLUMN_STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreContract..name";
-    public static final String COLUMN_STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreContract.address";
+    public static final String TABLE_NAME = "shops";
+    private static final String COLUMN_PK = "_primaryKey";
+    public static final String COLUMN_STORE_ID = "StoreId";
+    public static final String COLUMN_STORE_NAME = "storeName";
+    public static final String COLUMN_STORE_ADDRESS = "storeAddress";
 
     public static final String CREATE_TABLE_STORES =
             "CREATE TABLE " + TABLE_NAME + " (" +

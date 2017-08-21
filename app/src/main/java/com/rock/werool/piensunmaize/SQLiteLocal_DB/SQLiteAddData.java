@@ -8,20 +8,28 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class SQLiteAddData extends IntentService {
 
+    public static final String ADD_TYPE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.TYPE";
+    public static final String ADD_BARCODE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE";
+    public static final String ADD_PRODUCT = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT";
+    public static final String ADD_STORE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE";
+    public static final String ADD_STORE_PRODUCT_PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_PRICE";
 
-
-    public SQLiteAddData(){
-        super(SQLiteQuery.class.getName());
-    }
-
-    public SQLiteAddData(String name) {
-        super(name);
-    }
-
+    public static final String BARCODE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE_DATA";
+    public static final String PRODUCT_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_NAME_DATA";
+    public static final String CATEGORY = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.CATEGORY_DATA";
+    public static final String PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRICE_DATA";
 
 
     private SQLiteHelper helper;
     private SQLiteDatabase database;
+
+
+    public SQLiteAddData(){
+        super(SQLiteAddData.class.getName());
+    }
+    public SQLiteAddData(String name) {
+        super(name);
+    }
 
     @Override
     public void onCreate(){

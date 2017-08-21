@@ -49,7 +49,7 @@ public class SQLiteQuery extends IntentService{
     public void onCreate(){
         super.onCreate();
         helper = new SQLiteHelper(getApplicationContext());
-        database = helper.getWritableDatabase();
+        database = helper.getReadableDatabase();
     }
 
     @Override
