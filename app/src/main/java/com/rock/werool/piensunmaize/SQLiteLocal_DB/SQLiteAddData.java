@@ -10,7 +10,13 @@ public class SQLiteAddData extends IntentService {
 
 
 
+    public SQLiteAddData(){
+        super(SQLiteQuery.class.getName());
+    }
 
+    public SQLiteAddData(String name) {
+        super(name);
+    }
 
 
 
