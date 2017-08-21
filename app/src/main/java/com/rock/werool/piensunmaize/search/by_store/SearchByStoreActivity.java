@@ -1,7 +1,9 @@
 package com.rock.werool.piensunmaize.search.by_store;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
+import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
 
 import java.util.ArrayList;
@@ -25,6 +29,20 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     MyCustomAdapter dataAdapter;
     ArrayList<Store> stores = new ArrayList<>();
     ArrayList<Store> storeSearchResults = new ArrayList<>();            //ListView uses storeSearchResults instead of stores!
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(SearchStoreList , new IntentFilter("ProcessedQueryResult"));         //Registers BroadcastReceivers
+        registerReceiver(SearchStoreSQL , new IntentFilter ("QUERY_RESULT"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(SearchStoreList);         //Unregisters BroadcastReceivers
+        unregisterReceiver(SearchStoreSQL);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +70,12 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
 
         storeSearchResults.addAll(stores);                  //ListView initially shows all stores
         displayListView(storeSearchResults);
-        addSearchBarListener();
+
+        final EditText searchStoreName = (EditText) findViewById(R.id.searchStoreNameText);
+        final EditText searchStoreAddress = (EditText) findViewById(R.id.searchStoreAddressText);
+        addSearchBarListener(searchStoreName);
+        addSearchBarListener(searchStoreAddress);
+
     }
     private void displayListView(ArrayList<Store> inputList) {
 
@@ -159,22 +182,24 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         }
     }
 
-    private void addSearchBarListener() {                               //Updates results in ListView
-        final EditText search = (EditText)findViewById(R.id.searchStoreNameText);
-        search.addTextChangedListener(new TextWatcher() {
+    private void addSearchBarListener(EditText textFieldForListener) {                               //Updates results in ListView
+        final EditText searchStoreName = (EditText)findViewById(R.id.searchStoreNameText);
+        final EditText searchStoreAddress = (EditText)findViewById(R.id.searchStoreAddressText);
+
+        textFieldForListener.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                storeSearchResults.clear();                           //Clears results so the right ones could be readded
-                for(int n = 0; n < stores.size(); n++) {
-                    if(stores.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {     ////.matches() is a regular expression
-                        storeSearchResults.add(stores.get(n));                          //If product name matches. Not case or index sensitive
-                    }
-                }
-                displayListView(storeSearchResults);                 //TODO Maybe not a good way to update ListView
+                Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
+                intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
+                intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO may need to turn to lowercase
+                intentForSQL.putExtra(SQLiteQuery.SRC_STORE, searchStoreName.getText().toString());
+                intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, searchStoreAddress.getText().toString());
+                startService(intentForSQL);             //Starts SQLite intent service
+                Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
             }
 
             @Override
@@ -183,4 +208,23 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             }
         });
     }
+    BroadcastReceiver SearchStoreList = new BroadcastReceiver() {              //Receives an ArrayList from QueryProcessingIntentService
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            storeSearchResults.clear();
+            storeSearchResults.addAll((ArrayList<Store>) intent.getSerializableExtra("ArrayList<Store>"));
+            displayListView(storeSearchResults);                 //TODO Maybe not a good way to update ListView
+        }
+
+    };
+
+    BroadcastReceiver SearchStoreSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intentForService = new Intent();
+            intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
+            intentForService.putExtra("currentQuery", "SEND_STORENAME_GET_PRODUCTNAME_PRODUCTPRICE");
+            startService(intent);
+        }
+    };
 }

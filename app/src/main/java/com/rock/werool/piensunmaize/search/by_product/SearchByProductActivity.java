@@ -20,6 +20,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 
@@ -193,18 +194,11 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                /*
-                productSearchResults.clear();                      //Clears results so the right ones could be readded
-                for(int n = 0; n < products.size(); n++) {
-                    if(products.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {  //.matches() is a regular expression
-                        productSearchResults.add(products.get(n));    //If product name matches. Not case or index sensitive
-                    }
-                }
-                displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
-                */
-                Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
-                intentForSQL.putExtra("type", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
-                intentForSQL.putExtra("queryProductName", search.getText().toString());     //TODO may need to turn to lowercase
+                Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+                intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
+                intentForSQL.putExtra(SQLiteQuery.SRC_NAME, search.getText().toString());     //TODO may need to turn to lowercase
+                intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
+                intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
             }

@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
 
@@ -27,6 +28,7 @@ public class SelectStoreActivity extends AppCompatActivity {
     MyCustomAdapter dataAdapter;
     ArrayList<Store> stores = new ArrayList<>();
     ArrayList<Store> storeSearchResults = new ArrayList<>();            //ListView uses storeSearchResults instead of stores!
+    String clickedProductName;
 
     @Override
     protected void onResume() {
@@ -46,7 +48,7 @@ public class SelectStoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_store);
-        String clickedProductName = getIntent().getExtras().getString("clickedProductName");     //Gets the passed parameter
+        clickedProductName = getIntent().getExtras().getString("clickedProductName");     //Gets the passed parameter
         //String clickedProductAveragePrice = extras.getString("clickedAveragePrice");
         TextView productNameTextView = (TextView) findViewById(R.id.selectedProductName);
         productNameTextView.setText(clickedProductName);
@@ -73,10 +75,10 @@ public class SelectStoreActivity extends AppCompatActivity {
         storeSearchResults.addAll(stores);                  //ListView initially shows all stores
         displayListView(storeSearchResults);
 
-        final EditText searchName = (EditText)findViewById(R.id.selectStoreNameText);
-        final EditText searchAddress = (EditText)findViewById(R.id.selectStoreAddressText);
-        addSearchBarListener(searchName);
-        addSearchBarListener(searchAddress);    //Add listeners to both text fields
+        final EditText selectStoreName = (EditText)findViewById(R.id.selectStoreNameText);
+        final EditText selectStoreAddress = (EditText)findViewById(R.id.selectStoreAddressText);
+        addSearchBarListener(selectStoreName);
+        addSearchBarListener(selectStoreAddress);    //Add listeners to both text fields
     }
     private void displayListView(ArrayList<Store> inputList) {
 
@@ -167,8 +169,8 @@ public class SelectStoreActivity extends AppCompatActivity {
     }
 
     private void addSearchBarListener(EditText textFieldForListener) {                               //Updates results in ListView
-        final EditText searchName = (EditText)findViewById(R.id.selectStoreNameText);
-        final EditText searchAddress = (EditText)findViewById(R.id.selectStoreAddressText);
+        final EditText selectName = (EditText)findViewById(R.id.selectStoreNameText);
+        final EditText selectAddress = (EditText)findViewById(R.id.selectStoreAddressText);
 
         textFieldForListener.addTextChangedListener(new TextWatcher() {
             @Override
@@ -178,9 +180,10 @@ public class SelectStoreActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
-                intentForSQL.putExtra("type", "SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_STORENAME_STOREADDRESS_PRODUCTPRICE");
-                intentForSQL.putExtra("queryStoreName", searchName.getText().toString());     //TODO may need to turn to lowercase
-                intentForSQL.putExtra("queryStoreAddress", searchAddress.getText().toString());
+                intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
+                intentForSQL.putExtra(SQLiteQuery.SRC_NAME, clickedProductName);     //TODO may need to turn to lowercase
+                intentForSQL.putExtra(SQLiteQuery.SRC_STORE, selectName.getText().toString());
+                intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, selectAddress.getText().toString());
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectStoreActivity");
             }
