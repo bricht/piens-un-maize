@@ -137,7 +137,7 @@ public class SQLiteQuery extends IntentService{
 
             for(i = 0; i < cursor.getCount(); i++){
                 for(j = 0; j < cursor.getColumnCount(); j++){
-                    arr[i][j] = cursor.getString(cursor.getColumnIndex(columns[j]));
+                    arr[i][j] = cursor.getString(cursor.getColumnIndexOrThrow(columns[j]));
                 }
                 cursor.moveToNext();
                 j = 0;
