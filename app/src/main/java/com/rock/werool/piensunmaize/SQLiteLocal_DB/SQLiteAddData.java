@@ -3,8 +3,10 @@ package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.icu.text.SimpleDateFormat;
+import android.icu.text.StringPrepParseException;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,10 +38,11 @@ public class SQLiteAddData extends IntentService {
     public static final String STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_NAME_DATA";
     public static final String STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ADDRESS_DATA";
 
-    private String date;
+    private static String date;
+    private static String query = null;
 
     private SQLiteHelper helper;
-    private SQLiteDatabase database;
+    private static SQLiteDatabase database;
 
 
     public SQLiteAddData(){
@@ -82,14 +85,14 @@ public class SQLiteAddData extends IntentService {
                 if(productName == null || category == null ){
                     break;
                 }
-                insertProduct(productName, category);
+                insertProduct(0, productName, category);
                 break;
 
             case 3: i = 3;
                 if(storeName == null || storeAddress == null){
                     break;
                 }
-                insertStore(storeName, storeAddress);
+                insertStore(0, storeName, storeAddress);
                 break;
 
             case 4: i = 4;
@@ -106,20 +109,107 @@ public class SQLiteAddData extends IntentService {
 
     }
 
-   private void insertBarcode(String code, String name){
+   public static void insertBarcode(String code, String name){
+       int productId;
+       Cursor cursor;
 
+       cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                       " FROM " + ProductContract.TABLE_NAME +
+                       " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + name,
+                        null);
+       productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+
+       query = "INSERT INTO " + BarcodeContract.TABLE_NAME +
+               " (" + BarcodeContract.COLUMN_BARCODE + ", " + BarcodeContract.COLUMN_PRODUCT_ID + ")" +
+               " VALUES (" + code + ", " + productId + ")";
+
+       database.rawQuery(query, null);
    }
 
-   private void insertProduct(String name, String cat){
+   // Insert new product. If id is unknown or new product, int should be 0. If product name already exists, no insertion will be made - table requires unique product name.
+   public static void insertProduct(int id, String name, String cat){
+       int productId;
+       if(id == 0){
+           Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID + "), 0) + 1 FROM " + ProductContract.TABLE_NAME, null);
+           productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+           cursor.close();
+       }else{
+           productId = id;
+       }
 
+       query = "INSERT INTO " + ProductContract.TABLE_NAME +
+               " (" + ProductContract.COLUMN_PRODUCT_ID + ", " + ProductContract.COLUMN_PRODUCT_NAME + ", " + ProductContract.COLUMN_CATEGORY + ")" +
+               " VALUES (" + productId + ", " + name + ", " + cat + ")";
+
+       database.rawQuery(query, null);
    }
 
-   private void insertStore(String name, String addresss){
+    // Insert new store. If id is unknown or new store, int should be 0. If store name already exists, no insertion will be made - table requires unique store.
+    public static void insertStore(int id, String name, String address){
+        int storeId;
+        if(id == 0){
+            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
+            storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+            cursor.close();
+        }else{
+            storeId = id;
+        }
 
+        query = "INSERT INTO " + StoreContract.TABLE_NAME +
+                " (" + StoreContract.COLUMN_STORE_ID + ", " + StoreContract.COLUMN_STORE_NAME + ", " + StoreContract.COLUMN_STORE_ADDRESS + ")" +
+                " VALUES (" + storeId + ", " + name + ", " + address + ")";
+
+        database.rawQuery(query, null);
    }
 
-   private void insertPrice(String pName, String sName, String address, double price){
+    public static void insertPrice(String pName, String sName, String address, double price){
+        int productId;
+        int storeId;
+        Cursor cursor;
 
+        cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                " FROM " + ProductContract.TABLE_NAME +
+                " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + pName,
+                null);
+        productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+
+        cursor = database.rawQuery("SELECT " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID +
+                " FROM " + StoreContract.TABLE_NAME +
+                " WHERE " + StoreContract.COLUMN_STORE_NAME + " = " + sName +
+                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " = " + address,
+                null);
+        storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+
+        query = "INSERT INTO " + StoreProductPriceContract.TABLE_NAME +
+                " (" + StoreProductPriceContract.COLUMN_PRICE + ", " + StoreProductPriceContract.COLUMN_UPDATE + ", " + StoreProductPriceContract.COLUMN_PRODUCT_ID + ", " + StoreProductPriceContract.COLUMN_STORE_ID + ")" +
+                " VALUES (" + price + ", " + date + ", " + productId + ", " + storeId + ")";
+
+        database.rawQuery(query, null);
+   }
+
+   public static void updatePrice(String pName, String sName, String address, double price){
+       int productId;
+       int storeId;
+       Cursor cursor;
+
+       cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                       " FROM " + ProductContract.TABLE_NAME +
+                       " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + pName,
+               null);
+       productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+
+       cursor = database.rawQuery("SELECT " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID +
+                       " FROM " + StoreContract.TABLE_NAME +
+                       " WHERE " + StoreContract.COLUMN_STORE_NAME + " = " + sName +
+                       " AND " + StoreContract.COLUMN_STORE_ADDRESS + " = " + address,
+               null);
+       storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+
+       query = "UPDATE " + StoreProductPriceContract.TABLE_NAME +
+               " SET " + StoreProductPriceContract.COLUMN_PRICE + " = " + price + ", " + StoreProductPriceContract.COLUMN_UPDATE + " = " + date +
+               " WHERE " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + productId + " AND " + StoreProductPriceContract.COLUMN_STORE_ID + " = " + storeId;
+
+       database.rawQuery(query, null);
    }
 
 }

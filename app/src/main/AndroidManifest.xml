@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name=".mainpage.MainMenu">-->
+
+        <!-- <activity android:name=".mainpage.MainMenu"> -->
         <activity android:name=".mainpage.GreetingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,13 +42,14 @@
         <activity android:name=".shoppingList.ShoppingListActivity" />
         <activity android:name=".favourites.FavouritesMenu" />
 
-
         <service
             android:name=".SQLiteLocal_DB.SQLiteQuery"
-            android:exported="false"></service>
-
+            android:exported="false" />
         <service
             android:name=".SQLiteLocal_DB.SQLiteAddData"
+            android:exported="false" />
+        <service
+            android:name=".SQLiteLocal_DB.DbInitialize"
             android:exported="false"></service>
     </application>
 

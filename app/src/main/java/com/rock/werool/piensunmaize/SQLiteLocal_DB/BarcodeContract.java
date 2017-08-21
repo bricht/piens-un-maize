@@ -10,7 +10,7 @@ public class BarcodeContract {
     public static final String TABLE_NAME = "barcodes";
     private static final String COLUMN_PK = "_primaryKey";
     public static final String COLUMN_BARCODE = "barcode";
-    public static final String COLUMN_PRODUCT_ID = "prod_id";
+    public static final String COLUMN_PRODUCT_ID = "prodId";
 
     public static final String CREATE_TABLE_BARCODES =
             "CREATE TABLE " + TABLE_NAME + " (" +
