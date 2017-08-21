@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize.database;
+package com.rock.werool.piensunmaize.remoteDatabase;
 
 import android.content.Context;
 import android.util.Log;
@@ -30,12 +30,12 @@ public class RemoteDatabase {
     private static final String ACTION_UPDATE_PRODUCT = "updateProduct.php";
     private static final String ACTION_UPDATE_STORE = "updateStore.php";
     private static final String ACTION_UPDATE_STOREPRODUCTPRICE = "updateStoreProductPrice.php";
-    private static final String ACTION_UPDATE_BACRODE = "updateProduct.php";
+    private static final String ACTION_UPDATE_BACRODE = "updateBarcode.php";
 
     private static final String ACTION_DELETE_PRODUCT = "deleteProduct.php";
     private static final String ACTION_DELETE_STORE = "deleteStore.php";
     private static final String ACTION_DELETE_STOREPRODUCTPRICE = "deleteStoreProductPrice.php";
-    private static final String ACTION_DELETE_BACRODE = "deleteProduct.php";
+    private static final String ACTION_DELETE_BACRODE = "deleteBarcode.php";
 
     private static final String ACTION_FIND_PRODUCT_BY_BARCODE = "findProductByBarcode.php";
     private static final String ACTION_FIND_PRODUCT_BY_NAME = "findProductByName.php";
@@ -81,19 +81,19 @@ public class RemoteDatabase {
     public void AddBarcode(Barcode barcode, IRemoteDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_ADD_BARCODE, barcode, responseHandler);
     }
-
+    //Server side done
     public void UpdateProduct(Product product, IRemoteDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_UPDATE_PRODUCT, product, responseHandler);
     }
-
+    //Server side done
     public void UpdateStore(Store store, IRemoteDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_UPDATE_STORE, store, responseHandler);
     }
-
+    //Server side done
     public void UpdateStoreProductPrice(StoreProductPrice storePruductPrice, IRemoteDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_UPDATE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
-
+    //Server side done
     public void UpdateBarcode(Barcode barcode, IRemoteDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_UPDATE_BACRODE, barcode, responseHandler);
     }
@@ -237,6 +237,7 @@ public class RemoteDatabase {
             IRemoteDatabaseResponseHandler<String> responseHandler){
 
         String requestUrl = createBarcodeRequestUrl(barcode, action);
+        Log.d("requestUrl", requestUrl);
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnString(responseHandler), new OnError(responseHandler));
@@ -271,7 +272,7 @@ public class RemoteDatabase {
 
     private String createProductParamUrl(Product product, String action) {
         return this.url + action + "?" +
-                "p_id" + "=" + product.getId() + "&" + // sorry but this was necessary
+                Product.TAG_ID + "=" + product.getId() + "&" + // sorry but this was necessary
                 Product.TAG_NAME + "=" + product.getName() + "&" +
                 Product.TAG_CATEGORY + "=" + product.getCategory() + "&" +
                 Product.TAG_DESCRIPTION + "=" + product.getDescription() + "&" +
@@ -287,16 +288,16 @@ public class RemoteDatabase {
 
     private String createStoreProductPriceParamUrl(StoreProductPrice storeProductPrice, String action) {
         return this.url + action + "?" +
-                StoreProductPrice.TAG_STORE_ID + "=" + storeProductPrice.getStore().getId() + "&" +
-                StoreProductPrice.TAG_STORE_NAME + "=" + storeProductPrice.getStore().getName() + "&" +
-                StoreProductPrice.TAG_STORE_LOCATION + "=" + storeProductPrice.getStore().getLocation() + "&" +
-                StoreProductPrice.TAG_PRODUCT_ID + "=" + storeProductPrice.getProduct().getId() + "&" +
-                StoreProductPrice.TAG_PRODUCT_NAME + "=" + storeProductPrice.getProduct().getName() + "&" +
-                StoreProductPrice.TAG_PRODUCT_CATEGORY + "=" + storeProductPrice.getProduct().getCategory() + "&" +
-                StoreProductPrice.TAG_PRODUCT_DESCRIPTION + "=" + storeProductPrice.getProduct().getDescription() + "&" +
-                StoreProductPrice.TAG_PRODUCT_AVERAGE_PRICE + "=" + storeProductPrice.getProduct().getAvaragePricePrice() + "&" +
+                Store.TAG_ID + "=" + storeProductPrice.getStore().getId() + "&" +
+                Store.TAG_NAME + "=" + storeProductPrice.getStore().getName() + "&" +
+                Store.TAG_LOCATION + "=" + storeProductPrice.getStore().getLocation() + "&" +
+                Product.TAG_ID + "=" + storeProductPrice.getProduct().getId() + "&" +
+                Product.TAG_NAME + "=" + storeProductPrice.getProduct().getName() + "&" +
+                Product.TAG_CATEGORY + "=" + storeProductPrice.getProduct().getCategory() + "&" +
+                Product.TAG_DESCRIPTION + "=" + storeProductPrice.getProduct().getDescription() + "&" +
+                Product.TAG_PRICE + "=" + storeProductPrice.getProduct().getAvaragePricePrice() + "&" +
                 StoreProductPrice.TAG_PRICE + "=" + storeProductPrice.getPrice() + "&" +
-                StoreProductPrice.TAG_LAST_UPDATED + "=" + storeProductPrice.getLastUpdated().toString() + "&";
+                StoreProductPrice.TAG_LAST_UPDATED + "=" + storeProductPrice.getLastUpdated().toString();
     }
 
     private String createBarcodeRequestUrl(Barcode barcode, String action) {
@@ -377,6 +378,7 @@ public class RemoteDatabase {
         @Override
         public void onResponse(String response) {
             ArrayList<Product> products = new ArrayList<Product>();
+            Log.d("jsonerror", response);
             try {
                 JSONArray jarray = new JSONArray(response);
                 for(int i = 0; i < jarray.length(); i++) {

@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize.database;
+package com.rock.werool.piensunmaize.remoteDatabase;
 
 import android.util.Log;
 
@@ -16,15 +16,15 @@ import java.sql.Date;
 
 public class StoreProductPrice {
 
-    public static final String TAG_PRODUCT_ID = "p_id";
-    public static final String TAG_PRODUCT_NAME = "p_name";
-    public static final String TAG_PRODUCT_CATEGORY = "p_category";
-    public static final String TAG_PRODUCT_DESCRIPTION = "p_descript";
-    public static final String TAG_PRODUCT_AVERAGE_PRICE = "p_price";
+    //public static final String TAG_PRODUCT_ID = "p_id";
+    //public static final String TAG_PRODUCT_NAME = "p_name";
+    //public static final String TAG_PRODUCT_CATEGORY = "p_category";
+    //public static final String TAG_PRODUCT_DESCRIPTION = "p_descript";
+    //public static final String TAG_PRODUCT_AVERAGE_PRICE = "p_price";
 
-    public static final String TAG_STORE_ID = "s_id";
-    public static final String TAG_STORE_NAME = "s_name";
-    public static final String TAG_STORE_LOCATION = "s_location";
+    //public static final String TAG_STORE_ID = "s_id";
+    //public static final String TAG_STORE_NAME = "s_name";
+    //public static final String TAG_STORE_LOCATION = "s_location";
 
     public static final String TAG_PRICE = "spp_price";
     public static final String TAG_LAST_UPDATED = "spp_last_update";
@@ -40,17 +40,16 @@ public class StoreProductPrice {
     public StoreProductPrice(JSONObject jobj) {
         try {
             this.store = new Store(
-                    jobj.getInt(TAG_STORE_ID),
-                    jobj.getString(TAG_STORE_NAME),
-                    jobj.getString(TAG_STORE_LOCATION));
+                    jobj.getInt(Store.TAG_ID),
+                    jobj.getString(Store.TAG_NAME),
+                    jobj.getString(Store.TAG_LOCATION));
             this.product = new Product(
-                    jobj.getInt(TAG_PRODUCT_ID),
-                    jobj.getString(TAG_PRODUCT_NAME),
-                    jobj.getString(TAG_PRODUCT_CATEGORY),
-                    jobj.getString(TAG_PRODUCT_DESCRIPTION),
-                    jobj.getDouble(TAG_PRODUCT_AVERAGE_PRICE));
+                    jobj.getInt(Product.TAG_ID),
+                    jobj.getString(Product.TAG_NAME),
+                    jobj.getString(Product.TAG_CATEGORY),
+                    jobj.getString(Product.TAG_DESCRIPTION),
+                    jobj.getDouble(Product.TAG_PRICE));
             this.price = jobj.getDouble(TAG_PRICE);
-            Log.d("dateerror", jobj.getString(TAG_LAST_UPDATED));
             this.lastUpdated = Date.valueOf(jobj.getString(TAG_LAST_UPDATED));
         } catch (JSONException e) {
             e.printStackTrace();

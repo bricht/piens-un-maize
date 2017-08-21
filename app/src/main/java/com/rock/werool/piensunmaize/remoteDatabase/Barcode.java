@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize.database;
+package com.rock.werool.piensunmaize.remoteDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,8 +9,8 @@ import org.json.JSONObject;
 
 public class Barcode {
 
-    public static final String TAG_BARCODE = "barcode";
-    public static final String TAG_PRODUCT_ID = "p_id";
+    public static final String TAG_BARCODE = "b_barcode";
+    public static final String TAG_PRODUCT_ID = "b_productID";
 
     private int product_id;
     private String barcode;

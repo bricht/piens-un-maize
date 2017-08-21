@@ -25,7 +25,8 @@
         <activity android:name=".barcode.BarcodeScanner"
             android:theme="@style/BarcodeScannerTheme"/>
         <activity android:name=".search.SearchMenu" />
-        <activity android:name=".search.by_product.SearchByProductActivity" />
+        <activity android:name=".search.by_product.SearchByProductActivity"/>
+            <!--android:launchMode="singleInstance"/> TODO -->
         <activity android:name=".search.by_store.SearchByStoreActivity" />
         <activity android:name=".add.addProductChoosePage" />
         <activity android:name=".mainpage.GreetingsActivity" />
