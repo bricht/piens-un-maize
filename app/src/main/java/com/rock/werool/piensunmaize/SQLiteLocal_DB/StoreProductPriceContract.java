@@ -18,7 +18,7 @@ public class StoreProductPriceContract {
 
     public static final String CREATE_TABLE_STOREPRODUCTPRICE =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_PK + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_PK + "INTEGER PRIMARY KEY, " +
                     COLUMN_PRICE + " REAL, " +
                     COLUMN_UPDATE + " TEXT, " +
                     COLUMN_PRODUCT_ID + " INTEGER, " +

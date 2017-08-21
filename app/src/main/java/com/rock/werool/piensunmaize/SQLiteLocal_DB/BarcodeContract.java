@@ -14,7 +14,7 @@ public class BarcodeContract {
 
     public static final String CREATE_TABLE_BARCODES =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_PK + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_PK + "INTEGER PRIMARY KEY, " +
                     COLUMN_BARCODE + " TEXT, " +
                     COLUMN_PRODUCT_ID + " INTEGER) " +
                     "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductContract.TABLE_NAME + "(" + ProductContract.COLUMN_PRODUCT_ID + ") ";

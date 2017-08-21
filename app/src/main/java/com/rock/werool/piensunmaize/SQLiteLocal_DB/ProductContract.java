@@ -16,7 +16,7 @@ public class ProductContract {
 
     public static final String CREATE_TABLE_PRODUCTS =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_PK + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_PK + "INTEGER PRIMARY KEY, " +
                     COLUMN_PRODUCT_ID + " INTEGER AUTOINCREMENT, " +
                     COLUMN_PRODUCT_NAME + " TEXT, " +
                     COLUMN_CATEGORY + " TEXT)";
