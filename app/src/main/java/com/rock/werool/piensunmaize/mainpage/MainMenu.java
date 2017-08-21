@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
+import com.rock.werool.piensunmaize.favourites.FavouritesMenu;
 import com.rock.werool.piensunmaize.search.SearchMenu;
 
 public class MainMenu extends AppCompatActivity {
@@ -45,7 +46,7 @@ public class MainMenu extends AppCompatActivity {
         buttonFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainMenu.this, FavouriteStoresActivity.class);
+                Intent intent = new Intent(MainMenu.this, FavouritesMenu.class);
                 startActivity(intent);
             }
         });
