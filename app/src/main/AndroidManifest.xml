@@ -37,9 +37,8 @@
         <activity android:name=".search.by_product.SelectStoreActivity" />
         <activity android:name=".search.by_store.SelectProductActivity" />
         <activity android:name=".favourites.FavouriteStoresActivity" />
-
+        <activity android:name=".favourites.FavouriteProductsActivity" />
         <activity android:name=".shoppingList.ShoppingListActivity" />
-
         <activity android:name=".favourites.FavouritesMenu" />
 
 
