@@ -14,6 +14,7 @@ import com.rock.werool.piensunmaize.search.SearchMenu;
 public class MainMenu extends AppCompatActivity {
 
     Button buttonShare, buttonSearch, buttonFavourites;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,9 +22,9 @@ public class MainMenu extends AppCompatActivity {
         //setContentView(R.layout.checkbox_list);
         //Intent intent = new Intent(this, BarcodeScanner.class);
         //startActivity(intent);
-        
+
         //start with Greeeting Activity
-        //TODO change first page in manifest.xml
+        
 //        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
         buttonShare = (Button) findViewById(R.id.mainMenuShare);
         buttonShare.setOnClickListener(new View.OnClickListener() {
