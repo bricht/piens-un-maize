@@ -17,7 +17,7 @@ import com.google.android.gms.games.request.Requests;
 public class SQLiteQuery extends IntentService implements Parcelable{
 
     // Japadod intent ar cetriem laukiem
-    // Key SQLiteQuery.SRC.TYPE             Value SQLiteQuery.SRC_PRODUCT_AVG_PRICE/SRC_PRICE/SRC_NAME_PRICE_ALL
+    // Key SQLiteQuery.SRC_TYPE             Value SQLiteQuery.SRC_PRODUCT_AVG_PRICE/SRC_PRICE/SRC_NAME_PRICE_ALL
     // Key SQLiteQuery.SRC_NAME             Value String string or null
     // Key SQLiteQuery.SRC_STORE            Value String string or null
     // Key SQLiteQuery.SRC_ADDRESS          Value String string or null
@@ -72,22 +72,54 @@ public class SQLiteQuery extends IntentService implements Parcelable{
         String product = intent.getStringExtra(SRC_NAME);
         String store = intent.getStringExtra(SRC_STORE);
         String address = intent.getStringExtra(SRC_ADDRESS);
+        String query = null;
 
         if(product == null && store == null && address == null){
             i = 0;
         }
 
         switch (i){
-            case 1: i = 1;
-                String query = "SELECT"
-                break;
-            case  2: i = 2;
+            case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu
+                query = "SELECT AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                        ") FROM " + ProductContract.TABLE_NAME +
+                        " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+                        " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                        " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
+                result = database.rawQuery(query, null);
+
 
                 break;
-            case 3: i = 3;
+
+            case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu
+                query = "SELECT " +StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                        ") FROM " + ProductContract.TABLE_NAME +
+                        " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+                        " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                        " INNER JOIN " + StoreContract.TABLE_NAME +
+                        " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
+                        " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%'" +
+                        " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
+                        " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
+                result = database.rawQuery(query, null);
+
 
                 break;
+
+            case 3: i = 3; // pec veikala un adreses visu produktu cena
+                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                        ") FROM " + ProductContract.TABLE_NAME +
+                        " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+                        " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                        " INNER JOIN " + StoreContract.TABLE_NAME +
+                        " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
+                        " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
+                        " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
+                result = database.rawQuery(query, null);
+
+                break;
+
             case 4 : i = 0;
+                result = null;
 
                 break;
         }
