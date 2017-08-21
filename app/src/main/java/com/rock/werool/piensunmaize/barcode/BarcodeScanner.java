@@ -34,6 +34,7 @@ public class BarcodeScanner extends AppCompatActivity {
     CameraSource cameraSource;
     final int cameraPermissionCode = 1;
     private static final String TAG = "BarcodeScanner";
+    private static boolean activityOpen = false;
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -165,14 +166,18 @@ public class BarcodeScanner extends AppCompatActivity {
                     final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
                     if (barcodes.size() != 0) {
-                        Bundle bundle = getIntent().getExtras();            //getExtras() is a way to pass parameters to activities
-                        String necessaryAction = bundle.getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
-                        BarcodeAction barAction = new BarcodeAction();
-                        //String necessaryAction = "UPDATE_PRODUCT";
-                        barAction.setContextAndNecessaryAction(getApplicationContext(), necessaryAction);
+                        if(activityOpen == false) {
+                            Bundle bundle = getIntent().getExtras();            //getExtras() is a way to pass parameters to activities
+                            String necessaryAction = bundle.getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
+                            BarcodeAction barAction = new BarcodeAction();
+                            //String necessaryAction = "UPDATE_PRODUCT";
+                            barAction.setContextAndNecessaryAction(getApplicationContext(), necessaryAction);
 
-                        barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);       //BarcodeAction executes necessary action
-
+                            barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);       //BarcodeAction executes necessary action
+                            activityOpen = true;
+                        }else{
+                            
+                        }
                         /*
 //                        barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
 //                            public void run() {
@@ -191,6 +196,12 @@ public class BarcodeScanner extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityOpen = false;
     }
 
     private static Camera getCamera(@NonNull CameraSource cameraSource) {

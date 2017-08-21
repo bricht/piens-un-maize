@@ -9,12 +9,12 @@ import android.graphics.PorterDuff;
 public class StoreProductPriceContract {
     private StoreProductPriceContract(){}
 
-    public static final String TABLE_NAME = "storeProductPrice";
-    private static final String COLUMN_PK = "_primary_key";
-    public static final String COLUMN_PRICE = "price";
-    public static final String COLUMN_UPDATE = "update";
-    public static final String COLUMN_PRODUCT_ID = "product_id";
-    public static final String COLUMN_STORE_ID = "store_id";
+    public static final String TABLE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreProductPriceContract.storeProductPrice";
+    private static final String COLUMN_PK = "_com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreProductPriceContract.primary_key";
+    public static final String COLUMN_PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreProductPriceContract.price";
+    public static final String COLUMN_UPDATE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreProductPriceContract.update";
+    public static final String COLUMN_PRODUCT_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreProductPriceContract.product_id";
+    public static final String COLUMN_STORE_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.StoreProductPriceContract.store_id";
 
     public static final String CREATE_TABLE_STOREPRODUCTPRICE =
             "CREATE TABLE " + TABLE_NAME + " (" +

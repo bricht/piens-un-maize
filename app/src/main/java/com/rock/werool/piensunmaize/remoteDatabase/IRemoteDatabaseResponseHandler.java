@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize.database;
+package com.rock.werool.piensunmaize.remoteDatabase;
 
 import com.android.volley.VolleyError;
 
@@ -13,4 +13,5 @@ public interface IRemoteDatabaseResponseHandler<T> {
     public void onArrive(ArrayList<T> data);
 
     public void onError(VolleyError error);
+
 }

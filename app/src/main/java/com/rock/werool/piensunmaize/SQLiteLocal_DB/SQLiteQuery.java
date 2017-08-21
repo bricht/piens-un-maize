@@ -4,17 +4,14 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
-
-import com.google.android.gms.games.request.Requests;
 
 /**
  * Created by user on 2017.08.20.
  */
 
-public class SQLiteQuery extends IntentService implements Parcelable{
+public class SQLiteQuery extends IntentService{
 
     // Japadod intent ar cetriem laukiem
     // Key SQLiteQuery.SRC_TYPE             Value SQLiteQuery.SRC_PRODUCT_AVG_PRICE/SRC_PRICE/SRC_NAME_PRICE_ALL
@@ -34,6 +31,7 @@ public class SQLiteQuery extends IntentService implements Parcelable{
     public static final String QUERY_RESULT = "queryResult";                                                    // obtained values
 
     private Cursor result;
+    private Bundle bundle;
     private SQLiteHelper helper;
     private SQLiteDatabase database;
 
@@ -44,19 +42,6 @@ public class SQLiteQuery extends IntentService implements Parcelable{
     public SQLiteQuery(String name) {
         super(name);
     }
-
-    //Override Parcelable methods
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
-
     // Override IntentService methods
 
     @Override
@@ -69,6 +54,7 @@ public class SQLiteQuery extends IntentService implements Parcelable{
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         int i = intent.getIntExtra(SRC_TYPE, 0);
+
         String product = intent.getStringExtra(SRC_NAME);
         String store = intent.getStringExtra(SRC_STORE);
         String address = intent.getStringExtra(SRC_ADDRESS);
@@ -80,14 +66,14 @@ public class SQLiteQuery extends IntentService implements Parcelable{
 
         switch (i){
             case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu
-                query = "SELECT AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + " AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                         ") FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                         " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                         " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
                 result = database.rawQuery(query, null);
-
-
+                bundle = result.getExtras();
+                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
                 break;
 
             case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu
@@ -101,8 +87,8 @@ public class SQLiteQuery extends IntentService implements Parcelable{
                         " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
-
-
+                bundle = result.getExtras();
+                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
                 break;
 
             case 3: i = 3; // pec veikala un adreses visu produktu cena
@@ -115,7 +101,8 @@ public class SQLiteQuery extends IntentService implements Parcelable{
                         " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
-
+                bundle = result.getExtras();
+                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
                 break;
 
             case 4 : i = 0;
