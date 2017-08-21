@@ -30,6 +30,7 @@ public class SQLiteQuery extends IntentService{
 
     public static final String QUERY_RESULT = "queryResult";                                                    // obtained values
 
+
     private Cursor result;
     private Bundle bundle;
     private SQLiteHelper helper;
@@ -116,6 +117,7 @@ public class SQLiteQuery extends IntentService{
     }
 
     private void publishResults(Intent intent){
+        intent.setAction("QUERY_RESULT");
         sendBroadcast(intent);
     }
 
