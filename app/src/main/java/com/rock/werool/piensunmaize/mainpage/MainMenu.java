@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
+import com.rock.werool.piensunmaize.favourites.FavouritesMenu;
 import com.rock.werool.piensunmaize.search.SearchMenu;
 import com.rock.werool.piensunmaize.shoppingList.ShoppingListActivity;
 
@@ -25,7 +26,6 @@ public class MainMenu extends AppCompatActivity {
         //startActivity(intent);
 
         //start with Greeeting Activity
-        
 //        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
         buttonShare = (Button) findViewById(R.id.mainMenuShare);
         buttonShare.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +47,7 @@ public class MainMenu extends AppCompatActivity {
         buttonFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainMenu.this, FavouriteStoresActivity.class);
+                Intent intent = new Intent(MainMenu.this, FavouritesMenu.class);
                 startActivity(intent);
             }
         });

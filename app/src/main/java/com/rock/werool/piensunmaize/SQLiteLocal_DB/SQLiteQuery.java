@@ -32,7 +32,7 @@ public class SQLiteQuery extends IntentService{
 
 
     private Cursor result;
-    private Bundle bundle;
+    String [][] resultArray;
     private SQLiteHelper helper;
     private SQLiteDatabase database;
 
@@ -55,6 +55,7 @@ public class SQLiteQuery extends IntentService{
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         int i = intent.getIntExtra(SRC_TYPE, 0);
+        Intent reply = new Intent("QUERY_RESULT");
 
         String product = intent.getStringExtra(SRC_NAME);
         String store = intent.getStringExtra(SRC_STORE);
@@ -66,18 +67,18 @@ public class SQLiteQuery extends IntentService{
         }
 
         switch (i){
-            case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu
-                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + " AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+            case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu. 2D masivs, ind 1 , ind 2 = prodName ++ avgPrice
+                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                         ") FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                         " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                         " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
                 result = database.rawQuery(query, null);
-                bundle = result.getExtras();
-                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                resultArray = cursorToArr(result);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
                 break;
 
-            case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu
+            case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu. 2D masivs, ind1 , ind2 = prodName ++ storeName ++ storeAddress ++ price
                 query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
                         StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_NAME + ", " +
                         StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ADDRESS + ", " +
@@ -91,11 +92,11 @@ public class SQLiteQuery extends IntentService{
                         " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
-                bundle = result.getExtras();
-                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                resultArray = cursorToArr(result);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
                 break;
 
-            case 3: i = 3; // pec veikala un adreses visu produktu cena
+            case 3: i = 3; // pec veikala un adreses visu produktu cena. 2D masivs, ind 1 , ind 2 = prodName ++ Price
                 query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                         " FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
@@ -105,8 +106,8 @@ public class SQLiteQuery extends IntentService{
                         " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
-                bundle = result.getExtras();
-                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                resultArray = cursorToArr(result);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
                 break;
 
             case 4 : i = 0;
@@ -115,13 +116,40 @@ public class SQLiteQuery extends IntentService{
                 break;
         }
 
-        publishResults(intent);
+        publishResults(reply);
 
     }
 
     private void publishResults(Intent intent){
         intent.setAction("QUERY_RESULT");
         sendBroadcast(intent);
+    }
+
+    private String [][] cursorToArr(Cursor cursor){
+        String [][] arr;
+        String [] columns;
+        int i = 0;
+        int j = 0;
+
+        if(cursor.moveToFirst()){
+            arr = new String[cursor.getCount()][cursor.getColumnCount()];
+            columns = cursor.getColumnNames();
+
+            for(i = 0; i < cursor.getCount(); i++){
+                for(j = 0; j < cursor.getColumnCount(); j++){
+                    arr[i][j] = cursor.getString(cursor.getColumnIndex(columns[j]));
+                }
+                cursor.moveToNext();
+                j = 0;
+            }
+
+            cursor.close();
+
+        }else{
+            arr = null;
+        }
+
+        return arr;
     }
 
 

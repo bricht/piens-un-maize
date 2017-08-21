@@ -18,13 +18,13 @@ public class StoreProductPriceContract {
 
     public static final String CREATE_TABLE_STOREPRODUCTPRICE =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_PK + "INTEGER PRIMARY KEY, " +
+                    COLUMN_PK + " INTEGER PRIMARY KEY, " +
                     COLUMN_PRICE + " REAL, " +
                     COLUMN_UPDATE + " TEXT, " +
                     COLUMN_PRODUCT_ID + " INTEGER, " +
-                    COLUMN_STORE_ID + " INTEGER), " +
+                    COLUMN_STORE_ID + " INTEGER, " +
                     "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductContract.TABLE_NAME + "(" + ProductContract.COLUMN_PRODUCT_ID + ") " +
-                    "FOREIGN KEY (" + COLUMN_STORE_ID + ") REFERENCES " + StoreContract.TABLE_NAME + "(" + StoreContract.COLUMN_STORE_ID + ")";
+                    "FOREIGN KEY (" + COLUMN_STORE_ID + ") REFERENCES " + StoreContract.TABLE_NAME + "(" + StoreContract.COLUMN_STORE_ID + ") )";
 
     public static final String DELETE_TABLE_STOREPRODUCTPRICE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
