@@ -41,9 +41,9 @@
             android:name=".SQLiteLocal_DB.SQLiteQuery"
             android:exported="false"></service>
 
-        <service
-            android:name=".SQLiteLocal_DB.SQLiteAddData"
-            android:exported="false"></service>
+        <!--<service-->
+            <!--android:name=".SQLiteLocal_DB.SQLiteAddData"-->
+            <!--android:exported="false"></service>-->
     </application>
 
 </manifest>
