@@ -163,16 +163,21 @@ public class BarcodeScanner extends AppCompatActivity {
                 @Override
                 public void receiveDetections(Detector.Detections<Barcode> detections) {
                     final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+                    boolean activityOpen = false;
 
                     if (barcodes.size() != 0) {
-                        Bundle bundle = getIntent().getExtras();            //getExtras() is a way to pass parameters to activities
-                        String necessaryAction = bundle.getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
-                        BarcodeAction barAction = new BarcodeAction();
-                        //String necessaryAction = "UPDATE_PRODUCT";
-                        barAction.setContextAndNecessaryAction(getApplicationContext(), necessaryAction);
+                        if(activityOpen == false) {
+                            Bundle bundle = getIntent().getExtras();            //getExtras() is a way to pass parameters to activities
+                            String necessaryAction = bundle.getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
+                            BarcodeAction barAction = new BarcodeAction();
+                            //String necessaryAction = "UPDATE_PRODUCT";
+                            barAction.setContextAndNecessaryAction(getApplicationContext(), necessaryAction);
 
-                        barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);       //BarcodeAction executes necessary action
-
+                            barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);       //BarcodeAction executes necessary action
+                            activityOpen = true;
+                        }else{
+                            
+                        }
                         /*
 //                        barcodeInfo.post(new Runnable() {    // Use the post method of the TextView
 //                            public void run() {

@@ -38,6 +38,7 @@ public class BarcodeAction {
                 intent.putExtra("scannedProductName", "Placeholder Name");
                 intent.putExtra("scannedProductCategory", "Placeholder Category");
                 context.startActivity(intent);
+
                 break;
             } case "FIND_PRODUCT_INFO": {
                 Intent intent = new Intent(context, SearchByProductActivity.class);     //TODO get product name from barcode id
