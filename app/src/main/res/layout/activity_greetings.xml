@@ -6,19 +6,44 @@
     android:layout_height="match_parent"
     tools:context="com.rock.werool.piensunmaize.mainpage.GreetingsActivity">
 
-    <Button
-        android:id="@+id/greetingButton"
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_button"
-        android:text="Greetings"
-        app:layout_constraintHorizontal_bias="0.333"
+        android:gravity="center"
+        android:text="Please wait! Database is synchronizing!"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space7" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="395dp"
+        android:layout_height="203dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/space7" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="24dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/space7"
+        app:layout_constraintVertical_bias="0.61"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="0dp" />
+    <!-- TODO # Add button (go offline) -->
 </android.support.constraint.ConstraintLayout>

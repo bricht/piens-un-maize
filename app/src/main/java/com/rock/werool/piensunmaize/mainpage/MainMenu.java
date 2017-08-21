@@ -21,7 +21,10 @@ public class MainMenu extends AppCompatActivity {
         //setContentView(R.layout.checkbox_list);
         //Intent intent = new Intent(this, BarcodeScanner.class);
         //startActivity(intent);
-//        startActivity(new Intent(MainMenu.this, BarcodeScanner.class));
+        
+        //start with Greeeting Activity
+        //TODO change first page in manifest.xml
+        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
         buttonShare = (Button) findViewById(R.id.mainMenuShare);
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
