@@ -24,7 +24,6 @@ public class MainMenu extends AppCompatActivity {
         //startActivity(intent);
 
         //start with Greeeting Activity
-        
 //        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
         buttonShare = (Button) findViewById(R.id.mainMenuShare);
         buttonShare.setOnClickListener(new View.OnClickListener() {
