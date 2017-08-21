@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mainpage.MainMenu">
+        <!--<activity android:name=".mainpage.MainMenu">-->
+        <activity android:name=".mainpage.GreetingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +31,7 @@
         <!-- android:launchMode="singleInstance"/> TODO -->
         <activity android:name=".search.by_store.SearchByStoreActivity" />
         <activity android:name=".add.addProductChoosePage" />
-        <activity android:name=".mainpage.GreetingsActivity" />
+        <activity android:name=".mainpage.MainMenu" />
         <activity android:name=".add.FillWithHandActivity" />
         <activity android:name=".add.ThankActivity" />
         <activity android:name=".search.by_product.SelectStoreActivity" />

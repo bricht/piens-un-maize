@@ -24,7 +24,7 @@ public class MainMenu extends AppCompatActivity {
         
         //start with Greeeting Activity
         //TODO change first page in manifest.xml
-        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
+//        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
         buttonShare = (Button) findViewById(R.id.mainMenuShare);
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
