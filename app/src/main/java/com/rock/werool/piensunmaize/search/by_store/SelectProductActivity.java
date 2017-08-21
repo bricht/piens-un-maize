@@ -1,7 +1,9 @@
 package com.rock.werool.piensunmaize.search.by_store;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,12 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.search.Product;
-import com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity;
 import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
 import java.util.ArrayList;
@@ -28,6 +29,22 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     MyCustomAdapter dataAdapter;
     ArrayList<Product> products = new ArrayList<>();
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
+    String clickedStoreName;
+    String clickedStoreAddress;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(SelectProductList , new IntentFilter("ProcessedQueryResult"));         //Registers BroadcastReceivers
+        registerReceiver(SelectProductSQL , new IntentFilter ("QUERY_RESULT"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(SelectProductList);         //Unregisters BroadcastReceivers
+        unregisterReceiver(SelectProductSQL);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +52,8 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         setContentView(R.layout.activity_select_product);
 
         Bundle extras = getIntent().getExtras();            //Recieves the passed parameters in a bundle
-        String clickedStoreName = extras.getString("clickedStoreName");     //Gets the specified param from the bundle
-        String clickedStoreAddress = extras.getString("clickedStoreAddress");
+        clickedStoreName = extras.getString("clickedStoreName");     //Gets the specified param from the bundle
+        clickedStoreAddress = extras.getString("clickedStoreAddress");
         TextView storeNameAddressTextView = (TextView) findViewById(R.id.selectedStoreNameAddress);
         storeNameAddressTextView.setText(clickedStoreName + " " + clickedStoreAddress);
 
@@ -160,7 +177,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     }
 
     private void addSearchBarListener() {                       //Updates results in ListView
-        final EditText search = (EditText)findViewById(R.id.selectProductName);
+        final EditText search = (EditText)findViewById(R.id.selectProductNameText);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -169,13 +186,13 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                productSearchResults.clear();                      //Clears results so the right ones could be readded
-                for(int n = 0; n < products.size(); n++) {
-                    if(products.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {  //.matches() is a regular expression
-                        productSearchResults.add(products.get(n));    //If product name matches. Not case or index sensitive
-                    }
-                }
-                displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
+                Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+                intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
+                intentForSQL.putExtra(SQLiteQuery.SRC_NAME, search.getText().toString());     //TODO may need to turn to lowercase
+                intentForSQL.putExtra(SQLiteQuery.SRC_STORE, clickedStoreAddress);
+                intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, clickedStoreAddress);
+                startService(intentForSQL);             //Starts SQLite intent service
+                Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
             }
 
             @Override
@@ -184,4 +201,23 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
             }
         });
     }
+    BroadcastReceiver SelectProductList = new BroadcastReceiver() {              //Receives an ArrayList from QueryProcessingIntentService
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            productSearchResults.clear();
+            productSearchResults.addAll((ArrayList<Product>) intent.getSerializableExtra("ArrayList<Product>"));
+            displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
+        }
+
+    };
+
+    BroadcastReceiver SelectProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intentForService = new Intent();
+            intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
+            intentForService.putExtra("currentQuery", "SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_PRODUCTNAME_PRODUCTPRICE");
+            startService(intent);
+        }
+    };
 }

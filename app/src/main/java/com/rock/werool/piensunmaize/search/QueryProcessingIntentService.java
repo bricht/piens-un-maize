@@ -35,10 +35,9 @@ public class QueryProcessingIntentService extends IntentService{      //TODO Fin
 
             switch (currentQuery) {
                 case ("SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE") : {      //1.2 SearchByProductActivity
-
                     ArrayList<Product> products = new ArrayList<>();
                     while (cursor.moveToNext()){
-                        products.add(new Product(cursor.getString(1), cursor.getString(2)));    //TODO may be incorrect
+                        products.add(new Product(cursor.getString(1), cursor.getString(2)));    //TODO indexes may be incorrect
                     }
                     Intent sendableIntent = new Intent();
                     sendableIntent.setAction("ProcessedQueryResult");
@@ -47,15 +46,36 @@ public class QueryProcessingIntentService extends IntentService{      //TODO Fin
                     break;
                 }
                 case ("SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_STORENAME_STOREADDRESS_PRODUCTPRICE") : {        //1.2.1 SelectStoreActivity
-
+                    ArrayList<Store> stores = new ArrayList<>();
+                    while (cursor.moveToNext()) {
+                        stores.add(new Store(cursor.getString(1), cursor.getString(2), cursor.getString(3)));   //TODO indexes may be incorrect
+                    }
+                    Intent sendableIntent = new Intent();
+                    sendableIntent.setAction("ProcessedQueryResult");   //BroadcastRecievers are unregistered with onPause() so there shouldn't be any overlap
+                    sendableIntent.putExtra("ArrayList<Store>", (Serializable) stores);
+                    sendBroadcast(sendableIntent);
                     break;
                 }
                 case ("SEND_STORENAME_GET_PRODUCTNAME_PRODUCTPRICE") : {        //1.3 SearchByStoreActivity
-
+                    ArrayList<Product> products = new ArrayList<>();
+                    while (cursor.moveToNext()){
+                        products.add(new Product(cursor.getString(1), cursor.getString(2)));    //TODO indexes may be incorrect
+                    }
+                    Intent sendableIntent = new Intent();
+                    sendableIntent.setAction("ProcessedQueryResult");
+                    sendableIntent.putExtra("ArrayList<Product>", (Serializable) products);
+                    sendBroadcast(sendableIntent);
                     break;
                 }
                 case ("SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_PRODUCTNAME_PRODUCTPRICE") : {           //1.3.1 SelectProductActivity
-
+                    ArrayList<Product> products = new ArrayList<>();
+                    while (cursor.moveToNext()) {
+                        products.add(new Product(cursor.getString(1), cursor.getString(2)));      //TODO indexes may be incorrect
+                    }
+                    Intent sendableIntent = new Intent();
+                    sendableIntent.setAction("ProcessedQueryResult");
+                    sendableIntent.putExtra("ArrayList<Product>", (Serializable) products);
+                    sendBroadcast(sendableIntent);
                     break;
                 }
             }

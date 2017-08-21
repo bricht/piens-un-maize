@@ -20,6 +20,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 
@@ -31,10 +32,17 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(SearchProductList , new IntentFilter ("ProcessedQueryResult"));         //Registers BroadcastReceivers
+        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
-        unregisterReceiver(SearchProductSQL);
+            unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
+            unregisterReceiver(SearchProductSQL);
     }
 
     @Override
@@ -46,9 +54,6 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
             productNameTextView.setText(scannedProductName);
         }
-
-        registerReceiver(SearchProductList , new IntentFilter ("ProcessedQueryResult"));         //Registers BroadcastReceivers
-        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
 
         products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
         products.add(new Product("Orange", "42"));
@@ -189,19 +194,13 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                /*
-                productSearchResults.clear();                      //Clears results so the right ones could be readded
-                for(int n = 0; n < products.size(); n++) {
-                    if(products.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {  //.matches() is a regular expression
-                        productSearchResults.add(products.get(n));    //If product name matches. Not case or index sensitive
-                    }
-                }
-                displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
-                */
-                Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
-                intentForSQL.putExtra("type", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
-                intentForSQL.putExtra("queryproductName", search.getText().toString());     //TODO may need to turn to lowercase
+                Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+                intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
+                intentForSQL.putExtra(SQLiteQuery.SRC_NAME, search.getText().toString());     //TODO may need to turn to lowercase
+                intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
+                intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
                 startService(intentForSQL);             //Starts SQLite intent service
+                Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
             }
 
             @Override
@@ -220,7 +219,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
     };
 
-    BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {
+    BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent intentForService = new Intent();
