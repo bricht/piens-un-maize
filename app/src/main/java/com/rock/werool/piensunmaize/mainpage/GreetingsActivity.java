@@ -31,7 +31,7 @@ public class GreetingsActivity extends AppCompatActivity {
         }, 5000);
     }
 
-    //TODO Fix bug: After app closing and then geting back in - neverending loop with loading screen
+    //TODO Fix bug: After app closing and then geting back in - never ending loop with loading screen
     @Override
     protected void onPause() {
         super.onPause();
