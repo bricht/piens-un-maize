@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize.database;
+package com.rock.werool.piensunmaize.remoteDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,9 +9,9 @@ import org.json.JSONObject;
 
 public class Store {
 
-    public static final String TAG_ID = "id";
-    public static final String TAG_NAME = "name";
-    public static final String TAG_LOCATION = "location";
+    public static final String TAG_ID = "s_id";
+    public static final String TAG_NAME = "s_name";
+    public static final String TAG_LOCATION = "s_location";
 
     private int id;
     private String name;
@@ -29,7 +29,7 @@ public class Store {
     }
 
     public Store(JSONObject jobj) throws JSONException {
-        this(jobj.getInt("s_id"), jobj.getString("s_name"), jobj.getString("s_location"));
+        this(jobj.getInt(TAG_ID), jobj.getString(TAG_NAME), jobj.getString(TAG_LOCATION));
     }
 
     public String getName() {
@@ -58,6 +58,6 @@ public class Store {
 
     @Override
     public String toString() {
-        return "s_id:" + this.getId() + " s_name:" + this.getName() + " s_location" + this.getLocation();
+        return this.getId() + " | " + this.getName() + " | " + this.getLocation();
     }
 }

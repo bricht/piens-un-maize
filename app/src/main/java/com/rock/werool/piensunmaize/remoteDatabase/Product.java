@@ -1,4 +1,4 @@
-package com.rock.werool.piensunmaize.database;
+package com.rock.werool.piensunmaize.remoteDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,11 +9,11 @@ import org.json.JSONObject;
 
 public class Product {
 
-    public static final String TAG_ID = "id";
-    public static final String TAG_NAME = "name";
-    public static final String TAG_CATEGORY = "category";
-    public static final String TAG_DESCRIPTION = "description";
-    public static final String TAG_PRICE = "price";
+    public static final String TAG_ID = "p_id";
+    public static final String TAG_NAME = "p_name";
+    public static final String TAG_CATEGORY = "p_category";
+    public static final String TAG_DESCRIPTION = "p_descript";
+    public static final String TAG_PRICE = "p_price";
 
     public Product(long id, String name, String category, String description, double avaragePrice) {
         this.setId(id);
@@ -69,11 +69,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return "p_id:" + this.getId() + " p_name:" + this.getName() +
-                " p_category:" + this.getCategory() +
-                " p_descript:" + this.getDescription() +
-                " p_av_price:" + this.getAvaragePricePrice();
-
+        return this.getId() + " | " + this.getName() +
+                " | " + this.getCategory() +
+                " | " + this.getDescription() +
+                " | " + this.getAvaragePricePrice();
     }
 
     private long id;
