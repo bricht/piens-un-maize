@@ -1,5 +1,7 @@
 package com.rock.werool.piensunmaize.mainpage;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,5 +18,13 @@ public class GreetingsActivity extends AppCompatActivity {
 
         spinner = (ProgressBar)findViewById(R.id.progressBar2);
         spinner.setVisibility(View.VISIBLE);
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                finish();
+                startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
+            }
+        }, 5000);
     }
 }
