@@ -55,6 +55,7 @@ public class SQLiteQuery extends IntentService{
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         int i = intent.getIntExtra(SRC_TYPE, 0);
+        Intent reply = new Intent("QUERY_RESULT");
 
         String product = intent.getStringExtra(SRC_NAME);
         String store = intent.getStringExtra(SRC_STORE);
@@ -74,7 +75,7 @@ public class SQLiteQuery extends IntentService{
                         " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
                 result = database.rawQuery(query, null);
                 bundle = result.getExtras();
-                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
                 break;
 
             case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu
@@ -92,7 +93,7 @@ public class SQLiteQuery extends IntentService{
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
                 bundle = result.getExtras();
-                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
                 break;
 
             case 3: i = 3; // pec veikala un adreses visu produktu cena
@@ -106,7 +107,7 @@ public class SQLiteQuery extends IntentService{
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
                 bundle = result.getExtras();
-                intent.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
                 break;
 
             case 4 : i = 0;
@@ -115,7 +116,7 @@ public class SQLiteQuery extends IntentService{
                 break;
         }
 
-        publishResults(intent);
+        publishResults(reply);
 
     }
 

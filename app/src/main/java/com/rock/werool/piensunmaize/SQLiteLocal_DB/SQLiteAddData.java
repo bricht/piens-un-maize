@@ -6,10 +6,17 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.icu.text.SimpleDateFormat;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class SQLiteAddData extends IntentService {
+
+    // Japadod intent ar astoniem laukiem
+    // Key SQLiteAddData.ADD_TYPE             Value SQLiteADD.ADD_BARCODE/ADD_PRODUCT/ADD_STORE/ADD_STORE_PRODUCT_PRICE
+    // Key SQLiteAddData.BARCODE            Value String string or null
+
 
     public static final String ADD_TYPE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.TYPE";
     public static final String ADD_BARCODE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE";
@@ -44,7 +51,8 @@ public class SQLiteAddData extends IntentService {
         super.onCreate();
         helper = new SQLiteHelper(getApplicationContext());
         database = helper.getWritableDatabase();
-        date = null;
+        Date currentTime = Calendar.getInstance().getTime();
+        date = currentTime.toString();
     }
 
     @Override
