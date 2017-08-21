@@ -79,7 +79,7 @@ public class SQLiteQuery extends IntentService implements Parcelable{
 
         switch (i){
             case 1: i = 1;
-                String query = "SELECT"
+                String query = "SELECT";
                 break;
             case  2: i = 2;
 
