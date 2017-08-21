@@ -78,8 +78,11 @@ public class SQLiteQuery extends IntentService{
                 break;
 
             case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu
-                query = "SELECT " +StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
-                        ") FROM " + ProductContract.TABLE_NAME +
+                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
+                        StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_NAME + ", " +
+                        StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ADDRESS + ", " +
+                        StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                        " FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                         " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                         " INNER JOIN " + StoreContract.TABLE_NAME +
@@ -94,7 +97,7 @@ public class SQLiteQuery extends IntentService{
 
             case 3: i = 3; // pec veikala un adreses visu produktu cena
                 query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
-                        ") FROM " + ProductContract.TABLE_NAME +
+                        " FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                         " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                         " INNER JOIN " + StoreContract.TABLE_NAME +

@@ -22,11 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".barcode.BarcodeScanner"
-            android:theme="@style/BarcodeScannerTheme"/>
+        <activity
+            android:name=".barcode.BarcodeScanner"
+            android:theme="@style/BarcodeScannerTheme" />
         <activity android:name=".search.SearchMenu" />
-        <activity android:name=".search.by_product.SearchByProductActivity"/>
-            <!--android:launchMode="singleInstance"/> TODO -->
+        <activity android:name=".search.by_product.SearchByProductActivity" />
+        <!-- android:launchMode="singleInstance"/> TODO -->
         <activity android:name=".search.by_store.SearchByStoreActivity" />
         <activity android:name=".add.addProductChoosePage" />
         <activity android:name=".mainpage.GreetingsActivity" />
@@ -34,7 +35,15 @@
         <activity android:name=".add.ThankActivity" />
         <activity android:name=".search.by_product.SelectStoreActivity" />
         <activity android:name=".search.by_store.SelectProductActivity" />
-        <activity android:name=".favourites.FavouriteStoresActivity"></activity>
+        <activity android:name=".favourites.FavouriteStoresActivity" />
+
+        <service
+            android:name=".SQLiteLocal_DB.SQLiteQuery"
+            android:exported="false"></service>
+
+        <service
+            android:name=".SQLiteLocal_DB.SQLiteAddData"
+            android:exported="false"></service>
     </application>
 
 </manifest>
