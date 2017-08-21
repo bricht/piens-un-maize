@@ -67,7 +67,7 @@ public class SQLiteQuery extends IntentService{
         }
 
         switch (i){
-            case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu
+            case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu. 2D masivs, ind 1 , ind 2 = prodName ++ avgPrice
                 query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                         ") FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
@@ -78,7 +78,7 @@ public class SQLiteQuery extends IntentService{
                 reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
                 break;
 
-            case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu
+            case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu. 2D masivs, ind1 , ind2 = prodName ++ storeName ++ storeAddress ++ price
                 query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
                         StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_NAME + ", " +
                         StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ADDRESS + ", " +
@@ -96,7 +96,7 @@ public class SQLiteQuery extends IntentService{
                 reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
                 break;
 
-            case 3: i = 3; // pec veikala un adreses visu produktu cena
+            case 3: i = 3; // pec veikala un adreses visu produktu cena. 2D masivs, ind 1 , ind 2 = prodName ++ Price
                 query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                         " FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
