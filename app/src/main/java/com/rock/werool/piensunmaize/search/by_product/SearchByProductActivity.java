@@ -1,7 +1,9 @@
 package com.rock.werool.piensunmaize.search.by_product;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Product;
+import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 
 import java.util.ArrayList;
 
@@ -26,6 +29,13 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     MyCustomAdapter dataAdapter;
     ArrayList<Product> products = new ArrayList<>();
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
+        unregisterReceiver(SearchProductSQL);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,9 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
             productNameTextView.setText(scannedProductName);
         }
+
+        registerReceiver(SearchProductList , new IntentFilter ("ProcessedQueryResult"));         //Registers BroadcastReceivers
+        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
 
         products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
         products.add(new Product("Orange", "42"));
@@ -176,6 +189,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                /*
                 productSearchResults.clear();                      //Clears results so the right ones could be readded
                 for(int n = 0; n < products.size(); n++) {
                     if(products.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {  //.matches() is a regular expression
@@ -183,6 +197,11 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                     }
                 }
                 displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
+                */
+                Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
+                intentForSQL.putExtra("type", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
+                intentForSQL.putExtra("queryproductName", search.getText().toString());     //TODO may need to turn to lowercase
+                startService(intentForSQL);             //Starts SQLite intent service
             }
 
             @Override
@@ -191,5 +210,24 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             }
         });
     }
+    BroadcastReceiver SearchProductList = new BroadcastReceiver() {              //Receives an ArrayList from QueryProcessingIntentService
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            productSearchResults.clear();
+            productSearchResults.addAll((ArrayList<Product>) intent.getSerializableExtra("ArrayList<Product>"));
+            displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
+        }
+
+    };
+
+    BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent intentForService = new Intent();
+            intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
+            intentForService.putExtra("currentQuery", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
+            startService(intent);
+        }
+    };
 }
 
