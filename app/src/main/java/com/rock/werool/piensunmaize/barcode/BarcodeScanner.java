@@ -34,6 +34,7 @@ public class BarcodeScanner extends AppCompatActivity {
     CameraSource cameraSource;
     final int cameraPermissionCode = 1;
     private static final String TAG = "BarcodeScanner";
+    private static boolean activityOpen = false;
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -163,7 +164,6 @@ public class BarcodeScanner extends AppCompatActivity {
                 @Override
                 public void receiveDetections(Detector.Detections<Barcode> detections) {
                     final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-                    boolean activityOpen = false;
 
                     if (barcodes.size() != 0) {
                         if(activityOpen == false) {
@@ -196,6 +196,12 @@ public class BarcodeScanner extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityOpen = false;
     }
 
     private static Camera getCamera(@NonNull CameraSource cameraSource) {
