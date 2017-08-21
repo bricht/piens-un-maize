@@ -37,11 +37,11 @@
         <activity android:name=".search.by_product.SelectStoreActivity" />
         <activity android:name=".search.by_store.SelectProductActivity" />
         <activity android:name=".favourites.FavouriteStoresActivity" />
-<<<<<<< HEAD
+
         <activity android:name=".shoppingList.ShoppingListActivity" />
-=======
+
         <activity android:name=".favourites.FavouritesMenu" />
->>>>>>> c1987b6201da71b09be180c0e5be5a774e8421b7
+
 
         <service
             android:name=".SQLiteLocal_DB.SQLiteQuery"
