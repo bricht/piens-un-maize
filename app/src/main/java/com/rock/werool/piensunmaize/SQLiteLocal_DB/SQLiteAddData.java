@@ -4,6 +4,9 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.icu.text.SimpleDateFormat;
+
+import java.util.Date;
 
 
 public class SQLiteAddData extends IntentService {
@@ -41,7 +44,7 @@ public class SQLiteAddData extends IntentService {
         super.onCreate();
         helper = new SQLiteHelper(getApplicationContext());
         database = helper.getWritableDatabase();
-       // date = System.get
+        date = null;
     }
 
     @Override
