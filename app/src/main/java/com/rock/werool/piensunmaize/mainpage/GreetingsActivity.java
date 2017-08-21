@@ -11,6 +11,8 @@ import com.rock.werool.piensunmaize.R;
 
 public class GreetingsActivity extends AppCompatActivity {
     private ProgressBar spinner;
+    private Handler handler;
+    private Runnable myRunnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,13 +20,20 @@ public class GreetingsActivity extends AppCompatActivity {
 
         spinner = (ProgressBar)findViewById(R.id.progressBar2);
         spinner.setVisibility(View.VISIBLE);
-        Handler handler = new Handler();
+        handler = new Handler();
 
-        handler.postDelayed(new Runnable() {
+        handler.postDelayed(myRunnable = new Runnable() {
             public void run() {
                 finish();
                 startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
+
             }
         }, 5000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(myRunnable);
     }
 }
