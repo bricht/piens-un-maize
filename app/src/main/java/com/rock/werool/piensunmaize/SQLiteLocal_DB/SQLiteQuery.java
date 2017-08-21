@@ -142,13 +142,10 @@ public class SQLiteQuery extends IntentService{
                 cursor.moveToNext();
                 j = 0;
             }
-
             cursor.close();
-
         }else{
             arr = null;
         }
-
         return arr;
     }
 

@@ -33,7 +33,6 @@ public class SQLiteAddData extends IntentService {
     public static final String PRODUCT_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_NAME_DATA";
     public static final String CATEGORY = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.CATEGORY_DATA";
     public static final String PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRICE_DATA";
-    public static final String UPDATE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE_DATA";
     public static final String STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_NAME_DATA";
     public static final String STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ADDRESS_DATA";
 
@@ -66,21 +65,61 @@ public class SQLiteAddData extends IntentService {
 
         String barcode = intent.getStringExtra(BARCODE);
         String productName = intent.getStringExtra(PRODUCT_NAME);
-        String address = intent.getStringExtra(SRC_ADDRESS);
-        String query = null;
+        String category = intent.getStringExtra(CATEGORY);
+        float price = intent.getFloatExtra(PRICE, 0);
+        String storeName = intent.getStringExtra(STORE_NAME);
+        String storeAddress = intent.getStringExtra(STORE_ADDRESS);
 
-        if(product == null && store == null && address == null){
-            i = 0;
+        switch (i) {
+            case 1: i = 1;
+                if(barcode == null || productName == null){
+                    break;
+                }
+                insertBarcode(barcode, productName);
+                break;
+
+            case 2: i = 2;
+                if(productName == null || category == null ){
+                    break;
+                }
+                insertProduct(productName, category);
+                break;
+
+            case 3: i = 3;
+                if(storeName == null || storeAddress == null){
+                    break;
+                }
+                insertStore(storeName, storeAddress);
+                break;
+
+            case 4: i = 4;
+                break;
+
+            case 5: i = 0;
+                if(productName == null || storeName == null || storeAddress == null || price == 0){
+                    break;
+                }
+                insertPrice(productName, storeName, storeAddress, price);
+                break;
+
         }
 
-        switch (i){
-            case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu
-
     }
 
-    private void publishResults(Intent intent){
-        intent.setAction("INSERT_RESULT");
-        sendBroadcast(intent);
-    }
+   private void insertBarcode(String code, String name){
+
+   }
+
+   private void insertProduct(String name, String cat){
+
+   }
+
+   private void insertStore(String name, String addresss){
+
+   }
+
+   private void insertPrice(String pName, String sName, String address, double price){
+
+   }
 
 }
