@@ -11,10 +11,11 @@ import com.rock.werool.piensunmaize.add.addProductChoosePage;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
 import com.rock.werool.piensunmaize.favourites.FavouritesMenu;
 import com.rock.werool.piensunmaize.search.SearchMenu;
+import com.rock.werool.piensunmaize.shoppingList.ShoppingListActivity;
 
 public class MainMenu extends AppCompatActivity {
 
-    Button buttonShare, buttonSearch, buttonFavourites;
+    Button buttonShare, buttonSearch, buttonFavourites, buttonShoppingList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,14 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainMenu.this, FavouritesMenu.class);
+                startActivity(intent);
+            }
+        });
+        buttonShoppingList = (Button) findViewById(R.id.mainMenuShoppingList);
+        buttonShoppingList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainMenu.this, ShoppingListActivity.class);
                 startActivity(intent);
             }
         });
