@@ -67,7 +67,7 @@ public class SQLiteQuery extends IntentService{
 
         switch (i){
             case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu
-                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + " AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                         ") FROM " + ProductContract.TABLE_NAME +
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                         " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
