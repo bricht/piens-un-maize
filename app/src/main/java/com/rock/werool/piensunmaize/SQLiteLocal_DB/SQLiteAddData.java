@@ -18,6 +18,11 @@ public class SQLiteAddData extends IntentService {
     public static final String PRODUCT_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_NAME_DATA";
     public static final String CATEGORY = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.CATEGORY_DATA";
     public static final String PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRICE_DATA";
+    public static final String UPDATE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE_DATA";
+    public static final String STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_NAME_DATA";
+    public static final String STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ADDRESS_DATA";
+
+    private String date;
 
 
     private SQLiteHelper helper;
@@ -36,6 +41,7 @@ public class SQLiteAddData extends IntentService {
         super.onCreate();
         helper = new SQLiteHelper(getApplicationContext());
         database = helper.getWritableDatabase();
+       // date = System.get
     }
 
     @Override
