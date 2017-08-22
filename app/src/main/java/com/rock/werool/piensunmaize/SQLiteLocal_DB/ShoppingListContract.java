@@ -18,8 +18,8 @@ public class ShoppingListContract {
                     COLUMN_PK + " INTEGER PRIMARY KEY, " +
                     COLUMN_SHOPPING_LIST_ID + " INTEGER, " +
                     COLUMN_SHOPPING_LIST_NAME + " TEXT, " +
-                    COLUMN_SHOPPING_LIST_PRICE + " FLOAT, " +
-                    "UNIQUE(" + COLUMN_SHOPPING_LIST_NAME + "))";;
+                    COLUMN_SHOPPING_LIST_PRICE + " FLOAT " ;
+//                    "UNIQUE(" + COLUMN_SHOPPING_LIST_NAME + "))";;
 
     public static final String DELETE_TABLE_SHOPPING_LIST =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
