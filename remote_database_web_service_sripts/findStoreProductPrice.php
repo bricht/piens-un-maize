@@ -16,9 +16,10 @@
 			store.*, 
 			storeproductprice.spp_price, storeproductprice.spp_last_update
 			from storeproductprice
-			JOIN store on storeproductprice.storeID = store.s_id
-			JOIN product on storeproductprice.productID = product.p_id
-			where productID = $p_id";
+			JOIN store on storeproductprice.spp_storeID = store.s_id
+			JOIN product on storeproductprice.spp_productID = product.p_id
+			where spp_productID = $p_id
+			limit 200";
 	$result = $conn->query($sql);	
 	if($result) {
 		$jsonData = array();

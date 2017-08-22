@@ -1,6 +1,6 @@
  <?php
  
-	$barcode = str_replace("%20", " ", $_GET['barcode']);
+	$barcode = str_replace("%20", " ", $_GET['b_barcode']);
 
 	$servername = "zesloka.tk";
 	$username = "user";
@@ -12,20 +12,17 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "select * from product where id in
-			(select productID from barcode where code = '$barcode');";
-	if($result) {
-		$jsonData = array();
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$jsonData[] = $row;
-			}
-			echo json_encode($jsonData);
-		} else {
-			echo "0 results";
+	$sql = "select * from product where p_id in
+			(select b_productID from barcode where b_barcode = '$barcode')";
+	$result = $conn->query($sql);
+	$jsonData = array();
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			$jsonData[] = $row;
 		}
+		echo json_encode($jsonData);
 	} else {
-		echo "-Error: sql query failed!";
+		echo "[]";
 	}
 
 	$conn->close();

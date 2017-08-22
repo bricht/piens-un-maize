@@ -15,14 +15,17 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "INSERT INTO storeproductprice (spp_storeID, spp_productID, spp_price , spp_last_update)
-	VALUES ('$s_id', '$p_id', '$price', '$last_update')";
+	$sql = "update storeproductprice set  
+	spp_price = $price , spp_last_update = '$last_update'
+	where spp_storeID = $s_id and spp_productID = $p_id
+	";
 
 	if ($conn->query($sql) === TRUE) {
 		echo "+New Store Product Price record created successfully";
 	} else {
 		echo "-Error: " . $sql. " " . $conn->error;
 	}
+	
 
 	$conn->close();
 	

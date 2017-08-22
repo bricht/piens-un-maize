@@ -1,5 +1,6 @@
  <?php
- 
+	
+	$s_id = str_replace("%20", " ", $_GET['s_id']);
 	$name = str_replace("%20", " ", $_GET['s_name']);
 	$location = str_replace("%20", " ", $_GET['s_location']);
 
@@ -14,8 +15,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "INSERT INTO store (s_name, s_location)
-	VALUES ('$name', '$location')";
+	$sql = "update store set s_name = '$name', s_location = '$location' where s_id = $s_id";
 
 	if ($conn->query($sql) === TRUE) {
 		echo "+New record created successfully";

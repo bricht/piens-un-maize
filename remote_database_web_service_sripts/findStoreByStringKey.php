@@ -11,10 +11,9 @@
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	}
+
 	
-	
-	
-	$sql = "select * from store where s_name like '%$str_key%' or s_location like '%$str_key%'";
+	$sql = "select * from store where s_name like '%$str_key%' or s_location like '%$str_key%' limit 200";
 	$result = $conn->query($sql);
 	if($result) {
 		$jsonData = array();
@@ -24,7 +23,7 @@
 		}
 		echo json_encode($jsonData);
 		} else {
-			echo "0 results";
+			echo "[]";
 		}
 	} else {
 		echo "-Error: sql query failed!";

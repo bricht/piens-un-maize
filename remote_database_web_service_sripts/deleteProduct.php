@@ -1,8 +1,6 @@
  <?php
- 
-	$name = str_replace("%20", " ", $_GET['s_name']);
-	$location = str_replace("%20", " ", $_GET['s_location']);
-
+	
+	$p_id = str_replace("%20", " ", $_GET['p_id']);
 
 	$servername = "zesloka.tk";
 	$username = "user";
@@ -14,15 +12,17 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "INSERT INTO store (s_name, s_location)
-	VALUES ('$name', '$location')";
+	$sql = "SET SQL_SAFE_UPDATES=0;
+			delete from product WHERE p_id = 3;
+			delete from storeproductprice WHERE spp_productID = 3;
+			SET SQL_SAFE_UPDATES=1;";
 
 	if ($conn->query($sql) === TRUE) {
-		echo "+New record created successfully";
+		echo "Sucsess.";
 	} else {
 		echo "-Error: " . $sql. " " . $conn->error;
 	}
-
+	
 	$conn->close();
 	
 ?> 

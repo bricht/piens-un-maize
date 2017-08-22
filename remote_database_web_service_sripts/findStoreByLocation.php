@@ -1,6 +1,6 @@
  <?php
  
-	$location = str_replace("%20", " ", $_GET['location']);
+	$location = str_replace("%20", " ", $_GET['s_location']);
 
 	$servername = "zesloka.tk";
 	$username = "user";
@@ -11,10 +11,8 @@
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	}
-	
-	
-	
-	$sql = "select * from store where s_location like '%$location%'";
+
+	$sql = "select * from store where s_location like '%$location%' limit 200";
 	$result = $conn->query($sql);
 	if($result) {
 		$jsonData = array();
@@ -24,7 +22,7 @@
 		}
 		echo json_encode($jsonData);
 		} else {
-			echo "0 results";
+			echo "[]";
 		}
 	} else {
 		echo "-Error: sql query failed!";
