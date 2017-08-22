@@ -1,14 +1,56 @@
 <resources>
 
+    <!--
+    parent="Theme.AppCompat.Light.DarkActionBar
+    Theme.Holo.Light.DarkActionBar
+    android:Theme.Light
+
+    -->
+
+
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
 
         <item name="colorPrimary">#D3D3D3</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
+        <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <item name="android:fontFamily">sans-serif</item>
+
+        <item name="android:editTextColor">@android:color/holo_orange_dark</item>
+        <item name="android:textColorPrimary">@android:color/holo_orange_dark</item>
+        <item name="android:textColorSecondary">@android:color/holo_orange_dark</item>
+        <item name="android:textColorTertiary">@android:color/holo_orange_dark</item>
+        <item name="android:textColorPrimaryInverse">@android:color/holo_orange_dark</item>
+        <item name="android:textColorSecondaryInverse">@android:color/holo_orange_dark</item>
+        <item name="android:textColorTertiaryInverse">@android:color/holo_orange_dark</item>
+
     </style>
 
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <!--
+        <item name="android:windowBackground"></item>
+
+        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="sans-serif-thin"
+
+       <item name="android:fontFamily">sans-serif-light</item>
+       <item name="android:textStyle">bold</item>
+
+       <item name="android:edittextColor"></item>
+       <item name="android:textColorPrimary"></item>
+       <item name="android:textColorSecondary"></item>
+       <item name="android:textColorTertiary"></item>
+       <item name="android:textColorPrimaryInverse"></item>
+       <item name="android:textColorSecondaryInverse"></item>
+       <item name="android:textColorTertiaryInverse"></item>
+
+       -->
+
+    </style>
 
 
     <style name="BarcodeScannerTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -17,5 +59,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="CustomTheme1" parent="Theme.AppCompat.NoActionBar" />
 
 </resources>

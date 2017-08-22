@@ -22,6 +22,14 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        //SHOW ICON
+        getSupportActionBar().setLogo(R.mipmap.applogo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.applogo);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // /SHOW ICON
+
         //setContentView(R.layout.checkbox_list);
         //Intent intent = new Intent(this, BarcodeScanner.class);
         //startActivity(intent);
