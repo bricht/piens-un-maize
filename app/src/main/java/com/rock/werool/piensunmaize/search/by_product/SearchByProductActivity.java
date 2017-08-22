@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -55,6 +56,14 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             productNameTextView.setText(scannedProductName);
         }
 
+        Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+        intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
+        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "");     //All products
+        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
+        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
+        startService(intentForSQL);             //Starts SQLite intent service
+        Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
+        /*
         products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
         products.add(new Product("Orange", "42"));
         products.add(new Product("Apple", "21"));
@@ -72,6 +81,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
         productSearchResults.addAll(products);                 //ListView initially shows all products
         displayListView(productSearchResults);
+        */
         addSearchBarListener();
     }
     private void displayListView(ArrayList<Product> inputList) {
@@ -222,10 +232,10 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
         @Override
         public void onReceive(Context context, Intent intent) {
-            Intent intentForService = new Intent();
-            intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
+            Intent intentForService = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
+            intentForService.putExtra("String[][]", intent.getBundleExtra(SQLiteQuery.QUERY_RESULT));
             intentForService.putExtra("currentQuery", "SEND_PRODUCTNAME_GET_PRODUCTNAME_AVERAGEPRICE");
-            startService(intent);
+            getApplicationContext().startService(intentForService);
         }
     };
 }

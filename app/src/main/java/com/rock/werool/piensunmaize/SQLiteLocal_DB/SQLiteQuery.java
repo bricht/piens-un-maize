@@ -133,8 +133,15 @@ public class SQLiteQuery extends IntentService{
 
         if(cursor.moveToFirst()){
             arr = new String[cursor.getCount()][cursor.getColumnCount()];
-            columns = cursor.getColumnNames();
 
+            int a = cursor.getCount();
+            int b = cursor.getColumnCount();
+
+            columns = cursor.getColumnNames();
+            String test = cursor.getString(cursor.getColumnIndexOrThrow(columns[0]));
+            if (cursor.getString(cursor.getColumnIndexOrThrow(columns[0])) == null)
+                return null;
+            //"Aggregate SQL functions such as SUM() always return a result row. The result itself can be null."
             for(i = 0; i < cursor.getCount(); i++){
                 for(j = 0; j < cursor.getColumnCount(); j++){
                     arr[i][j] = cursor.getString(cursor.getColumnIndexOrThrow(columns[j]));

@@ -53,6 +53,15 @@ public class SelectStoreActivity extends AppCompatActivity {
         TextView productNameTextView = (TextView) findViewById(R.id.selectedProductName);
         productNameTextView.setText(clickedProductName);
 
+        Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
+        intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
+        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, clickedProductName);     //TODO may need to turn to lowercase
+        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, "");       //All stores
+        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, "");     //All addresses
+        startService(intentForSQL);             //Starts SQLite intent service
+        Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectStoreActivity");
+
+        /*
         stores.add(new Store("Rimi", "Somewhere 24"));          //TODO Implement local database query and format the data into ArrayList<Store>
         stores.add(new Store("Ma\nxima", "Anywhere 42"));
         stores.add(new Store("Rimi\nRimi", "Somewhere 24"));
@@ -74,7 +83,7 @@ public class SelectStoreActivity extends AppCompatActivity {
 
         storeSearchResults.addAll(stores);                  //ListView initially shows all stores
         displayListView(storeSearchResults);
-
+        */
         final EditText selectStoreName = (EditText)findViewById(R.id.selectStoreNameText);
         final EditText selectStoreAddress = (EditText)findViewById(R.id.selectStoreAddressText);
         addSearchBarListener(selectStoreName);
@@ -120,6 +129,15 @@ public class SelectStoreActivity extends AppCompatActivity {
                 holder.address = (TextView) convertView.findViewById(R.id.storeAddress);
                 holder.itemPrice = (TextView) convertView.findViewById(R.id.selectedProductPriceInStore);
 
+                Store store = storeList.get(position);
+                holder.name.setText(store.getName());
+                holder.address.setText(store.getAddress());
+                holder.itemPrice.setText(store.getPriceForProduct());
+
+                final String clickedStoreName = holder.name.getText().toString();
+                final String clickedStoreAddress = holder.address.getText().toString();
+                final String productInStorePrice = holder.itemPrice.getText().toString();
+
                 convertView.setTag(holder);                             //Important! Stores the holder in the View (row)
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -162,7 +180,7 @@ public class SelectStoreActivity extends AppCompatActivity {
             //holder.check.setTag(store);
             holder.name.setText(store.getName());
             holder.address.setText(store.getAddress());
-            holder.itemPrice.setText("1234");           //TODO implement items price in the specific store
+            holder.itemPrice.setText(store.getPriceForProduct());
 
             return convertView;
         }
@@ -210,7 +228,7 @@ public class SelectStoreActivity extends AppCompatActivity {
             Intent intentForService = new Intent();
             intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
             intentForService.putExtra("currentQuery", "SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_STORENAME_STOREADDRESS_PRODUCTPRICE");
-            startService(intent);
+            getApplicationContext().startService(intent);
         }
     };
 }

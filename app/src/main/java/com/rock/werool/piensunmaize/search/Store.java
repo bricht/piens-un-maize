@@ -9,6 +9,15 @@ public class Store {
     String address = null;
     String priceForProduct = null;
 
+    public String getPriceForProduct() {
+        return priceForProduct;
+    }
+
+    public void setPriceForProduct(String priceForProduct) {
+        this.priceForProduct = priceForProduct;
+    }
+
+
     public Store(String name, String address) {
         this.name = name;
         this.address = address;

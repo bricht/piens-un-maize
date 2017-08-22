@@ -48,7 +48,14 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_store);
-
+        Intent intentForSQL = new Intent(getApplicationContext(), QueryProcessingIntentService.class);
+        intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
+        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO may need to turn to lowercase
+        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, "");       //All stores
+        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, "");     //All addresses
+        startService(intentForSQL);             //Starts SQLite intent service
+        Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
+        /*
         stores.add(new Store("Rimi first", "Somewhere 24"));          //TODO Implement local database query and format the data into ArrayList<Store>
         stores.add(new Store("Maxima second", "Anywhere 42"));
         stores.add(new Store("Rimi", "Somewhere 24"));
@@ -70,7 +77,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
 
         storeSearchResults.addAll(stores);                  //ListView initially shows all stores
         displayListView(storeSearchResults);
-
+        */
         final EditText searchStoreName = (EditText) findViewById(R.id.searchStoreNameText);
         final EditText searchStoreAddress = (EditText) findViewById(R.id.searchStoreAddressText);
         addSearchBarListener(searchStoreName);
@@ -178,7 +185,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             //holder.check.setTag(store);
             holder.name.setText(store1.getName());
             holder.address.setText(store1.getAddress());
-            return convertView;     //FIXME listView is not ordered and the entries change while not visible
+            return convertView;
         }
     }
 
@@ -224,7 +231,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             Intent intentForService = new Intent();
             intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
             intentForService.putExtra("currentQuery", "SEND_STORENAME_GET_PRODUCTNAME_PRODUCTPRICE");
-            startService(intent);
+            getApplicationContext().startService(intent);
         }
     };
 }

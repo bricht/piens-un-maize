@@ -1,3 +1,4 @@
+/*
 package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 
 import android.app.IntentService;
@@ -213,3 +214,4 @@ public class SQLiteAddData extends IntentService {
    }
 
 }
+*/

@@ -57,6 +57,15 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         TextView storeNameAddressTextView = (TextView) findViewById(R.id.selectedStoreNameAddress);
         storeNameAddressTextView.setText(clickedStoreName + " " + clickedStoreAddress);
 
+        Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+        intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
+        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "");     //All products
+        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, clickedStoreAddress);
+        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, clickedStoreAddress);
+        startService(intentForSQL);             //Starts SQLite intent service
+        Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
+
+        /*
         products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
         products.add(new Product("Orange", "42"));
         products.add(new Product("Apple", "21"));
@@ -74,6 +83,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
         productSearchResults.addAll(products);                 //ListView initially shows all products
         displayListView(productSearchResults);
+        */
         addSearchBarListener();
     }
     private void displayListView(ArrayList<Product> inputList) {
@@ -217,7 +227,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
             Intent intentForService = new Intent();
             intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
             intentForService.putExtra("currentQuery", "SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_PRODUCTNAME_PRODUCTPRICE");
-            startService(intent);
+            getApplicationContext().startService(intent);
         }
     };
 }

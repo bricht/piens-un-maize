@@ -45,6 +45,9 @@
         <activity android:name=".favourites.FavouritesMenu" />
 
         <service
+            android:name=".search.QueryProcessingIntentService"
+            android:exported="false" />
+        <service
             android:name=".SQLiteLocal_DB.SQLiteQuery"
             android:exported="false" />
         <service
