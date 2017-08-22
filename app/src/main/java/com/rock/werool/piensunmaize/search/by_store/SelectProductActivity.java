@@ -31,18 +31,17 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
     String clickedStoreName;
     String clickedStoreAddress;
+    String[][] array;
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(SelectProductList , new IntentFilter("ProcessedQueryResult"));         //Registers BroadcastReceivers
         registerReceiver(SelectProductSQL , new IntentFilter ("QUERY_RESULT"));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(SelectProductList);         //Unregisters BroadcastReceivers
         unregisterReceiver(SelectProductSQL);
     }
 
@@ -65,43 +64,26 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         startService(intentForSQL);             //Starts SQLite intent service
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
 
-        /*
-        products.add(new Product("Apple", "21"));           //TODO Implement local database query and format the data into ArrayList<Product>
-        products.add(new Product("Orange", "42"));
-        products.add(new Product("Apple", "21"));
-        products.add(new Product("Orange", "42"));
-        products.add(new Product("Apple", "21"));
-        products.add(new Product("Orange", "42"));
-        products.add(new Product("Apple", "21"));
-        products.add(new Product("Orange", "42"));
-        products.add(new Product("Apple", "21"));
-        products.add(new Product("Orange", "42"));
-        products.add(new Product("Apple", "21"));
-        products.add(new Product("Orange", "42"));
-        products.add(new Product("Apple", "21"));
-        products.add(new Product("Orange", "42"));
-
-        productSearchResults.addAll(products);                 //ListView initially shows all products
-        displayListView(productSearchResults);
-        */
         addSearchBarListener();
     }
-    private void displayListView(ArrayList<Product> inputList) {
+    private void displayListView(ArrayList<String> inputList) {
 
         dataAdapter = new MyCustomAdapter(this, R.layout.itemname_price_addtolist, inputList);
         ListView listView = (ListView)findViewById(R.id.listviewselectproduct);
         listView.setAdapter(dataAdapter);
 
     }
-    private class MyCustomAdapter extends ArrayAdapter<Product> {
-
-        private ArrayList<Product> productList;
+    private class MyCustomAdapter extends ArrayAdapter<String> {
+        Context context;
+        int textViewResourceId;
+        private ArrayList<String> storeList;
 
         public MyCustomAdapter(Context context, int textViewResourceId,
-                               ArrayList<Product> productList) {
-            super(context, textViewResourceId, productList);
-            this.productList = new ArrayList<Product>();
-            this.productList.addAll(productList);
+                               ArrayList<String> storeList) {
+            super(context, textViewResourceId, storeList);
+            this.textViewResourceId = textViewResourceId;
+            this.storeList = storeList;
+            this.context = context;
         }
 
         private class ViewHolder {
@@ -127,9 +109,8 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                 holder.priceInStore = (TextView) convertView.findViewById(R.id.productPrice);
                 holder.cart = (ImageView) convertView.findViewById(R.id.selectProductToList);
 
-                Product product = productList.get(position);    //Sets the values
-                holder.name.setText(product.getName());
-                holder.priceInStore.setText(product.getPrice());
+                holder.name.setText(array[position][0]);
+                holder.priceInStore.setText(array[position][1]);
 
                 final String clickedProductName = holder.name.getText().toString();
                 final String clickedProductAveragePrice = holder.priceInStore.getText().toString();
@@ -179,9 +160,8 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
             //holder.check.setChecked(product.getChecked());                //Ignore this
             //holder.check.setTag(product);
-            Product product = productList.get(position);    //Sets the values
-            holder.name.setText(product.getName());
-            holder.priceInStore.setText(product.getPrice());
+            holder.name.setText(array[position][0]);
+            holder.priceInStore.setText(array[position][1]);
             return convertView;
         }
     }
@@ -211,23 +191,22 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
             }
         });
     }
-    BroadcastReceiver SelectProductList = new BroadcastReceiver() {              //Receives an ArrayList from QueryProcessingIntentService
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            productSearchResults.clear();
-            productSearchResults.addAll((ArrayList<Product>) intent.getSerializableExtra("ArrayList<Product>"));
-            displayListView(productSearchResults);                 //TODO Maybe not a good way to update ListView
-        }
-
-    };
-
     BroadcastReceiver SelectProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent intentForService = new Intent();
             intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
             intentForService.putExtra("currentQuery", "SEND_PRODUCTNAME_STORENAME_STOREADDRESS_GET_PRODUCTNAME_PRODUCTPRICE");
-            getApplicationContext().startService(intent);
+            Bundle bun = intent.getBundleExtra(SQLiteQuery.QUERY_RESULT);
+            array = (String[][]) bun.getSerializable("String[][]");
+            ArrayList<String> array1D = new ArrayList<>();
+            if (array != null) {
+                //array1D = new String[array.length];
+                for (int i = 0; i < array.length; i++) {
+                    array1D.add(array[i][0]);
+                }
+            }
+            displayListView(array1D);
         }
     };
 }
