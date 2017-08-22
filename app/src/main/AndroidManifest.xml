@@ -8,8 +8,6 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/applogo"
@@ -52,6 +50,12 @@
             android:exported="false" />
         <service
             android:name=".SQLiteLocal_DB.DbInitialize"
+            android:exported="false" />
+
+        <activity android:name=".SQLiteLocal_DB.ClearDbActivity" />
+
+        <service
+            android:name=".SQLiteLocal_DB.DropTheBassService"
             android:exported="false"></service>
     </application>
 
