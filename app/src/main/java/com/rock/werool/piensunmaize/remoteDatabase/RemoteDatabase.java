@@ -1,6 +1,8 @@
 package com.rock.werool.piensunmaize.remoteDatabase;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -46,12 +48,23 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_STORE_BY_LOCATION = "findStoreByLocation";
     private static final String ACTION_FIND_STORE_BY_STRING_KEY = "findStoreByStringKey.php";
 
+    private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
+    private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
+    private static final String ACTION_GET_ALL_BARCODES = "getAllBarcodes.php";
+    private static final String ACTION_GET_ALL_STOREPRODUCTPRICES = "getAllStoreProductPrices.php";
+
+
     private static final String ACTION_FIND_STORE_PRODUCT_PRICE = "findStoreProductPrice.php";
 
     public static final String KEY_STR_KEY = "str_key";
 
     private String url;
     private Context context;
+
+    private IDatabaseResponseHandler<Product> lastProductHandler;
+    private IDatabaseResponseHandler<Store> lastStoreHandler;
+    private IDatabaseResponseHandler<StoreProductPrice> lastStoreProductPriceHandler;
+    private IDatabaseResponseHandler<Barcode> lastBarcodeHandler;
 
     public void setUrl(String url) {
         this.url = url;
@@ -63,76 +76,109 @@ public class RemoteDatabase {
     }
 
     //Server side done
-    public void AddProduct(Product product, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void AddProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_ADD_PRODUCT, product, responseHandler);
     }
 
     //Server side done
-    public void AddStore(Store store, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void AddStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_ADD_STORE, store, responseHandler);
     }
 
     //Server side done
-    public void AddStoreProductPrice(StoreProductPrice storePruductPrice, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void AddStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_ADD_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
     //Server side done
-    public void AddBarcode(Barcode barcode, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void AddBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_ADD_BARCODE, barcode, responseHandler);
     }
     //Server side done
-    public void UpdateProduct(Product product, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void UpdateProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_UPDATE_PRODUCT, product, responseHandler);
     }
     //Server side done
-    public void UpdateStore(Store store, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void UpdateStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_UPDATE_STORE, store, responseHandler);
     }
     //Server side done
-    public void UpdateStoreProductPrice(StoreProductPrice storePruductPrice, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void UpdateStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_UPDATE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
     //Server side done
-    public void UpdateBarcode(Barcode barcode, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void UpdateBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_UPDATE_BACRODE, barcode, responseHandler);
     }
 
-    public void DeleteProduct(Product product, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void DeleteProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_DELETE_PRODUCT, product, responseHandler);
     }
 
-    public void DeleteStore(Store store, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void DeleteStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_DELETE_STORE, store, responseHandler);
     }
 
-    public void DeleteStoreProductPrice(StoreProductPrice storePruductPrice, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void DeleteStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_DELETE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
-    public void DeleteBarcode(Barcode barcode, IRemoteDatabaseResponseHandler<String> responseHandler) {
+    public void DeleteBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_DELETE_BACRODE, barcode, responseHandler);
     }
 
-    // FIND PRODUCTS .........
-    //Server side done
-    public void FindProductByBarCode(String barCode, IRemoteDatabaseResponseHandler<Product> responseHandler) {
-        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, barCode, responseHandler);
-    }
-    //Server side done
-    public void FindProductByName(String name, IRemoteDatabaseResponseHandler<Product> responseHandler) {
-        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_NAME, Product.TAG_NAME, name, responseHandler);
-    }
-    //Server side done
-    public void FindProductByCategory(String category, IRemoteDatabaseResponseHandler<Product> responseHandler) {
-        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_CATEGORY, Product.TAG_CATEGORY, category, responseHandler);
-    }
-    //Server side done
-    public void FindProductByStringKey(String value, IRemoteDatabaseResponseHandler<Product> responseHandler) {
-        FindProductByStringKey(ACTION_FIND_PORDUCT_BY_STRING_KEY, KEY_STR_KEY ,value, responseHandler);
+
+    // GETTERS ...
+
+    public void GetAllProducts(IDatabaseResponseHandler<Product> responseHandler) {
+        this.doThis(ACTION_GET_ALL_PRODUCTS, responseHandler, new OnProduct(responseHandler));
     }
 
-    private void FindProductByStringKey(String action, String key, String value, IRemoteDatabaseResponseHandler<Product> responseHandler) {
+    public void GetAllStores(IDatabaseResponseHandler<Store> responseHandler) {
+        this.doThis(ACTION_GET_ALL_STORES, responseHandler, new OnStore(responseHandler));
+    }
+
+    public void GetAllBarcodes(IDatabaseResponseHandler<Barcode> responseHandler) {
+        this.doThis(ACTION_GET_ALL_BARCODES, responseHandler, new OnBarcode(responseHandler));
+    }
+
+    public void GetAllStoreProductPrices(IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
+        this.doThis(ACTION_GET_ALL_STOREPRODUCTPRICES, responseHandler, new OnStoreProductPrice(responseHandler));
+    }
+
+    private <T> void doThis(String action, IDatabaseResponseHandler<T> responseHandler, Response.Listener<String> listener ) {
+        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + action);
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        listener, new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+    }
+
+
+
+    // FIND PRODUCTS .........
+    //Server side done
+    public void FindProductByBarCode(String barCode, IDatabaseResponseHandler<Product> responseHandler) {
+        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, barCode, responseHandler);
+        this.lastProductHandler = responseHandler;
+    }
+    //Server side done
+    public void FindProductByName(String name, IDatabaseResponseHandler<Product> responseHandler) {
+        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_NAME, Product.TAG_NAME, name, responseHandler);
+        this.lastProductHandler = responseHandler;
+    }
+    //Server side done
+    public void FindProductByCategory(String category, IDatabaseResponseHandler<Product> responseHandler) {
+        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_CATEGORY, Product.TAG_CATEGORY, category, responseHandler);
+        this.lastProductHandler = responseHandler;
+    }
+    //Server side done
+    public void FindProductByStringKey(String value, IDatabaseResponseHandler<Product> responseHandler) {
+        FindProductByStringKey(ACTION_FIND_PORDUCT_BY_STRING_KEY, KEY_STR_KEY ,value, responseHandler);
+        this.lastProductHandler = responseHandler;
+    }
+
+    private void FindProductByStringKey(String action, String key, String value, IDatabaseResponseHandler<Product> responseHandler) {
         String requestUrl = this.removeWhiteSpaceFromUrl(this.url + action + "?" + key + "=" + value);
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
@@ -140,21 +186,26 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
     }
 
+
+
     // FIND STORES..........
     //Server side done
-    public void FindStoreByName(String key, IRemoteDatabaseResponseHandler<Store> responseHandler) {
+    public void FindStoreByName(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, key, responseHandler);
+        this.lastStoreHandler = responseHandler;
     }
     //Server side done
-    public void FindStoreByLocation(String location, IRemoteDatabaseResponseHandler<Store> responseHandler) {
+    public void FindStoreByLocation(String location, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_LOCATION, Store.TAG_LOCATION, location, responseHandler );
+        this.lastStoreHandler = responseHandler;
     }
     //Server side done
-    public void FindStoreByStringKey(String key, IRemoteDatabaseResponseHandler<Store> responseHandler) {
+    public void FindStoreByStringKey(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_STRING_KEY, KEY_STR_KEY, key, responseHandler);
+        this.lastStoreHandler = responseHandler;
     }
 
-    private void FindStoreByStringKey(String action, String key, String value, IRemoteDatabaseResponseHandler<Store> responseHandler) {
+    private void FindStoreByStringKey(String action, String key, String value, IDatabaseResponseHandler<Store> responseHandler) {
         String requestUrl = this.url + action + "?" + key + "=" + value;
         Log.d("requestUrl", requestUrl);
         StringRequest strRequest =
@@ -168,21 +219,22 @@ public class RemoteDatabase {
 
     public void FindStoreProductPrice(
             Product product,
-            IRemoteDatabaseResponseHandler<StoreProductPrice> responseHandler){
+            IDatabaseResponseHandler<StoreProductPrice> responseHandler){
 
         String requestUrl = this.removeWhiteSpaceFromUrl(
                 createProductParamUrl(product,ACTION_FIND_STORE_PRODUCT_PRICE)) ;
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
-                        new OnStoreProductPrice(responseHandler, product), new OnError(responseHandler));
+                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
+        this.lastStoreProductPriceHandler = responseHandler;
     }
 
 
 
-    //-------------------------------------
-    //      GENERAL METHODS down there ...
-    //-------------------------------------
+    //-----------------------------------------
+    //      ... GENERAL METHODS down there ...
+    //-----------------------------------------
 
     private void ExecuteStringRequest(StringRequest request) {
         RequestQueue queue = Volley.newRequestQueue(this.context);
@@ -195,7 +247,7 @@ public class RemoteDatabase {
     private void ManageProductByAction(
             String action,
             Product product,
-            IRemoteDatabaseResponseHandler<String> responseHandler) {
+            IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = this.removeWhiteSpaceFromUrl(createProductParamUrl(product,action));
         Log.d("requestUrl", requestUrl);
@@ -208,7 +260,7 @@ public class RemoteDatabase {
     private void ManageStoreByAction(
             String action,
             Store store,
-            IRemoteDatabaseResponseHandler<String> responseHandler) {
+            IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = this.removeWhiteSpaceFromUrl(createStoreParamUrl(store, action));
         StringRequest strRequest =
@@ -220,7 +272,7 @@ public class RemoteDatabase {
     private void ManageStoreProductPriceByAction(
             String action,
             StoreProductPrice storeProductPrice,
-            IRemoteDatabaseResponseHandler<String> responseHandler) {
+            IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = this.removeWhiteSpaceFromUrl(
                 createStoreProductPriceParamUrl(storeProductPrice, action));
@@ -234,7 +286,7 @@ public class RemoteDatabase {
     private void ManageBarcodeByAction(
             String action,
             Barcode barcode,
-            IRemoteDatabaseResponseHandler<String> responseHandler){
+            IDatabaseResponseHandler<String> responseHandler){
 
         String requestUrl = createBarcodeRequestUrl(barcode, action);
         Log.d("requestUrl", requestUrl);
@@ -247,7 +299,7 @@ public class RemoteDatabase {
     private void FindProductByAction(
             String action,
             Product product,
-            IRemoteDatabaseResponseHandler<Product> responseHandler) {
+            IDatabaseResponseHandler<Product> responseHandler) {
 
         String requestUrl = createProductParamUrl(product,action);
         StringRequest strRequest =
@@ -260,7 +312,7 @@ public class RemoteDatabase {
     private void FindStoreByAction(
             String action,
             Store store,
-            IRemoteDatabaseResponseHandler<Store> responseHandler) {
+            IDatabaseResponseHandler<Store> responseHandler) {
 
         String requestUrl = createStoreParamUrl(store, action);
         StringRequest strRequest =
@@ -319,36 +371,59 @@ public class RemoteDatabase {
     // helper class for expected StoreProductPrice response
     private class OnStoreProductPrice implements Response.Listener<String> {
 
-        private IRemoteDatabaseResponseHandler handler;
+        private ArrayList<StoreProductPrice> data;
+        private IDatabaseResponseHandler handler;
+        private Handler parseHandler = new Handler() {
+          @Override
+            public void handleMessage(Message msg) {
+              if(handler == lastStoreProductPriceHandler) {
+                  handler.onArrive(data);
 
-        public OnStoreProductPrice(IRemoteDatabaseResponseHandler h, Product p) {
+              }
+          }
+        };
+
+        public OnStoreProductPrice(IDatabaseResponseHandler h) {
             handler = h;
+            data = new ArrayList<StoreProductPrice>();
+            Log.d("testthread" , "created");
         }
         @Override
         public void onResponse(String response) {
-            ArrayList<StoreProductPrice> storeProductPrices = new ArrayList<StoreProductPrice>();
-            try {
-                Log.d("jsonerror", response);
-                JSONArray jarray = new JSONArray(response);
 
-                for(int i = 0; i < jarray.length(); i++) {
-                    JSONObject jobj = jarray.getJSONObject(i);
-                    storeProductPrices.add(new StoreProductPrice(jobj));
+
+            final String res = response;
+
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("myapp.testthread" , "started");
+                    try {
+                        Log.d("jsonerror", res);
+                        JSONArray jarray = new JSONArray(res);
+
+                        for(int i = 0; i < jarray.length(); i++) {
+                            JSONObject jobj = jarray.getJSONObject(i);
+                            data.add(new StoreProductPrice(jobj));
+                        }
+
+                    } catch (JSONException e) {
+                        Log.d("jsonerror", e.getMessage());
+                    }
+                    parseHandler.sendEmptyMessage(0);
                 }
-                handler.onArrive(storeProductPrices);
-
-            } catch (JSONException e) {
-                Log.d("jsonerror", e.getMessage());
-            }
+            };
+            Thread t = new Thread(r);
+            t.start();
         }
     }
 
     // helper class for expected Store response
     private class OnStore implements Response.Listener<String> {
 
-        private IRemoteDatabaseResponseHandler handler;
+        private IDatabaseResponseHandler handler;
 
-        public OnStore(IRemoteDatabaseResponseHandler h) {
+        public OnStore(IDatabaseResponseHandler h) {
             handler = h;
         }
         @Override
@@ -360,7 +435,9 @@ public class RemoteDatabase {
                     JSONObject jobj = jarray.getJSONObject(i);
                     stores.add(new Store(jobj));
                 }
-                handler.onArrive(stores);
+                if(this.handler == lastStoreHandler) {
+                    handler.onArrive(stores);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -370,9 +447,9 @@ public class RemoteDatabase {
     // helper class for expected Product response
     private class OnProduct implements Response.Listener<String> {
 
-        private IRemoteDatabaseResponseHandler handler;
+        private IDatabaseResponseHandler handler;
 
-        public OnProduct(IRemoteDatabaseResponseHandler h) {
+        public OnProduct(IDatabaseResponseHandler h) {
             handler = h;
         }
         @Override
@@ -385,7 +462,9 @@ public class RemoteDatabase {
                     JSONObject jobj = jarray.getJSONObject(i);
                     products.add(new Product(jobj));
                 }
-                handler.onArrive(products);
+                if(this.handler == lastProductHandler) {
+                    handler.onArrive(products);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -395,21 +474,24 @@ public class RemoteDatabase {
     // helper class for expected barcode response
     private class OnBarcode implements Response.Listener<String> {
 
-        private IRemoteDatabaseResponseHandler handler;
+        private IDatabaseResponseHandler handler;
 
-        public OnBarcode(IRemoteDatabaseResponseHandler h) {
+        public OnBarcode(IDatabaseResponseHandler h) {
             handler = h;
         }
         @Override
         public void onResponse(String response) {
-            ArrayList<Barcode> products = new ArrayList<Barcode>();
+            ArrayList<Barcode> barcodes = new ArrayList<Barcode>();
             try {
                 JSONArray jarray = new JSONArray(response);
                 for(int i = 0; i < jarray.length(); i++) {
                     JSONObject jobj = jarray.getJSONObject(i);
-                    products.add(new Barcode(jobj));
+                    barcodes.add(new Barcode(jobj));
                 }
-                handler.onArrive(products);
+                if(this.handler == lastBarcodeHandler) {
+                    handler.onArrive(barcodes);
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -420,9 +502,9 @@ public class RemoteDatabase {
     // helper class for expected String response
     private class OnString implements Response.Listener<String> {
 
-        private IRemoteDatabaseResponseHandler handler;
+        private IDatabaseResponseHandler handler;
 
-        public OnString(IRemoteDatabaseResponseHandler h) {
+        public OnString(IDatabaseResponseHandler h) {
             handler = h;
         }
         @Override
@@ -437,9 +519,9 @@ public class RemoteDatabase {
     // helper class for handling error response
     private class OnError implements Response.ErrorListener {
 
-        private IRemoteDatabaseResponseHandler handler;
+        private IDatabaseResponseHandler handler;
 
-        public OnError(IRemoteDatabaseResponseHandler h) {
+        public OnError(IDatabaseResponseHandler h) {
             handler = h;
         }
         @Override

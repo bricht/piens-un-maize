@@ -20,8 +20,7 @@ import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity {
     CustomAdapter listAdapter;
-    // TODO: ? add list to hold multiple shopping lists (separate list for each store)
-    // TODO: ? store shopping list in the local DB
+    // TODO: ? store/access shopping list in/from the local DB
     ArrayList<Product> shoppingList = new ArrayList<>();
 
     @Override
@@ -107,14 +106,9 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: implement a method + button to add products to the shopping list
-    // Clicking the button could open the product searching activity.
-    // If selected item is from a different store (store that doesn't have a shopping list currently),
-    // automatically create a new shopping list for the store and add the product there.
-    // TODO: somehow make it possible to display variable amount of shopping lists
-    // TODO: implement a method + button to add a shopping list for a separate store
-    // Clicking the button could open the store searching activity.
+    // TODO: add boxes to hold total price of the list
     // TODO: method + button for clearing all items
     // Clear all deletes shopping list from local DB
-    // TODO: add boxes to hold total price of the list
+    // TODO: implement a method to add products to the shopping list
+    // Clicking the button could open the product searching activity.
 }
