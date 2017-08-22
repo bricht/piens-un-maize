@@ -41,6 +41,13 @@
         <activity android:name=".favourites.FavouriteProductsActivity" />
         <activity android:name=".shoppingList.ShoppingListActivity" />
         <activity android:name=".favourites.FavouritesMenu" />
+        <activity android:name=".SQLiteLocal_DB.ClearDbActivity" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
 
         <service
             android:name=".SQLiteLocal_DB.SQLiteQuery"
@@ -52,11 +59,6 @@
             android:name=".SQLiteLocal_DB.DbInitialize"
             android:exported="false" />
 
-        <activity android:name=".SQLiteLocal_DB.ClearDbActivity" />
-
-        <service
-            android:name=".SQLiteLocal_DB.DropTheBassService"
-            android:exported="false"></service>
     </application>
 
 </manifest>
