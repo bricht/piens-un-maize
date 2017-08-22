@@ -31,6 +31,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(ProductContract.CREATE_TABLE_PRODUCTS);
         db.execSQL(BarcodeContract.CREATE_TABLE_BARCODES);
         db.execSQL(StoreProductPriceContract.CREATE_TABLE_STOREPRODUCTPRICE);
+        db.execSQL(ShoppingListContract.CREATE_TABLE_SHOPPING_LIST);
         Intent intent = new Intent(context, DbInitialize.class);
         context.startService(intent);
     }
@@ -41,6 +42,7 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(StoreContract.DELETE_TABLE_STORES);
         db.execSQL(BarcodeContract.DELETE_TABLE_BARCODES);
         db.execSQL(StoreProductPriceContract.DELETE_TABLE_STOREPRODUCTPRICE);
+        db.execSQL(ShoppingListContract.DELETE_TABLE_SHOPPING_LIST);
 
         onCreate(db);
     }
