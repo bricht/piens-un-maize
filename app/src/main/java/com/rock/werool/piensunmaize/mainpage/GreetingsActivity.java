@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.remoteDatabase.ConnectionVerifyer;
+import com.rock.werool.piensunmaize.remoteDatabase.IRemoteDBConnectionFerifyHandler;
 
 public class GreetingsActivity extends AppCompatActivity {
     private ProgressBar spinner;
@@ -18,10 +20,26 @@ public class GreetingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greetings);
 
+        final ConnectionVerifyer verifier = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
+        verifier.addListener(new IRemoteDBConnectionFerifyHandler() {
+            @Override
+            public void OnConnectionLost(String msg) {
+
+            }
+
+            @Override
+            public void OnConnection() {
+                startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
+                verifier.Stop();
+            }
+        });
+        verifier.setTimeout(3000);
+        verifier.Start();
+
         spinner = (ProgressBar)findViewById(R.id.progressBar2);
         spinner.setVisibility(View.VISIBLE);
+        /*
         handler = new Handler();
-
         handler.postDelayed(myRunnable = new Runnable() {
             public void run() {
                 finish();
@@ -29,6 +47,7 @@ public class GreetingsActivity extends AppCompatActivity {
 
             }
         }, 5000);
+        */
     }
 
     //TODO Fix bug: After app closing and then geting back in - never ending loop with loading screen

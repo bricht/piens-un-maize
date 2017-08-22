@@ -1,7 +1,10 @@
 package com.rock.werool.piensunmaize.barcode;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.support.annotation.NonNull;
@@ -25,8 +28,10 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.add.FillWithHandActivity;
 import com.rock.werool.piensunmaize.mainpage.MainMenu;
+import com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity;
 
 import java.io.IOException;
 
@@ -37,6 +42,20 @@ public class BarcodeScanner extends AppCompatActivity {
     private static boolean activityOpen = false;
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        //unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
+        unregisterReceiver(SearchProductSQL);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
+        activityOpen = false;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -44,47 +63,35 @@ public class BarcodeScanner extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     this.recreate();
-
                 } else {
-
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
                 return;
             }
-
             // other 'case' lines to check for other
             // permissions this app might request
         }
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode);
-
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(BarcodeScanner.this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-
-
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(BarcodeScanner.this,
                     Manifest.permission.CAMERA)) {
-
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(BarcodeScanner.this,
                         new String[]{Manifest.permission.CAMERA},
                         cameraPermissionCode);
@@ -94,8 +101,6 @@ public class BarcodeScanner extends AppCompatActivity {
                 // result of the request.
             }
         } else {
-
-
             BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).build();
             final SurfaceView cameraView = (SurfaceView) findViewById(R.id.camera_view);
             final TextView barcodeInfo = (TextView) findViewById(R.id.code_info);
@@ -107,10 +112,7 @@ public class BarcodeScanner extends AppCompatActivity {
                     .setAutoFocusEnabled(true)
                     .setRequestedFps(30.0f);
             cameraSource = builder.build();
-
-
             final ImageView flash = (ImageView) findViewById(R.id.flash);
-
             flash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -122,14 +124,12 @@ public class BarcodeScanner extends AppCompatActivity {
                     }
                 }
             });
-
             cameraView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //empty
                 }
             });
-
             cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
                 @Override
                 public void surfaceCreated(SurfaceHolder holder) {
@@ -145,35 +145,31 @@ public class BarcodeScanner extends AppCompatActivity {
                         Log.e("CAMERA SOURCE", e.getMessage());
                     }
                 }
-
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 }
-
                 @Override
                 public void surfaceDestroyed(SurfaceHolder holder) {
                     cameraSource.stop();
                 }
             });
-
             barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
                 @Override
                 public void release() {
                 }
-
                 @Override
                 public void receiveDetections(Detector.Detections<Barcode> detections) {
                     final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
                     if (barcodes.size() != 0) {
                         if(activityOpen == false) {
-                            Bundle bundle = getIntent().getExtras();            //getExtras() is a way to pass parameters to activities
-                            String necessaryAction = bundle.getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
-                            BarcodeAction barAction = new BarcodeAction();
-                            //String necessaryAction = "UPDATE_PRODUCT";
-                            barAction.setContextAndNecessaryAction(getApplicationContext(), necessaryAction);
+                            Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+                            intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
+                            intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);
+                            intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
+                            intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
+                            startService(intentForSQL);
 
-                            barAction.executeActionFromBarcode(barcodes.valueAt(0).displayValue);       //BarcodeAction executes necessary action
                             activityOpen = true;
                         }else{
                             
@@ -196,12 +192,6 @@ public class BarcodeScanner extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        activityOpen = false;
     }
 
     private static Camera getCamera(@NonNull CameraSource cameraSource) {
@@ -239,7 +229,35 @@ public class BarcodeScanner extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
+    }
+    BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String necessaryAction = getIntent().getExtras().getString("necessaryAction");   //Gets variable named necessaryAction from the bundle
+            Bundle bun = intent.getBundleExtra(SQLiteQuery.QUERY_RESULT);
+            String [][] array = (String[][]) bun.getSerializable("String[][]");
+            executeNecessaryAction(necessaryAction, array[0][0]);           //TODO properly implement barcode query
+        }
+    };
+    void executeNecessaryAction(String necessaryAction, String productName) {
+        switch (necessaryAction) {
+            case "UPDATE_PRODUCT" : {
+                Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("scannedProductName", productName);
+                //intent.putExtra("scannedProductCategory", "Placeholder Category");
+                getApplicationContext().startActivity(intent);
+                break;
+            } case "FIND_PRODUCT_INFO": {
+                Intent intent = new Intent(getApplicationContext(), SearchByProductActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("scannedProductName", productName);
+                getApplicationContext().startActivity(intent);
+                break;
+            } default: {
+
+            }
+        }      //BarcodeAction executes necessary action
     }
 }

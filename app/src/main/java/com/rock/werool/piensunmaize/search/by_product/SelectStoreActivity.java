@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -88,6 +89,7 @@ public class SelectStoreActivity extends AppCompatActivity {
             TextView name;
             TextView address;
             TextView itemPrice;
+            ImageView cart;
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -103,6 +105,7 @@ public class SelectStoreActivity extends AppCompatActivity {
                 holder.name = (TextView) convertView.findViewById(R.id.storeName);
                 holder.address = (TextView) convertView.findViewById(R.id.storeAddress);
                 holder.itemPrice = (TextView) convertView.findViewById(R.id.selectedProductPriceInStore);
+                holder.cart = (ImageView) convertView.findViewById(R.id.selectStoreToList);
 
                 holder.name.setText(array[position][1]);
                 holder.address.setText(array[position][2]);
@@ -122,6 +125,13 @@ public class SelectStoreActivity extends AppCompatActivity {
                 holder.address.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                    }
+                });
+                holder.cart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {        //TODO implement actions on click
+                        Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
 
                     }
                 });

@@ -75,9 +75,9 @@ public class SQLiteQuery extends IntentService{
                         " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                         " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                         " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
-                result = database.rawQuery(query, null);
-                resultArray = cursorToArr(result);
-                //String [][] resultArray = {{"a", "b"}, {"c", "d"}};
+                //result = database.rawQuery(query, null);
+                //resultArray = cursorToArr(result);
+                String [][] resultArray = {{"a", "b"}, {"c", "d"}};
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("String[][]", resultArray);
                 reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
@@ -97,12 +97,12 @@ public class SQLiteQuery extends IntentService{
                         " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
-                result = database.rawQuery(query, null);
-                resultArray = cursorToArr(result);
+                //result = database.rawQuery(query, null);
+                //resultArray = cursorToArr(result);
                 //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
-                //String [][] resultArray2 = {{"a", "b", "c", "d"}, {"e", "f", "g", "h"}};
+                String [][] resultArray2 = {{"a", "b", "c", "d"}, {"e", "f", "g", "h"}};
                 Bundle bundle2 = new Bundle();
-                bundle2.putSerializable("String[][]", resultArray);
+                bundle2.putSerializable("String[][]", resultArray2);
                 reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle2);
                 break;
 
@@ -115,13 +115,13 @@ public class SQLiteQuery extends IntentService{
                         " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
                         " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
-                result = database.rawQuery(query, null);
-                resultArray = cursorToArr(result);
+                //result = database.rawQuery(query, null);
+                //resultArray = cursorToArr(result);
                 //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
 
-                //String [][] resultArray3 = {{"a", "b"}, {"c", "d"}};
+                String [][] resultArray3 = {{"a", "b"}, {"c", "d"}};
                 Bundle bundle3 = new Bundle();
-                bundle3.putSerializable("String[][]", resultArray);
+                bundle3.putSerializable("String[][]", resultArray3);
                 reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle3);
 
                 break;
