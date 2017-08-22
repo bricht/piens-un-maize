@@ -6,8 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.remoteDatabase.ConnectionVerifyer;
+import com.rock.werool.piensunmaize.remoteDatabase.IRemoteDBConnectionFerifyHandler;
 
 public class GreetingsActivity extends AppCompatActivity {
     private ProgressBar spinner;
@@ -22,13 +25,38 @@ public class GreetingsActivity extends AppCompatActivity {
         spinner.setVisibility(View.VISIBLE);
         handler = new Handler();
 
-        handler.postDelayed(myRunnable = new Runnable() {
-            public void run() {
-                finish();
-                startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
 
+        final ConnectionVerifyer verifyer = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
+        verifyer.addListener(new IRemoteDBConnectionFerifyHandler() {
+            @Override
+            public void OnConnectionLost(String msg) {
+                TextView txt = (TextView) findViewById(R.id.textView2);
+                txt.setText("Sroory no connection, you are doomd!");
             }
-        }, 5000);
+
+            @Override
+            public void OnConnection() {
+                TextView txt = (TextView) findViewById(R.id.textView2);
+                txt.setText("Welcome");
+                verifyer.Stop();
+                handler.postDelayed(myRunnable = new Runnable() {
+                    public void run() {
+                        finish();
+                        startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
+
+                    }
+                }, 2000);
+                //startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
+            }
+        });
+        verifyer.setTimeout(1000);
+        verifyer.Start();
+
+
+
+
+
+
     }
 
     //TODO Fix bug: After app closing and then geting back in - never ending loop with loading screen
