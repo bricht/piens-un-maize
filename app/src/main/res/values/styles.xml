@@ -12,10 +12,19 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
 
-        <item name="colorPrimary">#D3D3D3</item>
-        <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
-        <item name="colorAccent">@android:color/holo_orange_dark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">sans-serif</item>
+
+
+
+
+    </style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <!--
 
         <item name="android:editTextColor">@android:color/holo_orange_dark</item>
         <item name="android:textColorPrimary">@android:color/holo_orange_dark</item>
@@ -24,12 +33,6 @@
         <item name="android:textColorPrimaryInverse">@android:color/holo_orange_dark</item>
         <item name="android:textColorSecondaryInverse">@android:color/holo_orange_dark</item>
         <item name="android:textColorTertiaryInverse">@android:color/holo_orange_dark</item>
-
-    </style>
-
-    <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:fontFamily">sans-serif-light</item>
-        <!--
         <item name="android:windowBackground"></item>
 
         android:fontFamily="sans-serif"

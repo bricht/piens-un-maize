@@ -27,7 +27,7 @@ public class MainMenu extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.applogo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.applogo);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         // /SHOW ICON
 
         //setContentView(R.layout.checkbox_list);
