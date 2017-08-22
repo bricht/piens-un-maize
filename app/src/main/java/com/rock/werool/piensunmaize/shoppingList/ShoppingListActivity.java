@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -19,9 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity {
-    CustomAdapter listAdapter;
+    private CustomAdapter listAdapter;
     // TODO: ? store/access shopping list in/from the local DB
-    ArrayList<Product> shoppingList = new ArrayList<>();
+    private ArrayList<Product> shoppingList = new ArrayList<>();
+    private double total = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +46,34 @@ public class ShoppingListActivity extends AppCompatActivity {
         shoppingList.add(new Product("Orange", "42"));
         shoppingList.add(new Product("Apple", "42"));
 
+        for (Product product : shoppingList) {
+            total += Double.parseDouble(product.getPrice());
+        }
+
         displayListView(shoppingList);
+        displayTotal(total);
+
+        final Button clearButton = (Button) findViewById(R.id.clear_btn);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                total = 0;
+                displayTotal(total);
+                shoppingList.clear();
+                displayListView(shoppingList);
+            }
+        });
     }
 
     private void displayListView(ArrayList<Product> inputList) {
         ListView productList = (ListView) findViewById(R.id.productListView);
         listAdapter = new CustomAdapter(shoppingList, productList.getContext());
         productList.setAdapter(listAdapter);
+    }
+
+    private void displayTotal(double totalPrice){
+        String total = String.format( "%.2f", totalPrice);
+        TextView textView = (TextView) findViewById(R.id.totalPrice);
+        textView.setText("Total price: " + total);
     }
 
     private class CustomAdapter extends BaseAdapter implements ListAdapter {
@@ -95,8 +118,9 @@ public class ShoppingListActivity extends AppCompatActivity {
             ImageView deleteBtn = (ImageView) view.findViewById(R.id.delete_btn);
 
             deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
                 public void onClick(View v) {
+                    total -= Double.parseDouble(list.get(position).getPrice());
+                    displayTotal(total);
                     list.remove(position);
                     notifyDataSetChanged();
                 }
@@ -106,9 +130,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: add boxes to hold total price of the list
-    // TODO: method + button for clearing all items
-    // Clear all deletes shopping list from local DB
-    // TODO: implement a method to add products to the shopping list
+    // TODO: add method and button to add products to the shopping list
     // Clicking the button could open the product searching activity.
 }
