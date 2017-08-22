@@ -1,6 +1,7 @@
 package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
@@ -30,19 +31,22 @@ public class SQLiteAddData extends IntentService {
     public static final int ADD_PRODUCT = 2;
     public static final int ADD_STORE = 3;
     public static final int ADD_STORE_PRODUCT_PRICE = 4;
+    public static final int UPDATE_STORE_PRODUCT_PRICE = 5;
 
     public static final String BARCODE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE_DATA";
     public static final String PRODUCT_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_NAME_DATA";
+    public static final String PRODUCT_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_ID_DATA";
     public static final String CATEGORY = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.CATEGORY_DATA";
     public static final String PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRICE_DATA";
     public static final String STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_NAME_DATA";
     public static final String STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ADDRESS_DATA";
+    public static final String STORE_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ID_DATA";
 
-    private static String date;
-    private static String query = null;
+    private String date;
+    private String query = null;
 
     private SQLiteHelper helper;
-    private static SQLiteDatabase database;
+    private SQLiteDatabase database;
 
 
     public SQLiteAddData(){
@@ -64,7 +68,6 @@ public class SQLiteAddData extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         int i = intent.getIntExtra(ADD_TYPE, 0);
-        Intent reply = new Intent("INSERT_RESULT");
 
         String barcode = intent.getStringExtra(BARCODE);
         String productName = intent.getStringExtra(PRODUCT_NAME);
@@ -72,37 +75,47 @@ public class SQLiteAddData extends IntentService {
         float price = intent.getFloatExtra(PRICE, 0);
         String storeName = intent.getStringExtra(STORE_NAME);
         String storeAddress = intent.getStringExtra(STORE_ADDRESS);
+        long pId = intent.getLongExtra(PRODUCT_ID, 0);
+        long sId = intent.getLongExtra(STORE_ID, 0);
 
         switch (i) {
             case 1: i = 1;
-                if(barcode == null || productName == null){
+                if(barcode == null){
                     break;
                 }
-                insertBarcode(barcode, productName, 0);
+                insertBarcode(barcode, productName, pId);
                 break;
 
             case 2: i = 2;
                 if(productName == null || category == null ){
                     break;
                 }
-                insertProduct(0, productName, category);
+                insertProduct(pId, productName, category);
                 break;
 
             case 3: i = 3;
                 if(storeName == null || storeAddress == null){
                     break;
                 }
-                insertStore(0, storeName, storeAddress);
+                insertStore(sId, storeName, storeAddress);
                 break;
 
             case 4: i = 4;
-                break;
-
-            case 5: i = 0;
                 if(productName == null || storeName == null || storeAddress == null || price == 0){
                     break;
                 }
                 insertPrice(productName, storeName, storeAddress, price);
+                break;
+
+            case 5: i = 5;
+                if(productName == null || storeName == null || storeAddress == null || price == 0){
+                    break;
+                }
+                updatePrice(productName, storeName, storeAddress, price);
+                break;
+
+            case 6: i = 0;
+
                 break;
 
         }
@@ -110,7 +123,7 @@ public class SQLiteAddData extends IntentService {
     }
 
     // Insert new barcode. name or id must be supplied, if both are supplied, only name will be used and id will be searched un db.
-   public static void insertBarcode(String code, String name, long id){
+   private boolean insertBarcode(String code, String name, long id){
        long productId;
        Cursor cursor;
 
@@ -121,53 +134,72 @@ public class SQLiteAddData extends IntentService {
                            " FROM " + ProductContract.TABLE_NAME +
                            " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + name,
                    null);
-           productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+           productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
        }
 
-       query = "INSERT INTO " + BarcodeContract.TABLE_NAME +
-               " (" + BarcodeContract.COLUMN_BARCODE + ", " + BarcodeContract.COLUMN_PRODUCT_ID + ")" +
-               " VALUES (" + code + ", " + productId + ")";
+       ContentValues values = new ContentValues();
+       values.put(BarcodeContract.COLUMN_BARCODE, code);
+       values.put(BarcodeContract.COLUMN_PRODUCT_ID, productId);
+       long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
 
-       database.execSQL(query);
+       if(newRowId > 0){
+           return true;
+       }else{
+           return false;
+       }
    }
 
    // Insert new product. If id is unknown or new product, int should be 0. If product name already exists, no insertion will be made - table requires unique product name.
-   public static void insertProduct(long id, String name, String cat){
+   private boolean insertProduct(long id, String name, String cat){
        long productId;
        if(id == 0){
            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID + "), 0) + 1 FROM " + ProductContract.TABLE_NAME, null);
-           productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+           productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
            cursor.close();
        }else{
            productId = id;
        }
 
-       query = "INSERT INTO " + ProductContract.TABLE_NAME +
-               " (" + ProductContract.COLUMN_PRODUCT_ID + ", " + ProductContract.COLUMN_PRODUCT_NAME + ", " + ProductContract.COLUMN_CATEGORY + ")" +
-               " VALUES (" + productId + ", " + name + ", " + cat + ")";
+       ContentValues values = new ContentValues();
+       values.put(ProductContract.COLUMN_PRODUCT_ID, productId);
+       values.put(ProductContract.COLUMN_PRODUCT_NAME, name);
+       values.put(ProductContract.COLUMN_CATEGORY, cat);
+       long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
 
-       database.execSQL(query);
+       if(newRowId > 0){
+           return true;
+       }else{
+           return false;
+       }
+
    }
 
     // Insert new store. If id is unknown or new store, int should be 0. If store name already exists, no insertion will be made - table requires unique store.
-    public static void insertStore(long id, String name, String address){
+    private boolean insertStore(long id, String name, String address){
         long storeId;
         if(id == 0){
             Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
-            storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+            storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
             cursor.close();
         }else{
             storeId = id;
         }
 
-        query = "INSERT INTO " + StoreContract.TABLE_NAME +
-                " (" + StoreContract.COLUMN_STORE_ID + ", " + StoreContract.COLUMN_STORE_NAME + ", " + StoreContract.COLUMN_STORE_ADDRESS + ")" +
-                " VALUES (" + storeId + ", " + name + ", " + address + ")";
+        ContentValues values = new ContentValues();
+        values.put(StoreContract.COLUMN_STORE_ID, storeId);
+        values.put(StoreContract.COLUMN_STORE_NAME, name);
+        values.put(StoreContract.COLUMN_STORE_ADDRESS, address);
+        long newRowId = database.insert(StoreContract.TABLE_NAME, null, values);
 
-        database.execSQL(query);
+        if(newRowId > 0){
+            return true;
+        }else{
+            return false;
+        }
+
    }
 
-    public static void insertPrice(String pName, String sName, String address, double price){
+    private boolean insertPrice(String pName, String sName, String address, double price){
         long productId;
         long storeId;
         Cursor cursor;
@@ -185,14 +217,21 @@ public class SQLiteAddData extends IntentService {
                 null);
         storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
 
-        query = "INSERT INTO " + StoreProductPriceContract.TABLE_NAME +
-                " (" + StoreProductPriceContract.COLUMN_PRICE + ", " + StoreProductPriceContract.COLUMN_UPDATE + ", " + StoreProductPriceContract.COLUMN_PRODUCT_ID + ", " + StoreProductPriceContract.COLUMN_STORE_ID + ")" +
-                " VALUES (" + price + ", " + date + ", " + productId + ", " + storeId + ")";
+        ContentValues values = new ContentValues();
+        values.put(StoreProductPriceContract.COLUMN_PRICE, price);
+        values.put(StoreProductPriceContract.COLUMN_UPDATE, date);
+        values.put(StoreProductPriceContract.COLUMN_PRODUCT_ID, productId);
+        values.put(StoreProductPriceContract.COLUMN_STORE_ID, storeId);
+        long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
 
-        database.execSQL(query);
+        if(newRowId > 0){
+            return true;
+        }else{
+            return false;
+        }
    }
 
-   public static void updatePrice(String pName, String sName, String address, double price){
+   private boolean updatePrice(String pName, String sName, String address, double price){
        long productId;
        long storeId;
        Cursor cursor;
@@ -210,11 +249,17 @@ public class SQLiteAddData extends IntentService {
                null);
        storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
 
-       query = "UPDATE " + StoreProductPriceContract.TABLE_NAME +
-               " SET " + StoreProductPriceContract.COLUMN_PRICE + " = " + price + ", " + StoreProductPriceContract.COLUMN_UPDATE + " = " + date +
-               " WHERE " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + productId + " AND " + StoreProductPriceContract.COLUMN_STORE_ID + " = " + storeId;
+       ContentValues values = new ContentValues();
+       values.put(StoreProductPriceContract.COLUMN_PRICE, price);
+       values.put(StoreProductPriceContract.COLUMN_UPDATE, date);
+       String where = "WHERE " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + productId + " AND " + StoreProductPriceContract.COLUMN_STORE_ID + " = " + storeId;
+       int newRowId = database.update(ProductContract.TABLE_NAME, values, where, null);
 
-       database.execSQL(query);
+       if(newRowId > 0){
+           return true;
+       }else{
+           return false;
+       }
    }
 
 }

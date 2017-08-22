@@ -46,13 +46,18 @@ public class DbInitialize extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        RemoteDatabase rDb = new RemoteDatabase("http://zsloka.tk/piens_un_maize_db/", null);
+        RemoteDatabase rDb = new RemoteDatabase("http://zsloka.tk/piens_un_maize_db/", getApplicationContext());
 
         rDb.GetAllProducts(new IDatabaseResponseHandler<Product>() {
             @Override
             public void onArrive(ArrayList<Product> data) {
                 for(Product p:data){
-                    SQLiteAddData.insertProduct(p.getId(), p.getName(), p.getCategory());
+                    Intent intent = new Intent(getApplicationContext(), SQLiteAddData.class);
+                    intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_PRODUCT);
+                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, p.getName());
+                    intent.putExtra(SQLiteAddData.CATEGORY, p.getCategory());
+                    intent.putExtra(SQLiteAddData.PRODUCT_ID, p.getId());
+                    getApplicationContext().startService(intent);
                 }
             }
 
@@ -66,7 +71,12 @@ public class DbInitialize extends IntentService {
             @Override
             public void onArrive(ArrayList<Store> data) {
                 for(Store s:data){
-                    SQLiteAddData.insertStore(s.getId(), s.getName(), s.getLocation());
+                    Intent intent = new Intent(getApplicationContext(), SQLiteAddData.class);
+                    intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE);
+                    intent.putExtra(SQLiteAddData.STORE_ID, s.getId());
+                    intent.putExtra(SQLiteAddData.STORE_NAME, s.getName());
+                    intent.putExtra(SQLiteAddData.STORE_ADDRESS, s.getLocation());
+                    getApplicationContext().startService(intent);
                 }
             }
 
@@ -80,7 +90,13 @@ public class DbInitialize extends IntentService {
             @Override
             public void onArrive(ArrayList<Barcode> data) {
                 for(Barcode b:data){
-                    SQLiteAddData.insertBarcode(b.getBarcode(), null, b.getProduct_id());
+                    String str = null;
+                    Intent intent = new Intent(getApplicationContext(), SQLiteAddData.class);
+                    intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_BARCODE);
+                    intent.putExtra(SQLiteAddData.BARCODE, b.getBarcode());
+                    intent.putExtra(SQLiteAddData.PRODUCT_ID, b.getProduct_id());
+                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, str);
+                    getApplicationContext().startService(intent);
                 }
             }
 
@@ -94,7 +110,13 @@ public class DbInitialize extends IntentService {
             @Override
             public void onArrive(ArrayList<StoreProductPrice> data) {
                 for(StoreProductPrice p:data){
-                    SQLiteAddData.insertPrice(p.getProduct().getName(), p.getStore().getName(), p.getStore().getLocation(), p.getPrice());
+                    Intent intent = new Intent(getApplicationContext(), SQLiteAddData.class);
+                    intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE_PRODUCT_PRICE);
+                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, p.getProduct().getName());
+                    intent.putExtra(SQLiteAddData.STORE_NAME, p.getStore().getName());
+                    intent.putExtra(SQLiteAddData.STORE_ADDRESS, p.getStore().getLocation());
+                    intent.putExtra(SQLiteAddData.PRICE,  p.getPrice());
+                    getApplicationContext().startService(intent);
                 }
             }
 
