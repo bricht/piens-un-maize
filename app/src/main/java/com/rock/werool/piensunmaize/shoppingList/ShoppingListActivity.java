@@ -83,7 +83,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         private List<Product> list = new ArrayList<>();
         private Context context;
 
-        public CustomAdapter(ArrayList<Product> list, Context context) {
+        CustomAdapter(ArrayList<Product> list, Context context) {
             this.list = list;
             this.context = context;
         }
