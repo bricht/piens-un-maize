@@ -22,7 +22,9 @@ import java.util.List;
 public class ShoppingListActivity extends AppCompatActivity {
     private CustomAdapter listAdapter;
     // TODO: ? store/access shopping list in/from the local DB
+    // TODO: change arrayList to an Array
     private ArrayList<Product> shoppingList = new ArrayList<>();
+    private String[][] shoppingListArray;
     private double total = 0;
 
     @Override
@@ -130,6 +132,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: add method and button to add products to the shopping list
+    // (maybe) add method and button to add products to the shopping list
     // Clicking the button could open the product searching activity.
 }
