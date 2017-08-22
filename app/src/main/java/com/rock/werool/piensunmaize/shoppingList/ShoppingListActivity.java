@@ -33,20 +33,20 @@ public class ShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_list);
 
         // TEMPORARY ITEMS
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "21"));
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "21"));
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "21"));
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "21"));
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "21"));
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "21"));
-        shoppingList.add(new Product("Orange", "42"));
-        shoppingList.add(new Product("Apple", "42"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.00"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.00"));
+        shoppingList.add(new Product("Orange", "42.01"));
+        shoppingList.add(new Product("Apple", "21.01"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.50"));
+        shoppingList.add(new Product("Orange", "42.43"));
+        shoppingList.add(new Product("Apple", "21.00"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.99"));
+        shoppingList.add(new Product("Orange", "42.99"));
+        shoppingList.add(new Product("Apple", "42.99"));
 
         for (Product product : shoppingList) {
             total += Double.parseDouble(product.getPrice());
@@ -73,7 +73,7 @@ public class ShoppingListActivity extends AppCompatActivity {
     }
 
     private void displayTotal(double totalPrice){
-        String total = String.format( "%.2f", totalPrice);
+        String total = String.format("%.2f", totalPrice);
         TextView textView = (TextView) findViewById(R.id.totalPrice);
         textView.setText("Total price: " + total);
     }
@@ -115,7 +115,9 @@ public class ShoppingListActivity extends AppCompatActivity {
             TextView listItemName = (TextView) view.findViewById(R.id.productName);
             listItemName.setText(list.get(position).getName());
             TextView listItemPrice = (TextView) view.findViewById(R.id.productPrice);
-            listItemPrice.setText((list.get(position).getPrice()));
+            // Should be seeing decimal numbers delimited by '.' or ',', depending on locale
+            double price = Double.parseDouble(list.get(position).getPrice());
+            listItemPrice.setText(String.format("%.2f", price));
 
             ImageView deleteBtn = (ImageView) view.findViewById(R.id.delete_btn);
 
@@ -132,6 +134,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         }
     }
 
-    // (maybe) add method and button to add products to the shopping list
+    // (maybe) Add method and button to add products to the shopping list
     // Clicking the button could open the product searching activity.
 }
