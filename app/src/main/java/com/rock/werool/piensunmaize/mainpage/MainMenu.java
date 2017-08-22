@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toolbar;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
@@ -24,6 +25,11 @@ public class MainMenu extends AppCompatActivity {
         //setContentView(R.layout.checkbox_list);
         //Intent intent = new Intent(this, BarcodeScanner.class);
         //startActivity(intent);
+
+//        Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setTitle(@res);
+//        toolbar.setNavigationIcon(R.mipmap.applogo);
+
 
         //start with Greeeting Activity
 //        startActivity(new Intent(MainMenu.this, GreetingsActivity.class));
