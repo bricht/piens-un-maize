@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.remoteDatabase.ConnectionVerifyer;
@@ -19,35 +20,34 @@ public class GreetingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greetings);
-        /*
-        final ConnectionVerifyer verifier = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
-        verifier.addListener(new IRemoteDBConnectionFerifyHandler() {
+        spinner = (ProgressBar)findViewById(R.id.progressBar2);
+        spinner.setVisibility(View.VISIBLE);
+
+        final ConnectionVerifyer verifyer = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
+        verifyer.addListener(new IRemoteDBConnectionFerifyHandler() {
+
             @Override
             public void OnConnectionLost(String msg) {
-
+                TextView txt = (TextView) findViewById(R.id.textView2);
+                txt.setText("Sorry no connection, you are doomd!");
             }
 
             @Override
             public void OnConnection() {
-                startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
-                verifier.Stop();
+                TextView txt = (TextView) findViewById(R.id.textView2);
+                txt.setText("Welcome");
+                verifyer.Stop();
+                handler.postDelayed(myRunnable = new Runnable() {
+                    public void run() {
+                        finish();
+                        startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
+
+                    }
+                }, 2000);
             }
         });
-        verifier.setTimeout(3000);
-        verifier.Start();
-        */
-        spinner = (ProgressBar)findViewById(R.id.progressBar2);
-        spinner.setVisibility(View.VISIBLE);
-
-        handler = new Handler();
-        handler.postDelayed(myRunnable = new Runnable() {
-            public void run() {
-                finish();
-                startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
-
-            }
-        }, 5000);
-
+        verifyer.setTimeout(1000);
+        verifyer.Start();
     }
 
     //TODO Fix bug: After app closing and then geting back in - never ending loop with loading screen
