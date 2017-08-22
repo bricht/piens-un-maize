@@ -1,7 +1,5 @@
  <?php
  
-	$name = str_replace("%20", " ", $_GET['s_name']);
-
 	$servername = "zesloka.tk";
 	$username = "user";
 	$password = "parolee";
@@ -12,7 +10,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 	
-	$sql = "select * from store where s_name like '%$name%' limit 200";
+	$sql = "select * from store limit 100000";
 	$result = $conn->query($sql);
 	$jsonData = array();
 	if ($result->num_rows > 0) {

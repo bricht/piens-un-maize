@@ -13,20 +13,19 @@
 	}
 
 	$sql = "select * from product 
-			where name like '%$str_key%'
-			or category like '%$str_key%'";
-	if($result) {
-		$jsonData = array();
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$jsonData[] = $row;
-			}
-			echo json_encode($jsonData);
-		} else {
-			echo "0 results";
+			where p_name like '%$str_key%'
+			or p_category like '%$str_key%'
+			or p_descript like '%$str_key%'
+			limit 200";
+	$result = $conn->query($sql);
+	$jsonData = array();
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			$jsonData[] = $row;
 		}
+		echo json_encode($jsonData);
 	} else {
-		echo "-Error: sql query failed!";
+		echo "[]";
 	}
 
 	$conn->close();

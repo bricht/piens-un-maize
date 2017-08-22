@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 2017.08.20.
  */
@@ -75,7 +77,11 @@ public class SQLiteQuery extends IntentService{
                         " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
                 result = database.rawQuery(query, null);
                 resultArray = cursorToArr(result);
-                reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+                //String [][] resultArray = {{"a", "b"}, {"c", "d"}};
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("String[][]", resultArray);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+                //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
                 break;
 
             case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu. 2D masivs, ind1 , ind2 = prodName ++ storeName ++ storeAddress ++ price
@@ -93,7 +99,11 @@ public class SQLiteQuery extends IntentService{
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
                 resultArray = cursorToArr(result);
-                reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+                //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+                //String [][] resultArray2 = {{"a", "b", "c", "d"}, {"e", "f", "g", "h"}};
+                Bundle bundle2 = new Bundle();
+                bundle2.putSerializable("String[][]", resultArray);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle2);
                 break;
 
             case 3: i = 3; // pec veikala un adreses visu produktu cena. 2D masivs, ind 1 , ind 2 = prodName ++ Price
@@ -107,7 +117,13 @@ public class SQLiteQuery extends IntentService{
                         " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
                 result = database.rawQuery(query, null);
                 resultArray = cursorToArr(result);
-                reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+                //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+
+                //String [][] resultArray3 = {{"a", "b"}, {"c", "d"}};
+                Bundle bundle3 = new Bundle();
+                bundle3.putSerializable("String[][]", resultArray);
+                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle3);
+
                 break;
 
             case 4 : i = 0;

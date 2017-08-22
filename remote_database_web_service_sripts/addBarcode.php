@@ -1,7 +1,7 @@
  <?php
  
-	$barcode = str_replace("%20", " ", $_GET['barcode']);
-	$productId = str_replace("%20", " ", $_GET['p_id']);
+	$barcode = str_replace("%20", " ", $_GET['b_barcode']);
+	$productId = str_replace("%20", " ", $_GET['b_productID']);
 
 	$servername = "zesloka.tk";
 	$username = "user";
@@ -13,7 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "INSERT INTO barcode (code, productID)
+	$sql = "INSERT INTO barcode (b_barcode, b_productID)
 	VALUES ('$barcode', '$productId')";
 
 	if ($conn->query($sql) === TRUE) {
@@ -21,11 +21,6 @@
 	} else {
 		echo "-Error: " . $sql. " " . $conn->error;
 	}
-	
-	$file = 'log.txt';
-	$current = file_get_contents($file);
-	$current .= "File Trigered";
-	file_put_contents($file, $current);
 
 	$conn->close();
 	

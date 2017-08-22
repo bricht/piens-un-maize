@@ -1,8 +1,7 @@
  <?php
  
-	$name = str_replace("%20", " ", $_GET['s_name']);
-	$location = str_replace("%20", " ", $_GET['s_location']);
-
+	$barcode = str_replace("%20", " ", $_GET['b_barcode']);
+	$productId = str_replace("%20", " ", $_GET['b_productID']);
 
 	$servername = "zesloka.tk";
 	$username = "user";
@@ -14,8 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "INSERT INTO store (s_name, s_location)
-	VALUES ('$name', '$location')";
+	$sql = "delete from barcode where b_barcode = '$barcode'";
 
 	if ($conn->query($sql) === TRUE) {
 		echo "+New record created successfully";

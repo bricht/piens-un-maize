@@ -43,7 +43,7 @@ public class QueryProcessingIntentService extends IntentService{      //TODO Fin
                     }
                     Intent intent = new Intent();
                     intent.setAction("ProcessedQueryResult");
-                    intent.putExtra("ArrayList<Product>", products);
+                    intent.putExtra("ArrayList<Product>", (Serializable) products);
                     sendBroadcast(intent);
                     break;
                 }
