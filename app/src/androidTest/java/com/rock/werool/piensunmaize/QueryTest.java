@@ -39,7 +39,6 @@ public class QueryTest {
     private Context context;
     private SQLiteHelper db;
     private SQLiteDatabase database;
-    SQLiteAddData add;
 
     @Before
     public void setup() {
@@ -63,6 +62,7 @@ public class QueryTest {
     public void testQueryName() {
 
 
+        // Pievieno produktu
         Intent in1 = new Intent(context, SQLiteAddData.class);
         in1.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_PRODUCT);
         in1.putExtra(SQLiteAddData.PRODUCT_NAME, "banana");
@@ -73,6 +73,7 @@ public class QueryTest {
         String classname = cn.getShortClassName();
         assertEquals("Expected class name .SQLiteLocal_DB.SQLiteAddData, but was: " + classname, classname, new String(".SQLiteLocal_DB.SQLiteAddData"));
 
+        // Pievieno veikalu
         Intent in2 = new Intent(context, SQLiteAddData.class);
         in2.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE);
         in2.putExtra(SQLiteAddData.STORE_ID, (long)1234);
@@ -88,6 +89,7 @@ public class QueryTest {
         }catch (InterruptedException e){
         }
 
+        // Pievieno produkta cenu
         Intent intent = new Intent(context, SQLiteAddData.class);
         intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE_PRODUCT_PRICE);
         intent.putExtra(SQLiteAddData.PRODUCT_NAME, "banana");
@@ -104,12 +106,13 @@ public class QueryTest {
         }catch (InterruptedException e){
         }
 
+        // mekle pievienoto produktu pec nosaukuma
         Intent in3 = new Intent(context, SQLiteQuery.class);
         in3.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);
         in3.putExtra(SQLiteQuery.SRC_NAME, "banana");
-        in3.putExtra(SQLiteQuery.SRC_STORE, (String) null);
-        in3.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
-        context.startService(in3);
+        cn = context.startService(in3);
+        classname = cn.getShortClassName();
+        assertEquals("Expected class name .SQLiteLocal_DB.SQLiteQuery, but was: " + classname, classname, new String(".SQLiteLocal_DB.SQLiteQuery"));
 
         try{
             Thread.sleep(250000000);

@@ -12,7 +12,7 @@ public class ShoppingListContract {
             "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_PK + " INTEGER PRIMARY KEY, " +
                     COLUMN_SHOPPING_LIST_NAME + " TEXT, " +
-                    COLUMN_SHOPPING_LIST_PRICE + " REAL " ;
+                    COLUMN_SHOPPING_LIST_PRICE + " REAL)" ;
 
     public static final String DELETE_TABLE_SHOPPING_LIST =
             "DROP TABLE IF EXISTS " + TABLE_NAME;

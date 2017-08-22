@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import java.io.Serializable;
-
 /**
  * Created by user on 2017.08.20.
  */
@@ -35,6 +33,8 @@ public class SQLiteQuery extends IntentService{
 
     private Cursor result;
     String [][] resultArray;
+    Intent reply;
+
     private SQLiteHelper helper;
     private SQLiteDatabase database;
 
@@ -52,17 +52,16 @@ public class SQLiteQuery extends IntentService{
         super.onCreate();
         helper = new SQLiteHelper(getApplicationContext());
         database = helper.getReadableDatabase();
+        reply = new Intent("QUERY_RESULT");
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         int i = intent.getIntExtra(SRC_TYPE, 0);
-        Intent reply = new Intent("QUERY_RESULT");
 
         String product = intent.getStringExtra(SRC_NAME);
         String store = intent.getStringExtra(SRC_STORE);
         String address = intent.getStringExtra(SRC_ADDRESS);
-        String query = null;
 
         if(product == null && store == null && address == null){
             i = 0;
@@ -70,59 +69,24 @@ public class SQLiteQuery extends IntentService{
 
         switch (i){
             case 1: i = 1; // pec produkta nosaukuma atrod videjo produkta cenu. 2D masivs, ind 1 , ind 2 = prodName ++ avgPrice
-                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", AVG(" + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
-                        ") FROM " + ProductContract.TABLE_NAME +
-                        " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
-                        " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
-                        " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%' ";
-                result = database.rawQuery(query, null);
-                resultArray = cursorToArr(result);
-                //String [][] resultArray = {{"a", "b"}, {"c", "d"}};
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("String[][]", resultArray);
-                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
-                //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+                if(product != null){
+                    reply = searchAvgByName(product);
+                    publishResults(reply);
+                }
                 break;
 
             case  2: i = 2; // pec nosaukuma, veikala un adreses atrod cenu. 2D masivs, ind1 , ind2 = prodName ++ storeName ++ storeAddress ++ price
-                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
-                        StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_NAME + ", " +
-                        StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ADDRESS + ", " +
-                        StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
-                        " FROM " + ProductContract.TABLE_NAME +
-                        " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
-                        " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
-                        " INNER JOIN " + StoreContract.TABLE_NAME +
-                        " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
-                        " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + product + "%'" +
-                        " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
-                        " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
-                result = database.rawQuery(query, null);
-                resultArray = cursorToArr(result);
-                //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
-                //String [][] resultArray2 = {{"a", "b", "c", "d"}, {"e", "f", "g", "h"}};
-                Bundle bundle2 = new Bundle();
-                bundle2.putSerializable("String[][]", resultArray);
-                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle2);
+                if(product != null && store != null && address != null){
+                    reply = searchPriceInStore(product, store, address);
+                    publishResults(reply);
+                }
                 break;
 
             case 3: i = 3; // pec veikala un adreses visu produktu cena. 2D masivs, ind 1 , ind 2 = prodName ++ Price
-                query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
-                        " FROM " + ProductContract.TABLE_NAME +
-                        " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
-                        " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
-                        " INNER JOIN " + StoreContract.TABLE_NAME +
-                        " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
-                        " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + store + "%'" +
-                        " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + address + "%'";
-                result = database.rawQuery(query, null);
-                resultArray = cursorToArr(result);
-                //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
-
-                //String [][] resultArray3 = {{"a", "b"}, {"c", "d"}};
-                Bundle bundle3 = new Bundle();
-                bundle3.putSerializable("String[][]", resultArray);
-                reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle3);
+                if(store != null && address != null){
+                    reply = searchAllInStore(store, address);
+                    publishResults(reply);
+                }
 
                 break;
 
@@ -132,13 +96,71 @@ public class SQLiteQuery extends IntentService{
                 break;
         }
 
-        publishResults(reply);
-
     }
 
     private void publishResults(Intent intent){
         intent.setAction("QUERY_RESULT");
         sendBroadcast(intent);
+    }
+
+    private Intent searchAvgByName(String productName){
+        result = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                " FROM " + ProductContract.TABLE_NAME +
+                " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+                " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + productName + "%' " +
+                "GROUP BY " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME
+                , null);
+        resultArray = cursorToArr(result);
+        //String [][] resultArray = {{"a", "b"}, {"c", "d"}};
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("String[][]", resultArray);
+        reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle);
+        //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+        return reply;
+    }
+
+    private Intent searchPriceInStore(String productName, String storeName, String storeAddress){
+        result = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
+                StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_NAME + ", " +
+                StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ADDRESS + ", " +
+                StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                " FROM " + ProductContract.TABLE_NAME +
+                " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+                " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                " INNER JOIN " + StoreContract.TABLE_NAME +
+                " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
+                " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + productName + "%'" +
+                " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + storeName + "%'" +
+                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + storeAddress + "%'"
+                , null);
+        resultArray = cursorToArr(result);
+        //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+        //String [][] resultArray2 = {{"a", "b", "c", "d"}, {"e", "f", "g", "h"}};
+        Bundle bundle2 = new Bundle();
+        bundle2.putSerializable("String[][]", resultArray);
+        reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle2);
+        return reply;
+    }
+
+    private Intent searchAllInStore(String storeName, String storeAddress){
+        result = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+                " FROM " + ProductContract.TABLE_NAME +
+                " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+                " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                " INNER JOIN " + StoreContract.TABLE_NAME +
+                " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
+                " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + storeName + "%'" +
+                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + storeAddress + "%'"
+                , null);
+        resultArray = cursorToArr(result);
+        //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
+
+        //String [][] resultArray3 = {{"a", "b"}, {"c", "d"}};
+        Bundle bundle3 = new Bundle();
+        bundle3.putSerializable("String[][]", resultArray);
+        reply.putExtra(SQLiteQuery.QUERY_RESULT, bundle3);
+        return reply;
     }
 
     private String [][] cursorToArr(Cursor cursor){
@@ -155,11 +177,13 @@ public class SQLiteQuery extends IntentService{
 
             columns = cursor.getColumnNames();
             String test = cursor.getString(cursor.getColumnIndexOrThrow(columns[0]));
+            //test = cursor.getString(cursor.getColumnIndexOrThrow(columns[1]));
             if (cursor.getString(cursor.getColumnIndexOrThrow(columns[0])) == null)
                 return null;
             //"Aggregate SQL functions such as SUM() always return a result row. The result itself can be null."
             for(i = 0; i < cursor.getCount(); i++){
                 for(j = 0; j < cursor.getColumnCount(); j++){
+
                     arr[i][j] = cursor.getString(cursor.getColumnIndexOrThrow(columns[j]));
                 }
                 cursor.moveToNext();
