@@ -35,6 +35,11 @@ public class DbInitialize extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
+        SQLiteAddData.insertProduct(0, "banana", "fruits");
+        SQLiteAddData.insertStore(0, "Rimi", "Ulmana gatve");
+        SQLiteAddData.insertBarcode("123456789", "banana");
+        SQLiteAddData.insertPrice("banana", "Rimi", "Ulmana gatve", 1.4);
+
 
 
     }
