@@ -53,7 +53,7 @@ public class FavouriteStoresActivity extends AppCompatActivity {
 
         storeSearchResults.addAll(stores);                  //ListView initially shows all stores
         displayListView(storeSearchResults);
-        addSearchBarListener();
+        //addSearchBarListener();
     }
     private void displayListView(ArrayList<FavouriteStore> inputList) {
 
@@ -160,29 +160,29 @@ public class FavouriteStoresActivity extends AppCompatActivity {
         }
     }
 
-    private void addSearchBarListener() {                               //Updates results in ListView
-        final EditText search = (EditText)findViewById(R.id.searchFavouriteStoreName);
-
-        search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                storeSearchResults.clear();                           //Clears results so the right ones could be readded
-                for(int n = 0; n < stores.size(); n++) {
-                    if(stores.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {     ////.matches() is a regular expression
-                        storeSearchResults.add(stores.get(n));                          //If product name matches. Not case or index sensitive
-                    }
-                }
-                displayListView(storeSearchResults);                 //TODO Maybe not a good way to update ListView
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-    }
+//    private void addSearchBarListener() {                               //Updates results in ListView
+//        final EditText search = (EditText)findViewById(R.id.searchFavouriteStoreName);
+//
+//        search.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                storeSearchResults.clear();                           //Clears results so the right ones could be readded
+//                for(int n = 0; n < stores.size(); n++) {
+//                    if(stores.get(n).getName().toLowerCase().matches(".*" + search.getText().toString().toLowerCase() + ".*")) {     ////.matches() is a regular expression
+//                        storeSearchResults.add(stores.get(n));                          //If product name matches. Not case or index sensitive
+//                    }
+//                }
+//                displayListView(storeSearchResults);                 //TODO Maybe not a good way to update ListView
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
+//    }
 }
