@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
 
 /**
@@ -421,26 +422,41 @@ public class RemoteDatabase {
     // helper class for expected Store response
     private class OnStore implements Response.Listener<String> {
 
+        ArrayList<Store> data;
         private IDatabaseResponseHandler handler;
+        private Handler parseHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if(handler == lastStoreHandler) {
+                    handler.onArrive(data);
+                }
+            }
+        };
 
         public OnStore(IDatabaseResponseHandler h) {
             handler = h;
+            data = new ArrayList<Store>();
         }
         @Override
         public void onResponse(String response) {
-            ArrayList<Store> stores = new ArrayList<Store>();
-            try {
-                JSONArray jarray = new JSONArray(response);
-                for(int i = 0; i < jarray.length(); i++) {
-                    JSONObject jobj = jarray.getJSONObject(i);
-                    stores.add(new Store(jobj));
+            final String res = response;
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONArray jarray = new JSONArray(res);
+                        for(int i = 0; i < jarray.length(); i++) {
+                            JSONObject jobj = jarray.getJSONObject(i);
+                            data.add(new Store(jobj));
+                        }
+                        parseHandler.sendEmptyMessage(0);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-                if(this.handler == lastStoreHandler) {
-                    handler.onArrive(stores);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            };
+            Thread t = new Thread(r);
+            t.start();
         }
     }
 
@@ -448,26 +464,42 @@ public class RemoteDatabase {
     private class OnProduct implements Response.Listener<String> {
 
         private IDatabaseResponseHandler handler;
+        private ArrayList<Product> data;
+        private Handler parseHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if(handler == lastProductHandler) {
+                    handler.onArrive(data);
+                }
+            }
+        };
 
         public OnProduct(IDatabaseResponseHandler h) {
+
             handler = h;
+            data = new ArrayList<Product>();
         }
         @Override
         public void onResponse(String response) {
-            ArrayList<Product> products = new ArrayList<Product>();
-            Log.d("jsonerror", response);
-            try {
-                JSONArray jarray = new JSONArray(response);
-                for(int i = 0; i < jarray.length(); i++) {
-                    JSONObject jobj = jarray.getJSONObject(i);
-                    products.add(new Product(jobj));
+            final String res = response;
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONArray jarray = new JSONArray(res);
+                        for(int i = 0; i < jarray.length(); i++) {
+                            JSONObject jobj = jarray.getJSONObject(i);
+                            data.add(new Product(jobj));
+                        }
+                        parseHandler.sendEmptyMessage(0);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-                if(this.handler == lastProductHandler) {
-                    handler.onArrive(products);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            };
+            Thread t = new Thread(r);
+            t.start();
+
         }
     }
 
@@ -475,26 +507,43 @@ public class RemoteDatabase {
     private class OnBarcode implements Response.Listener<String> {
 
         private IDatabaseResponseHandler handler;
+        private ArrayList<Barcode> data;
+        private Handler parseHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if(handler == lastBarcodeHandler) {
+                    handler.onArrive(data);
+                }
+            }
+        };
 
         public OnBarcode(IDatabaseResponseHandler h) {
+
             handler = h;
+            data = new ArrayList<Barcode>();
         }
         @Override
         public void onResponse(String response) {
-            ArrayList<Barcode> barcodes = new ArrayList<Barcode>();
-            try {
-                JSONArray jarray = new JSONArray(response);
-                for(int i = 0; i < jarray.length(); i++) {
-                    JSONObject jobj = jarray.getJSONObject(i);
-                    barcodes.add(new Barcode(jobj));
-                }
-                if(this.handler == lastBarcodeHandler) {
-                    handler.onArrive(barcodes);
-                }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            final String res = response;
+
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONArray jarray = new JSONArray(res);
+                        for(int i = 0; i < jarray.length(); i++) {
+                            JSONObject jobj = jarray.getJSONObject(i);
+                            data.add(new Barcode(jobj));
+                        }
+                        parseHandler.sendEmptyMessage(0);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
         }
     }
 
