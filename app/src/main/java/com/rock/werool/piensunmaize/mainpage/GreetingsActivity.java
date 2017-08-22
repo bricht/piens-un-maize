@@ -19,7 +19,7 @@ public class GreetingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_greetings);
-
+        /*
         final ConnectionVerifyer verifier = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
         verifier.addListener(new IRemoteDBConnectionFerifyHandler() {
             @Override
@@ -35,10 +35,10 @@ public class GreetingsActivity extends AppCompatActivity {
         });
         verifier.setTimeout(3000);
         verifier.Start();
-
+        */
         spinner = (ProgressBar)findViewById(R.id.progressBar2);
         spinner.setVisibility(View.VISIBLE);
-        /*
+
         handler = new Handler();
         handler.postDelayed(myRunnable = new Runnable() {
             public void run() {
@@ -47,7 +47,7 @@ public class GreetingsActivity extends AppCompatActivity {
 
             }
         }, 5000);
-        */
+
     }
 
     //TODO Fix bug: After app closing and then geting back in - never ending loop with loading screen
