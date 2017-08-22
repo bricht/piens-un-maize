@@ -65,6 +65,14 @@ public class SelectStoreActivity extends AppCompatActivity {
         final EditText selectStoreAddress = (EditText)findViewById(R.id.selectStoreAddressText);
         addSearchBarListener(selectStoreName);
         addSearchBarListener(selectStoreAddress);    //Add listeners to both text fields
+
+        ImageView addToFavouritesProduct = (ImageView)findViewById(R.id.addToFavouritesProduct);
+        addToFavouritesProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO add selected product to favourites database
+            }
+        });
     }
     private void displayListView(ArrayList<String> inputList) {
 

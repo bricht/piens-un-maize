@@ -165,7 +165,7 @@ public class BarcodeScanner extends AppCompatActivity {
                         if(activityOpen == false) {
                             Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
                             intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
-                            intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);
+                            intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO implement barcode query
                             intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
                             intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
                             startService(intentForSQL);

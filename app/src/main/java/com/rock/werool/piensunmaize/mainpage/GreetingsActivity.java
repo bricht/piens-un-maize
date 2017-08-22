@@ -24,6 +24,8 @@ public class GreetingsActivity extends AppCompatActivity {
         spinner.setVisibility(View.VISIBLE);
         handler = new Handler();
 
+        handler = new Handler();
+
         final ConnectionVerifyer verifyer = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
         verifyer.addListener(new IRemoteDBConnectionFerifyHandler() {
 

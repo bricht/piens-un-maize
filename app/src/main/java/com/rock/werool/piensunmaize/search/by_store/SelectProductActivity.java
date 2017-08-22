@@ -65,6 +65,14 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
 
         addSearchBarListener();
+
+        ImageView addToFavouritesStore = (ImageView)findViewById(R.id.addToFavouritesStore);
+        addToFavouritesStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO add selected store to favourites database
+            }
+        });
     }
     private void displayListView(ArrayList<String> inputList) {
 
