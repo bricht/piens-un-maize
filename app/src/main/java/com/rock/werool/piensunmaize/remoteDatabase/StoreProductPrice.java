@@ -1,11 +1,8 @@
 package com.rock.werool.piensunmaize.remoteDatabase;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.sql.Date;
 
 
@@ -96,7 +93,7 @@ public class StoreProductPrice {
     @Override
     public String toString() {
         return store.toString() + " " + product.toString() +
-                " spp_price:" + this.getPrice() +
-                " spp_last_update" + this.getLastUpdated().toString();
+                " | cena: " + this.getPrice() +
+                " | last update: " + this.getLastUpdated().toString();
     }
 }
