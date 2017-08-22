@@ -22,6 +22,7 @@ public class GreetingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_greetings);
         spinner = (ProgressBar)findViewById(R.id.progressBar2);
         spinner.setVisibility(View.VISIBLE);
+        handler = new Handler();
 
         final ConnectionVerifyer verifyer = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
         verifyer.addListener(new IRemoteDBConnectionFerifyHandler() {
@@ -41,9 +42,9 @@ public class GreetingsActivity extends AppCompatActivity {
                     public void run() {
                         finish();
                         startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
-
                     }
                 }, 2000);
+
             }
         });
         verifyer.setTimeout(1000);
