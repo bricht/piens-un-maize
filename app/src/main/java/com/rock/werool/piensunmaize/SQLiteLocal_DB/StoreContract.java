@@ -18,8 +18,8 @@ public final class StoreContract {
                     COLUMN_PK + " INTEGER PRIMARY KEY, " +
                     COLUMN_STORE_ID + " INTEGER, " +
                     COLUMN_STORE_NAME + " TEXT, " +
-                    COLUMN_STORE_ADDRESS + " TEXT, " +
-                    "UNIQUE(" + COLUMN_STORE_NAME + ", " + COLUMN_STORE_ADDRESS + "))";;
+                    COLUMN_STORE_ADDRESS + " TEXT)";
+//                    "UNIQUE(" + COLUMN_STORE_NAME + ", " + COLUMN_STORE_ADDRESS + "))";;
 
     public static final String DELETE_TABLE_STORES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;

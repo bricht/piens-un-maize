@@ -46,7 +46,6 @@ public class DatabaseTest {
     @Before
     public void setup(){
         context = InstrumentationRegistry.getTargetContext();
-        SQLiteHelper db = new SQLiteHelper(context);
     }
 
     @After

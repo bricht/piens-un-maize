@@ -18,8 +18,8 @@ public class ProductContract {
                     COLUMN_PK + " INTEGER PRIMARY KEY, " +
                     COLUMN_PRODUCT_ID + " INTEGER, " +
                     COLUMN_PRODUCT_NAME + " TEXT, " +
-                    COLUMN_CATEGORY + " TEXT, " +
-                    "UNIQUE(" + COLUMN_PRODUCT_NAME + "))";
+                    COLUMN_CATEGORY + " TEXT)";
+                   // "UNIQUE(" + COLUMN_PRODUCT_NAME + "))";
 
     public static final String DELETE_TABLE_PRODUCTS =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
