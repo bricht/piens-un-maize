@@ -59,7 +59,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
         Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
         intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
-        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "");     //All products
+        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "siers");     //All products
         intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
         intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
         startService(intentForSQL);             //Starts SQLite intent service
