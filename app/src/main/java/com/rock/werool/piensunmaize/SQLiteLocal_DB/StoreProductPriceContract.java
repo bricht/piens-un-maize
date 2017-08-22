@@ -22,9 +22,9 @@ public class StoreProductPriceContract {
                     COLUMN_PRICE + " REAL, " +
                     COLUMN_UPDATE + " TEXT, " +
                     COLUMN_PRODUCT_ID + " INTEGER, " +
-                    COLUMN_STORE_ID + " INTEGER)";
-//                    "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductContract.TABLE_NAME + "(" + ProductContract.COLUMN_PRODUCT_ID + ") " +
-//                    "FOREIGN KEY (" + COLUMN_STORE_ID + ") REFERENCES " + StoreContract.TABLE_NAME + "(" + StoreContract.COLUMN_STORE_ID + ") )";
+                    COLUMN_STORE_ID + " INTEGER, " +
+                    "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductContract.TABLE_NAME + "(" + ProductContract.COLUMN_PRODUCT_ID + ") " +
+                    "FOREIGN KEY (" + COLUMN_STORE_ID + ") REFERENCES " + StoreContract.TABLE_NAME + "(" + StoreContract.COLUMN_STORE_ID + ") )";
 
     public static final String DELETE_TABLE_STOREPRODUCTPRICE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;

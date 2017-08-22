@@ -72,7 +72,7 @@ public class SQLiteAddData extends IntentService {
         String barcode = intent.getStringExtra(BARCODE);
         String productName = intent.getStringExtra(PRODUCT_NAME);
         String category = intent.getStringExtra(CATEGORY);
-        float price = intent.getFloatExtra(PRICE, 0);
+        double price = intent.getDoubleExtra(PRICE, 0.0);
         String storeName = intent.getStringExtra(STORE_NAME);
         String storeAddress = intent.getStringExtra(STORE_ADDRESS);
         long pId = intent.getLongExtra(PRODUCT_ID, 0);
@@ -132,7 +132,7 @@ public class SQLiteAddData extends IntentService {
        }else {
            cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                            " FROM " + ProductContract.TABLE_NAME +
-                           " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + name,
+                           " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = '" + name + "'",
                    null);
            productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
        }
@@ -140,7 +140,7 @@ public class SQLiteAddData extends IntentService {
        ContentValues values = new ContentValues();
        values.put(BarcodeContract.COLUMN_BARCODE, code);
        values.put(BarcodeContract.COLUMN_PRODUCT_ID, productId);
-       long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
+       long newRowId = database.insert(BarcodeContract.TABLE_NAME, null, values);
 
        if(newRowId > 0){
            return true;
@@ -206,23 +206,27 @@ public class SQLiteAddData extends IntentService {
 
         cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                 " FROM " + ProductContract.TABLE_NAME +
-                " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + pName,
+                " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = '" + pName + "'",
                 null);
+        cursor.moveToFirst();
         productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+        cursor.close();
 
         cursor = database.rawQuery("SELECT " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID +
                 " FROM " + StoreContract.TABLE_NAME +
-                " WHERE " + StoreContract.COLUMN_STORE_NAME + " = " + sName +
-                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " = " + address,
+                " WHERE " + StoreContract.COLUMN_STORE_NAME + " = '" + sName + "'" +
+                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " = '" + address + "'",
                 null);
+        cursor.moveToFirst();
         storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+        cursor.close();
 
         ContentValues values = new ContentValues();
         values.put(StoreProductPriceContract.COLUMN_PRICE, price);
         values.put(StoreProductPriceContract.COLUMN_UPDATE, date);
         values.put(StoreProductPriceContract.COLUMN_PRODUCT_ID, productId);
         values.put(StoreProductPriceContract.COLUMN_STORE_ID, storeId);
-        long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
+        long newRowId = database.insert(StoreProductPriceContract.TABLE_NAME, null, values);
 
         if(newRowId > 0){
             return true;

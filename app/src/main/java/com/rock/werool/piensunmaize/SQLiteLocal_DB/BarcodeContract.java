@@ -16,8 +16,8 @@ public class BarcodeContract {
             "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_PK + " INTEGER PRIMARY KEY, " +
                     COLUMN_BARCODE + " TEXT, " +
-                    COLUMN_PRODUCT_ID + " INTEGER)";
-//                    "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductContract.TABLE_NAME + "(" + ProductContract.COLUMN_PRODUCT_ID + ") )";
+                    COLUMN_PRODUCT_ID + " INTEGER, " +
+                    "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + ProductContract.TABLE_NAME + "(" + ProductContract.COLUMN_PRODUCT_ID + ") )";
 
     public static final String DELETE_TABLE_BARCODES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
