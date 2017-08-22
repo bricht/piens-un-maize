@@ -1,4 +1,3 @@
-/*
 package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 
 import android.app.IntentService;
@@ -79,7 +78,7 @@ public class SQLiteAddData extends IntentService {
                 if(barcode == null || productName == null){
                     break;
                 }
-                insertBarcode(barcode, productName);
+                insertBarcode(barcode, productName, 0);
                 break;
 
             case 2: i = 2;
@@ -110,26 +109,31 @@ public class SQLiteAddData extends IntentService {
 
     }
 
-   public static void insertBarcode(String code, String name){
-       int productId;
+    // Insert new barcode. name or id must be supplied, if both are supplied, only name will be used and id will be searched un db.
+   public static void insertBarcode(String code, String name, long id){
+       long productId;
        Cursor cursor;
 
-       cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
-                       " FROM " + ProductContract.TABLE_NAME +
-                       " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + name,
-                        null);
-       productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+       if(name == null){
+           productId = id;
+       }else {
+           cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+                           " FROM " + ProductContract.TABLE_NAME +
+                           " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + name,
+                   null);
+           productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+       }
 
        query = "INSERT INTO " + BarcodeContract.TABLE_NAME +
                " (" + BarcodeContract.COLUMN_BARCODE + ", " + BarcodeContract.COLUMN_PRODUCT_ID + ")" +
                " VALUES (" + code + ", " + productId + ")";
 
-       database.rawQuery(query, null);
+       database.execSQL(query);
    }
 
    // Insert new product. If id is unknown or new product, int should be 0. If product name already exists, no insertion will be made - table requires unique product name.
-   public static void insertProduct(int id, String name, String cat){
-       int productId;
+   public static void insertProduct(long id, String name, String cat){
+       long productId;
        if(id == 0){
            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID + "), 0) + 1 FROM " + ProductContract.TABLE_NAME, null);
            productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
@@ -142,12 +146,12 @@ public class SQLiteAddData extends IntentService {
                " (" + ProductContract.COLUMN_PRODUCT_ID + ", " + ProductContract.COLUMN_PRODUCT_NAME + ", " + ProductContract.COLUMN_CATEGORY + ")" +
                " VALUES (" + productId + ", " + name + ", " + cat + ")";
 
-       database.rawQuery(query, null);
+       database.execSQL(query);
    }
 
     // Insert new store. If id is unknown or new store, int should be 0. If store name already exists, no insertion will be made - table requires unique store.
-    public static void insertStore(int id, String name, String address){
-        int storeId;
+    public static void insertStore(long id, String name, String address){
+        long storeId;
         if(id == 0){
             Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
             storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
@@ -160,58 +164,57 @@ public class SQLiteAddData extends IntentService {
                 " (" + StoreContract.COLUMN_STORE_ID + ", " + StoreContract.COLUMN_STORE_NAME + ", " + StoreContract.COLUMN_STORE_ADDRESS + ")" +
                 " VALUES (" + storeId + ", " + name + ", " + address + ")";
 
-        database.rawQuery(query, null);
+        database.execSQL(query);
    }
 
     public static void insertPrice(String pName, String sName, String address, double price){
-        int productId;
-        int storeId;
+        long productId;
+        long storeId;
         Cursor cursor;
 
         cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                 " FROM " + ProductContract.TABLE_NAME +
                 " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + pName,
                 null);
-        productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+        productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
 
         cursor = database.rawQuery("SELECT " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID +
                 " FROM " + StoreContract.TABLE_NAME +
                 " WHERE " + StoreContract.COLUMN_STORE_NAME + " = " + sName +
                 " AND " + StoreContract.COLUMN_STORE_ADDRESS + " = " + address,
                 null);
-        storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+        storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
 
         query = "INSERT INTO " + StoreProductPriceContract.TABLE_NAME +
                 " (" + StoreProductPriceContract.COLUMN_PRICE + ", " + StoreProductPriceContract.COLUMN_UPDATE + ", " + StoreProductPriceContract.COLUMN_PRODUCT_ID + ", " + StoreProductPriceContract.COLUMN_STORE_ID + ")" +
                 " VALUES (" + price + ", " + date + ", " + productId + ", " + storeId + ")";
 
-        database.rawQuery(query, null);
+        database.execSQL(query);
    }
 
    public static void updatePrice(String pName, String sName, String address, double price){
-       int productId;
-       int storeId;
+       long productId;
+       long storeId;
        Cursor cursor;
 
        cursor = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
                        " FROM " + ProductContract.TABLE_NAME +
                        " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = " + pName,
                null);
-       productId = cursor.getInt(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+       productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
 
        cursor = database.rawQuery("SELECT " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID +
                        " FROM " + StoreContract.TABLE_NAME +
                        " WHERE " + StoreContract.COLUMN_STORE_NAME + " = " + sName +
                        " AND " + StoreContract.COLUMN_STORE_ADDRESS + " = " + address,
                null);
-       storeId = cursor.getInt(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+       storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
 
        query = "UPDATE " + StoreProductPriceContract.TABLE_NAME +
                " SET " + StoreProductPriceContract.COLUMN_PRICE + " = " + price + ", " + StoreProductPriceContract.COLUMN_UPDATE + " = " + date +
                " WHERE " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + productId + " AND " + StoreProductPriceContract.COLUMN_STORE_ID + " = " + storeId;
 
-       database.rawQuery(query, null);
+       database.execSQL(query);
    }
 
 }
-*/

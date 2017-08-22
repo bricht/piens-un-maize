@@ -31,8 +31,8 @@ public class SQLiteHelper extends SQLiteOpenHelper{
         db.execSQL(ProductContract.CREATE_TABLE_PRODUCTS);
         db.execSQL(BarcodeContract.CREATE_TABLE_BARCODES);
         db.execSQL(StoreProductPriceContract.CREATE_TABLE_STOREPRODUCTPRICE);
-        Intent intent = new Intent(context, DbInitialize.class);
-        context.startService(intent);
+//        Intent intent = new Intent(context, DbInitialize.class);
+//        context.startService(intent);
     }
 
     @Override
