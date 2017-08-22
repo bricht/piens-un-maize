@@ -135,7 +135,7 @@ public class RemoteDatabase {
         this.doThis(ACTION_GET_ALL_PRODUCTS, responseHandler, new OnProduct(responseHandler));
     }
 
-    public void GetAllStores(IDatabaseResponseHandler<Store> iDatabaseResponseHandler) {
+    public void GetAllStores(IDatabaseResponseHandler<Store> responseHandler) {
         this.doThis(ACTION_GET_ALL_STORES, responseHandler, new OnStore(responseHandler));
     }
 
