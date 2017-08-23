@@ -115,7 +115,7 @@ public class QueryTest {
         assertEquals("Expected class name .SQLiteLocal_DB.SQLiteQuery, but was: " + classname, classname, new String(".SQLiteLocal_DB.SQLiteQuery"));
 
         try{
-            Thread.sleep(2500);
+            Thread.sleep(25000000);
         }catch (InterruptedException e){
         }
 

@@ -181,15 +181,6 @@ public class SQLiteAddData extends IntentService {
 
    }
 
-//    // Insert new product. If id is unknown or new product, int should be 0. If product name already exists, no insertion will be made - table requires unique product name.
-//    private boolean insertProductAll(long id, String name, String cat){
-//       boolean bl = insertProduct(id, name, cat);
-//        Product p = new Product();
-//        p.setName(name);
-//        p.setCategory(cat);
-//        return bl;
-//    }
-
     // Insert new store. If id is unknown or new store, int should be 0. If store name already exists, no insertion will be made - table requires unique store.
     private boolean insertStore(long id, String name, String address){
         long storeId;

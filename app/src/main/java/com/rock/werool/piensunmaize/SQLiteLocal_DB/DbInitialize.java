@@ -1,6 +1,7 @@
 package com.rock.werool.piensunmaize.SQLiteLocal_DB;
 
 import android.app.IntentService;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -45,6 +46,76 @@ public class DbInitialize extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+
+        // pievieno produktu
+        Intent in1 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in1.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_PRODUCT);
+        in1.putExtra(SQLiteAddData.PRODUCT_NAME, "banana");
+        in1.putExtra(SQLiteAddData.CATEGORY, "fruits");
+        in1.putExtra(SQLiteAddData.PRODUCT_ID, (long)123);
+
+        getApplicationContext().startService(in1);
+
+        // pievieno produktu
+        Intent in4 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in4.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_PRODUCT);
+        in4.putExtra(SQLiteAddData.PRODUCT_NAME, "potata");
+        in4.putExtra(SQLiteAddData.CATEGORY, "fruits");
+        in4.putExtra(SQLiteAddData.PRODUCT_ID, (long)124);
+
+        getApplicationContext().startService(in4);
+
+        // Pievieno veikalu
+        Intent in2 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in2.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE);
+        in2.putExtra(SQLiteAddData.STORE_ID, (long)1234);
+        in2.putExtra(SQLiteAddData.STORE_NAME, "Rimi");
+        in2.putExtra(SQLiteAddData.STORE_ADDRESS, "Ulmana gatve");
+
+        getApplicationContext().startService(in2);
+
+        // Pievieno veikalu
+        Intent in5 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in5.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE);
+        in5.putExtra(SQLiteAddData.STORE_ID, (long)1234);
+        in5.putExtra(SQLiteAddData.STORE_NAME, "Rimi");
+        in5.putExtra(SQLiteAddData.STORE_ADDRESS, "Silinu gatve");
+
+        getApplicationContext().startService(in5);
+
+        // Pievieno produkta cenu
+        Intent in3 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in3.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE_PRODUCT_PRICE);
+        in3.putExtra(SQLiteAddData.PRODUCT_NAME, "banana");
+        in3.putExtra(SQLiteAddData.STORE_NAME, "Rimi");
+        in3.putExtra(SQLiteAddData.STORE_ADDRESS, "Ulmana gatve");
+        in3.putExtra(SQLiteAddData.PRICE, (double)1.4 );
+
+        getApplicationContext().startService(in3);
+
+        // Pievieno produkta cenu
+        Intent in6 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in6.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE_PRODUCT_PRICE);
+        in6.putExtra(SQLiteAddData.PRODUCT_NAME, "banana");
+        in6.putExtra(SQLiteAddData.STORE_NAME, "Rimi");
+        in6.putExtra(SQLiteAddData.STORE_ADDRESS, "Silinu gatve");
+        in6.putExtra(SQLiteAddData.PRICE, (double)0.75 );
+
+        getApplicationContext().startService(in6);
+
+        // Pievieno produkta cenu
+        Intent in7 = new Intent(getApplicationContext(), SQLiteAddData.class);
+        in7.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_STORE_PRODUCT_PRICE);
+        in7.putExtra(SQLiteAddData.PRODUCT_NAME, "potata");
+        in7.putExtra(SQLiteAddData.STORE_NAME, "Rimi");
+        in7.putExtra(SQLiteAddData.STORE_ADDRESS, "Ulmana gatve");
+        in7.putExtra(SQLiteAddData.PRICE, (double)0.68 );
+
+        getApplicationContext().startService(in7);
+
+
+
+
 
         RemoteDatabase rDb = new RemoteDatabase("http://zsloka.tk/piens_un_maize_db/", getApplicationContext());
 

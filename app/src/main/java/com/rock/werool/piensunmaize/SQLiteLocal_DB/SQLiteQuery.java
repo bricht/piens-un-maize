@@ -33,6 +33,7 @@ public class SQLiteQuery extends IntentService{
 
     private Cursor result;
     String [][] resultArray;
+    private String query;
     Intent reply;
 
     private SQLiteHelper helper;
@@ -104,13 +105,21 @@ public class SQLiteQuery extends IntentService{
     }
 
     private Intent searchAvgByName(String productName){
-        result = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+        query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
                 " FROM " + ProductContract.TABLE_NAME +
                 " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
                 " ON " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
-                " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + productName + "%' " +
-                "GROUP BY " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME
-                , null);
+                " WHERE " + ProductContract.TABLE_NAME + "." +ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + productName + "%' ";
+//                "GROUP BY " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME;
+
+        result = database.rawQuery(query, null);
+        boolean bl;
+        if(result == null){
+            bl = true;
+        }else{
+            bl = false;
+        }
+
         resultArray = cursorToArr(result);
         //String [][] resultArray = {{"a", "b"}, {"c", "d"}};
         Bundle bundle = new Bundle();
@@ -121,7 +130,7 @@ public class SQLiteQuery extends IntentService{
     }
 
     private Intent searchPriceInStore(String productName, String storeName, String storeAddress){
-        result = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
+        query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " +
                 StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_NAME + ", " +
                 StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ADDRESS + ", " +
                 StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
@@ -132,8 +141,8 @@ public class SQLiteQuery extends IntentService{
                 " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
                 " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " LIKE '%" + productName + "%'" +
                 " AND " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + storeName + "%'" +
-                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + storeAddress + "%'"
-                , null);
+                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + storeAddress + "%'";
+        result = database.rawQuery(query, null);
         resultArray = cursorToArr(result);
         //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
         //String [][] resultArray2 = {{"a", "b", "c", "d"}, {"e", "f", "g", "h"}};
@@ -144,15 +153,15 @@ public class SQLiteQuery extends IntentService{
     }
 
     private Intent searchAllInStore(String storeName, String storeAddress){
-        result = database.rawQuery("SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
-                " FROM " + ProductContract.TABLE_NAME +
-                " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
-                " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
-                " INNER JOIN " + StoreContract.TABLE_NAME +
-                " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
-                " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + storeName + "%'" +
-                " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + storeAddress + "%'"
-                , null);
+       query = "SELECT " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_NAME + ", " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_PRICE +
+               " FROM " + ProductContract.TABLE_NAME +
+               " INNER JOIN " + StoreProductPriceContract.TABLE_NAME +
+               " ON " + StoreProductPriceContract.COLUMN_PRODUCT_ID + " = " + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID +
+               " INNER JOIN " + StoreContract.TABLE_NAME +
+               " ON " + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + " = " + StoreProductPriceContract.TABLE_NAME + "." + StoreProductPriceContract.COLUMN_STORE_ID +
+               " WHERE " + StoreContract.COLUMN_STORE_NAME + " LIKE '%" + storeName + "%'" +
+               " AND " + StoreContract.COLUMN_STORE_ADDRESS + " LIKE '%" + storeAddress + "%'";
+        result = database.rawQuery(query, null);
         resultArray = cursorToArr(result);
         //reply.putExtra(SQLiteQuery.QUERY_RESULT, resultArray);
 
@@ -166,6 +175,7 @@ public class SQLiteQuery extends IntentService{
     private String [][] cursorToArr(Cursor cursor){
         String [][] arr;
         String [] columns;
+        String string;
         int i = 0;
         int j = 0;
 
@@ -183,8 +193,8 @@ public class SQLiteQuery extends IntentService{
             //"Aggregate SQL functions such as SUM() always return a result row. The result itself can be null."
             for(i = 0; i < cursor.getCount(); i++){
                 for(j = 0; j < cursor.getColumnCount(); j++){
-
-                    arr[i][j] = cursor.getString(cursor.getColumnIndexOrThrow(columns[j]));
+                    string = cursor.getString(cursor.getColumnIndexOrThrow(columns[j]));
+                    arr[i][j] = string;
                 }
                 cursor.moveToNext();
                 j = 0;
