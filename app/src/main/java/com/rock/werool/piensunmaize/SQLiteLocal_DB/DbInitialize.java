@@ -118,7 +118,7 @@ public class DbInitialize extends IntentService {
 
 
 
-        RemoteDatabase rDb = new RemoteDatabase("http://zsloka.tk/piens_un_maize_db/", getApplicationContext());
+        RemoteDatabase rDb = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
 
         rDb.GetAllProducts(new IDatabaseResponseHandler<Product>() {
             @Override
@@ -135,7 +135,8 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
+                String err = error.getMessage();
+                //Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -154,7 +155,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -175,7 +176,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -196,7 +197,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
 
             }
         });

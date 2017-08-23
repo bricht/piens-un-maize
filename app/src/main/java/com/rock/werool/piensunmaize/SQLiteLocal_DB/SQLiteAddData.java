@@ -186,6 +186,7 @@ public class SQLiteAddData extends IntentService {
         long storeId;
         if(id == 0){
             Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
+            cursor.moveToFirst();
             storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
             cursor.close();
         }else{

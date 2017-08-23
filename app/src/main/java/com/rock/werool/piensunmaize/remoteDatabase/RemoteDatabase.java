@@ -2,6 +2,7 @@ package com.rock.werool.piensunmaize.remoteDatabase;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -424,7 +425,7 @@ public class RemoteDatabase {
 
         private ArrayList<StoreProductPrice> data;
         private IDatabaseResponseHandler handler;
-        private Handler parseHandler = new Handler() {
+        private Handler parseHandler = new Handler(Looper.getMainLooper()) {
           @Override
             public void handleMessage(Message msg) {
               if(handler == lastStoreProductPriceHandler) {
@@ -474,7 +475,7 @@ public class RemoteDatabase {
 
         ArrayList<Store> data;
         private IDatabaseResponseHandler handler;
-        private Handler parseHandler = new Handler() {
+        private Handler parseHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 if(handler == lastStoreHandler) {
@@ -515,7 +516,7 @@ public class RemoteDatabase {
 
         private IDatabaseResponseHandler handler;
         private ArrayList<Product> data;
-        private Handler parseHandler = new Handler() {
+        private Handler parseHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
 
@@ -560,7 +561,7 @@ public class RemoteDatabase {
 
         private IDatabaseResponseHandler handler;
         private ArrayList<Barcode> data;
-        private Handler parseHandler = new Handler() {
+        private Handler parseHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 if(handler == lastBarcodeHandler) {

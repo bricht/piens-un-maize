@@ -16,15 +16,15 @@ import java.sql.Date;
 
 public class StoreProductPrice {
 
-    //public static final String TAG_PRODUCT_ID = "p_id";
-    //public static final String TAG_PRODUCT_NAME = "p_name";
-    //public static final String TAG_PRODUCT_CATEGORY = "p_category";
-    //public static final String TAG_PRODUCT_DESCRIPTION = "p_descript";
-    //public static final String TAG_PRODUCT_AVERAGE_PRICE = "p_price";
+    public static final String TAG_PRODUCT_ID = "p_id";
+    public static final String TAG_PRODUCT_NAME = "p_name";
+    public static final String TAG_PRODUCT_CATEGORY = "p_category";
+    public static final String TAG_PRODUCT_DESCRIPTION = "p_descript";
+    public static final String TAG_PRODUCT_AVERAGE_PRICE = "p_price";
 
-    //public static final String TAG_STORE_ID = "s_id";
-    //public static final String TAG_STORE_NAME = "s_name";
-    //public static final String TAG_STORE_LOCATION = "s_location";
+    public static final String TAG_STORE_ID = "s_id";
+    public static final String TAG_STORE_NAME = "s_name";
+    public static final String TAG_STORE_LOCATION = "s_location";
 
     public static final String TAG_PRICE = "spp_price";
     public static final String TAG_LAST_UPDATED = "spp_last_update";

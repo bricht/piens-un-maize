@@ -1,10 +1,12 @@
 package com.rock.werool.piensunmaize.search.by_product;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,6 +23,8 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteHelper;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
@@ -56,12 +60,25 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
             productNameTextView.setText(scannedProductName);
         }
+        /*
+        Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+        String name = "banana";
+        String category = "fruits";
+
+        ContentValues values = new ContentValues();
+        values.put(ProductContract.COLUMN_PRODUCT_NAME, name);
+        values.put(ProductContract.COLUMN_CATEGORY, category);
+        SQLiteHelper helper = new SQLiteHelper(getApplicationContext());
+        SQLiteDatabase database = helper.getWritableDatabase();
+        long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
+        startService(intentForSQL);             //Starts SQLite intent service
+        */
 
         Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
         intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
         intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "sier");     //All products
-        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
-        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
+        //intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
+        //intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
         startService(intentForSQL);             //Starts SQLite intent service
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
 

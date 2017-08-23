@@ -178,8 +178,8 @@ public class SQLiteQuery extends IntentService{
         String string;
         int i = 0;
         int j = 0;
-
-        if(cursor.moveToFirst()){
+        boolean bl = cursor.moveToFirst();
+        if(bl){
             arr = new String[cursor.getCount()][cursor.getColumnCount()];
 
             int a = cursor.getCount();

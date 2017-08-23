@@ -1,9 +1,11 @@
 package com.rock.werool.piensunmaize.search.by_product;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +21,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.ProductContract;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteHelper;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
@@ -58,7 +62,7 @@ public class SelectStoreActivity extends AppCompatActivity {
         intentForSQL.putExtra(SQLiteQuery.SRC_NAME, clickedProductName);     //TODO may need to turn to lowercase
         intentForSQL.putExtra(SQLiteQuery.SRC_STORE, "");       //All stores
         intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, "");     //All addresses
-        startService(intentForSQL);             //Starts SQLite intent service
+
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectStoreActivity");
 
         final EditText selectStoreName = (EditText)findViewById(R.id.selectStoreNameText);

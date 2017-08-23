@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.Toolbar;
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.ClearDbActivity;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteHelper;
+import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
 import com.rock.werool.piensunmaize.favourites.FavouritesMenu;
@@ -22,6 +25,7 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        startActivity(new Intent(this, ClearDbActivity.class));
 
         //SHOW ICON
         getSupportActionBar().setLogo(R.mipmap.applogo);
