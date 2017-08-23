@@ -45,7 +45,7 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_PRODUCT_BY_NAME = "findProductByName.php";
     private static final String ACTION_FIND_PRODUCT_BY_CATEGORY = "findProductByCategory.php";
     private static final String ACTION_FIND_PORDUCT_BY_STRING_KEY = "findProductByStringKey.php";
-    private static final String ACTION_FIND_PRODUCTS_BY_STORE = "findProductsByStore.php";
+    private static final String ACTION_FIND_PRODUCTS_BY_STORE = "findProductsNameAndStoreID.php";
     private static final String ACTION_FIND_PORDUCT_BY_ID = "findProductByID.php";
 
 
@@ -170,16 +170,20 @@ public class RemoteDatabase {
 
 
     // FIND PRODUCTS .........
-    public void FindProductsByStore(Store store, String productKey, IDatabaseResponseHandler<Product> responseHandler) {
+    public void FindProductsNameAndStoreID(int storeId, String productKey, IDatabaseResponseHandler<Product> responseHandler) {
         String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_STORE +
-                "?" + Store.TAG_ID + "=" + Product.TAG_NAME  + "=" + productKey);
+                "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productKey);
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnProduct(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
     }
 
+
+
+    //
     public void FindProductByID(ArrayList<Integer> ids, IDatabaseResponseHandler<Product> responseHandler) {
+        //TODO implement this
         String data = "";
 
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, data , responseHandler);
@@ -220,7 +224,7 @@ public class RemoteDatabase {
     // FIND STORES..........
     //Server side done
     public void FindStoreByID(ArrayList<Integer> ids, IDatabaseResponseHandler<Store> responseHandler) {
-
+        //TODO implemtns this !!!!!
         String data = "";
         FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, data , responseHandler);
         this.lastStoreHandler = responseHandler;
@@ -240,11 +244,11 @@ public class RemoteDatabase {
         String requestUrl = this.url + ACTION_FIND_STORE_BY_NAME_AND_LOCATION + "?" +
                 Store.TAG_NAME + "=" + name + "&" +
                 Store.TAG_LOCATION + "=" + location;
-        Log.d("requestUrl", requestUrl);
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnStore(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
+        this.lastStoreHandler = responseHandler;
     }
     //Server side done
     public void FindStoreByStringKey(String key, IDatabaseResponseHandler<Store> responseHandler) {
