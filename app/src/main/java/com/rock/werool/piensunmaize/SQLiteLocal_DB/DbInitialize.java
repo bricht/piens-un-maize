@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.remoteDatabase.Barcode;
@@ -134,7 +135,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
-
+                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -153,6 +154,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -173,6 +175,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -193,6 +196,7 @@ public class DbInitialize extends IntentService {
 
             @Override
             public void onError(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "DB initialization error", Toast.LENGTH_LONG).show();
 
             }
         });
