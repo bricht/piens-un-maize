@@ -118,7 +118,7 @@ public class DbInitialize extends IntentService {
 
 
 
-        RemoteDatabase rDb = new RemoteDatabase("http://zetsloka.tk/piens_un_maize_db/", getApplicationContext());
+        RemoteDatabase rDb = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
 
         rDb.GetAllProducts(new IDatabaseResponseHandler<Product>() {
             @Override
