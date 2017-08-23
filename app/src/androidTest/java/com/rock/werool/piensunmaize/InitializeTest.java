@@ -31,9 +31,6 @@ public class InitializeTest {
 
     @Before
     public void setup(){
-        context = InstrumentationRegistry.getTargetContext();
-        helper = new SQLiteHelper(context);         // apmeram seit tiek izsaukta SQLiteHelper metode onCreate no kuras palaizas DbInitialize
-        database = helper.getWritableDatabase();
     }
 
     @After
@@ -43,7 +40,15 @@ public class InitializeTest {
 
     @Test
     public void createDbTest(){
+        context = InstrumentationRegistry.getTargetContext();
+        helper = new SQLiteHelper(context);         // apmeram seit tiek izsaukta SQLiteHelper metode onCreate no kuras palaizas DbInitialize
+        database = helper.getWritableDatabase();
         assertNotNull(helper);
+        try {
+            Thread.sleep(25000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

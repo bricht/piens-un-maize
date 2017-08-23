@@ -12,6 +12,7 @@ import android.icu.text.StringPrepParseException;
 import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
 import com.rock.werool.piensunmaize.remoteDatabase.Product;
 import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
+import com.rock.werool.piensunmaize.remoteDatabase.Store;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +46,7 @@ public class SQLiteAddData extends IntentService {
     public static final String STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_NAME_DATA";
     public static final String STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ADDRESS_DATA";
     public static final String STORE_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ID_DATA";
+    public static final String NEW = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.NEW_DATA";;
 
     private String date;
     private String query = null;
@@ -84,34 +86,35 @@ public class SQLiteAddData extends IntentService {
         String storeAddress = intent.getStringExtra(STORE_ADDRESS);
         long pId = intent.getLongExtra(PRODUCT_ID, 0);
         long sId = intent.getLongExtra(STORE_ID, 0);
+        boolean bool = intent.getBooleanExtra(NEW, false);
 
         switch (i) {
             case 1: i = 1;
                 if(barcode == null){
                     break;
                 }
-                insertBarcode(barcode, productName, pId);
+                insertBarcode(barcode, productName, pId, bool);
                 break;
 
             case 2: i = 2;
                 if(productName == null || category == null ){
                     break;
                 }
-                insertProduct(pId, productName, category);
+                insertProduct(pId, productName, category, bool);
                 break;
 
             case 3: i = 3;
                 if(storeName == null || storeAddress == null){
                     break;
                 }
-                insertStore(sId, storeName, storeAddress);
+                insertStore(sId, storeName, storeAddress, bool);
                 break;
 
             case 4: i = 4;
                 if(productName == null || storeName == null || storeAddress == null || price == 0){
                     break;
                 }
-                insertPrice(productName, storeName, storeAddress, price);
+                insertPrice(productName, storeName, storeAddress, price, bool);
                 break;
 
             case 5: i = 5;
@@ -130,7 +133,7 @@ public class SQLiteAddData extends IntentService {
     }
 
     // Insert new barcode. name or id must be supplied, if both are supplied, only name will be used and id will be searched un db.
-   private boolean insertBarcode(String code, String name, long id){
+   private boolean insertBarcode(String code, String name, long id, boolean bool){
        long productId;
        Cursor cursor;
 
@@ -141,6 +144,7 @@ public class SQLiteAddData extends IntentService {
                            " FROM " + ProductContract.TABLE_NAME +
                            " WHERE " + ProductContract.COLUMN_PRODUCT_NAME + " = '" + name + "'",
                    null);
+           cursor.moveToFirst();
            productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
        }
 
@@ -148,6 +152,10 @@ public class SQLiteAddData extends IntentService {
        values.put(BarcodeContract.COLUMN_BARCODE, code);
        values.put(BarcodeContract.COLUMN_PRODUCT_ID, productId);
        long newRowId = database.insert(BarcodeContract.TABLE_NAME, null, values);
+
+       if(bool == true){
+           //ievietot onlaina ari
+       }
 
        if(newRowId > 0){
            return true;
@@ -157,10 +165,11 @@ public class SQLiteAddData extends IntentService {
    }
 
    // Insert new product. If id is unknown or new product, int should be 0. If product name already exists, no insertion will be made - table requires unique product name.
-   private boolean insertProduct(long id, String name, String cat){
+   private boolean insertProduct(long id, String name, String cat, boolean bool){
        long productId;
        if(id == 0){
            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID + "), 0) + 1 FROM " + ProductContract.TABLE_NAME, null);
+           cursor.moveToFirst();
            productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
            cursor.close();
        }else{
@@ -173,6 +182,10 @@ public class SQLiteAddData extends IntentService {
        values.put(ProductContract.COLUMN_CATEGORY, cat);
        long newRowId = database.insert(ProductContract.TABLE_NAME, null, values);
 
+       if(bool == true){
+           //ievietot onlaina ari
+       }
+
        if(newRowId > 0){
            return true;
        }else{
@@ -182,7 +195,7 @@ public class SQLiteAddData extends IntentService {
    }
 
     // Insert new store. If id is unknown or new store, int should be 0. If store name already exists, no insertion will be made - table requires unique store.
-    private boolean insertStore(long id, String name, String address){
+    private boolean insertStore(long id, String name, String address, boolean bool){
         long storeId;
         if(id == 0){
             Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
@@ -198,6 +211,10 @@ public class SQLiteAddData extends IntentService {
         values.put(StoreContract.COLUMN_STORE_ADDRESS, address);
         long newRowId = database.insert(StoreContract.TABLE_NAME, null, values);
 
+        if(bool == true){
+            //ievietot onlaina ari
+        }
+
         if(newRowId > 0){
             return true;
         }else{
@@ -206,7 +223,7 @@ public class SQLiteAddData extends IntentService {
 
    }
 
-    private boolean insertPrice(String pName, String sName, String address, double price){
+    private boolean insertPrice(String pName, String sName, String address, double price, boolean bool){
         long productId;
         long storeId;
         Cursor cursor;
@@ -234,6 +251,10 @@ public class SQLiteAddData extends IntentService {
         values.put(StoreProductPriceContract.COLUMN_PRODUCT_ID, productId);
         values.put(StoreProductPriceContract.COLUMN_STORE_ID, storeId);
         long newRowId = database.insert(StoreProductPriceContract.TABLE_NAME, null, values);
+
+        if(bool == true){
+            //ievietot onlaina ari
+        }
 
         if(newRowId > 0){
             return true;
