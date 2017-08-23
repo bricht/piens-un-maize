@@ -32,7 +32,7 @@ public class InitializeTest {
     @Before
     public void setup(){
         context = InstrumentationRegistry.getTargetContext();
-        helper = new SQLiteHelper(context);
+        helper = new SQLiteHelper(context);         // apmeram seit tiek izsaukta SQLiteHelper metode onCreate no kuras palaizas DbInitialize
         database = helper.getWritableDatabase();
     }
 
