@@ -168,7 +168,7 @@ public class DbInitialize extends IntentService {
                     intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_BARCODE);
                     intent.putExtra(SQLiteAddData.BARCODE, b.getBarcode());
                     intent.putExtra(SQLiteAddData.PRODUCT_ID, b.getProduct_id());
-                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, str);
+//                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, str);
                     getApplicationContext().startService(intent);
                 }
             }
