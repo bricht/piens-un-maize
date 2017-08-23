@@ -57,13 +57,18 @@ public class ConnectionVerifyer {
             if(msg.getData().getInt(STATUS_NAME) == STATUS_VALUE_CONNECTION_OK){
                 if(!hasConnection) {
                     for(IRemoteDBConnectionFerifyHandler l : listeners) {
-                        l.OnConnection();
+                        if(l != null) {
+                            l.OnConnection();
+                        }
                     }
                     hasConnection = true;
                 }
             } else {
                 for(IRemoteDBConnectionFerifyHandler l : listeners) {
-                    l.OnConnectionLost(msg.getData().getString(STATUS_MESSAGE));
+                    if(l != null) {
+                        l.OnConnectionLost(msg.getData().getString(STATUS_MESSAGE));
+                    }
+
                 }
                 hasConnection = false;
             }

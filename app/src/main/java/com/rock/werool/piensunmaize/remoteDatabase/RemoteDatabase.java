@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,10 +45,13 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_PRODUCT_BY_NAME = "findProductByName.php";
     private static final String ACTION_FIND_PRODUCT_BY_CATEGORY = "findProductByCategory.php";
     private static final String ACTION_FIND_PORDUCT_BY_STRING_KEY = "findProductByStringKey.php";
+    private static final String ACTION_FIND_PORDUCT_BY_ID = "findProductByID.php";
+
 
     private static final String ACTION_FIND_STORE_BY_NAME = "findStoreByName";
     private static final String ACTION_FIND_STORE_BY_LOCATION = "findStoreByLocation";
     private static final String ACTION_FIND_STORE_BY_STRING_KEY = "findStoreByStringKey.php";
+    private static final String ACTION_FIND_STORE_BY_ID = "findStoreByID.php";
 
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
     private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
@@ -133,18 +137,22 @@ public class RemoteDatabase {
 
     public void GetAllProducts(IDatabaseResponseHandler<Product> responseHandler) {
         this.doThis(ACTION_GET_ALL_PRODUCTS, responseHandler, new OnProduct(responseHandler));
+        this.lastProductHandler = responseHandler;
     }
 
     public void GetAllStores(IDatabaseResponseHandler<Store> responseHandler) {
         this.doThis(ACTION_GET_ALL_STORES, responseHandler, new OnStore(responseHandler));
+        this.lastStoreHandler = responseHandler;
     }
 
     public void GetAllBarcodes(IDatabaseResponseHandler<Barcode> responseHandler) {
         this.doThis(ACTION_GET_ALL_BARCODES, responseHandler, new OnBarcode(responseHandler));
+        this.lastBarcodeHandler = responseHandler;
     }
 
     public void GetAllStoreProductPrices(IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
         this.doThis(ACTION_GET_ALL_STOREPRODUCTPRICES, responseHandler, new OnStoreProductPrice(responseHandler));
+        this.lastStoreProductPriceHandler = responseHandler;
     }
 
     private <T> void doThis(String action, IDatabaseResponseHandler<T> responseHandler, Response.Listener<String> listener ) {
@@ -158,6 +166,13 @@ public class RemoteDatabase {
 
 
     // FIND PRODUCTS .........
+    public void FindProductByID(ArrayList<Integer> ids, IDatabaseResponseHandler<Product> responseHandler) {
+        String data = "";
+
+        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, data , responseHandler);
+        this.lastProductHandler = responseHandler;
+    }
+
     //Server side done
     public void FindProductByBarCode(String barCode, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, barCode, responseHandler);
@@ -191,6 +206,13 @@ public class RemoteDatabase {
 
     // FIND STORES..........
     //Server side done
+    public void FindStoreByID(ArrayList<Integer> ids, IDatabaseResponseHandler<Store> responseHandler) {
+
+        String data = "";
+        FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, data , responseHandler);
+        this.lastStoreHandler = responseHandler;
+    }
+
     public void FindStoreByName(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, key, responseHandler);
         this.lastStoreHandler = responseHandler;
@@ -468,7 +490,9 @@ public class RemoteDatabase {
         private Handler parseHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+
                 if(handler == lastProductHandler) {
+                    Log.d("error", "This is called");
                     handler.onArrive(data);
                 }
             }
