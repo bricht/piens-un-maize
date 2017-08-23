@@ -1,8 +1,62 @@
 <resources>
-    <string name="app_name">bread \'n milk</string>
+    <string name="app_name"> bread n milk</string>
     <string name="product_name">Product Name</string>
     <string name="category">Category</string>
     <string name="price">Price</string>
     <string name="shop_name">Shop</string>
     <string name="address">Address</string>
+
+    <string name="greetings_text">please wait! database is synchronizing!</string>
+
+
+    <string name="menu_button_search">search</string>
+    <string name="menu_button_share">share</string>
+    <string name="menu_button_favourites">favourites</string>
+    <string name="menu_button_shopping_list">shopping list</string>
+
+    <string name="search_menu_text">search</string>
+    <string name="search_menu_button_using_barcode">using barcode</string>
+    <string name="search_menu_button_by_product">by product</string>
+    <string name="search_menu_button_by_store">by store</string>
+
+    <string name="search_by_product_edit_text">product name</string>
+    <string name="search_by_product_switch">show only favourites</string>
+
+    <string name="select_product_text">/?/?/?/?/?</string>
+    <string name="select_product_edit_text">product name</string>
+    <string name="select_product_switch">show only favourites</string>
+
+    <string name="search_by_store_edit_text_name">store name</string>
+    <string name="search_by_store_edit_text_address">store address</string>
+    <string name="search_by_store_switch">show only favourites</string>
+
+    <string name="select_store_text">/?/?/?/?/?</string>
+    <string name="select_store_edit_text_name">product name</string>
+    <string name="select_store_edit_text_address">product name</string>
+    <string name="select_store_switch">show only favourites</string>
+
+    <string name="share_menu_button_scan_barcode">scan barcode</string>
+    <string name="share_menu_button_refresh_barcode">refresh barcode</string>
+    <string name="share_menu_text">share</string>
+
+    <string name="share_edit_text_name">product name</string>
+    <string name="share_edit_text_category">category</string>
+    <string name="share_edit_text_price">price</string>
+    <string name="share_edit_text_shop">shop</string>
+    <string name="share_button_add">add</string>
+
+    <string name="scan_barcode_text">please point the camera towards the barcode</string>
+
+    <string name="favourites_menu_button_favourite_stores">favourite stores</string>
+    <string name="favourites_menu_text">favourites</string>
+    <string name="favourite_stores_text">favourite stores</string>
+
+    <string name="favourites_menu_button_favourite_products">favourite products</string>
+    <string name="favourite_products_text">favourite products</string>
+
+    <string name="shopping_list_edit_text">shopping list</string>
+    <string name="shopping_list_button">clear</string>
+    <string name="shopping_list_text_total">Total price: ...</string>
+
+
 </resources>
