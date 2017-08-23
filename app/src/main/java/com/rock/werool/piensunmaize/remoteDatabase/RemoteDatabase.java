@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
 
 /**
@@ -45,7 +43,7 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_PRODUCT_BY_NAME = "findProductByName.php";
     private static final String ACTION_FIND_PRODUCT_BY_CATEGORY = "findProductByCategory.php";
     private static final String ACTION_FIND_PORDUCT_BY_STRING_KEY = "findProductByStringKey.php";
-    private static final String ACTION_FIND_PRODUCTS_BY_STORE = "findProductsNameAndStoreID.php";
+    private static final String ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID = "findProductByNameAndStoreID.php";
     private static final String ACTION_FIND_PORDUCT_BY_ID = "findProductByID.php";
 
 
@@ -53,12 +51,17 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_STORE_BY_LOCATION = "findStoreByLocation";
     private static final String ACTION_FIND_STORE_BY_STRING_KEY = "findStoreByStringKey.php";
     private static final String ACTION_FIND_STORE_BY_NAME_AND_LOCATION = "findStoreByNameAndLocation.php";
-    private static final String ACTION_FIND_STORE_BY_ID = "findStoreByID.php";
 
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
     private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
     private static final String ACTION_GET_ALL_BARCODES = "getAllBarcodes.php";
     private static final String ACTION_GET_ALL_STOREPRODUCTPRICES = "getAllStoreProductPrices.php";
+
+    private static final String ACTION_GET_FAVORITE_PRODUCTS = "getFavoriteProducts.php";
+    private static final String ACTION_GET_FAVORITE_STORES = "getFavoriteStores.php";
+
+    private static final String ACTION_GET_NEW_USER_ID = "getNewUserID.php";
+
 
 
     private static final String ACTION_FIND_STORE_PRODUCT_PRICE = "findStoreProductPrice.php";
@@ -67,6 +70,7 @@ public class RemoteDatabase {
 
     private String url;
     private Context context;
+    private UserIdentity user;
 
     private IDatabaseResponseHandler<Product> lastProductHandler;
     private IDatabaseResponseHandler<Store> lastStoreHandler;
@@ -80,62 +84,64 @@ public class RemoteDatabase {
     public RemoteDatabase(String url, Context context) {
         this.url = url;
         this.context = context;
+        user = new UserIdentity(this, context);
     }
 
-    //Server side done
     public void AddProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_ADD_PRODUCT, product, responseHandler);
     }
 
-    //Server side done
     public void AddStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_ADD_STORE, store, responseHandler);
     }
 
-    //Server side done
     public void AddStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_ADD_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
-    //Server side done
     public void AddBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_ADD_BARCODE, barcode, responseHandler);
     }
-    //Server side done
+
     public void UpdateProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_UPDATE_PRODUCT, product, responseHandler);
     }
-    //Server side done
+
     public void UpdateStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_UPDATE_STORE, store, responseHandler);
     }
-    //Server side done
+
     public void UpdateStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_UPDATE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
-    //Server side done
+
     public void UpdateBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_UPDATE_BACRODE, barcode, responseHandler);
     }
 
+    // TODO make sure it delete all references in database
     public void DeleteProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_DELETE_PRODUCT, product, responseHandler);
     }
 
+    // TODO make sure it delete all references in database
     public void DeleteStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_DELETE_STORE, store, responseHandler);
     }
 
+    // Does what it says
     public void DeleteStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_DELETE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
+    // Does what it says
     public void DeleteBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_DELETE_BACRODE, barcode, responseHandler);
     }
 
 
     // GETTERS ...
+
 
     public void GetAllProducts(IDatabaseResponseHandler<Product> responseHandler) {
         this.doThis(ACTION_GET_ALL_PRODUCTS, responseHandler, new OnProduct(responseHandler));
@@ -157,6 +163,7 @@ public class RemoteDatabase {
         this.lastStoreProductPriceHandler = responseHandler;
     }
 
+    // Does that
     private <T> void doThis(String action, IDatabaseResponseHandler<T> responseHandler, Response.Listener<String> listener ) {
         String requestUrl = this.removeWhiteSpaceFromUrl(this.url + action);
         StringRequest strRequest =
@@ -166,46 +173,37 @@ public class RemoteDatabase {
     }
 
 
-
-
-
-    // FIND PRODUCTS .........
-    public void FindProductsNameAndStoreID(int storeId, String productKey, IDatabaseResponseHandler<Product> responseHandler) {
-        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_STORE +
-                "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productKey);
+    // Return StoreProductPrice objects(Store, Product and their price in store)
+    // where product is in store('storeID') and product name is like 'productName'
+    public void FindProductInStoreByName(int storeId, String productName, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
+        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID +
+                "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productName);
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
-                        new OnProduct(responseHandler), new OnError(responseHandler));
+                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
+        this.lastStoreProductPriceHandler = responseHandler;
     }
 
-
-
-    //
-    public void FindProductByID(ArrayList<Integer> ids, IDatabaseResponseHandler<Product> responseHandler) {
-        //TODO implement this
-        String data = "";
-
-        FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, data , responseHandler);
-        this.lastProductHandler = responseHandler;
-    }
-
-    //Server side done
+    // Return Product object where product barcode equals  'barCode'
     public void FindProductByBarCode(String barCode, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, barCode, responseHandler);
         this.lastProductHandler = responseHandler;
     }
-    //Server side done
+
+    // Return Product objects where product name is like 'name'
     public void FindProductByName(String name, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_NAME, Product.TAG_NAME, name, responseHandler);
         this.lastProductHandler = responseHandler;
     }
-    //Server side done
+
+    // Return Product objects were product category is like 'category'
     public void FindProductByCategory(String category, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_CATEGORY, Product.TAG_CATEGORY, category, responseHandler);
         this.lastProductHandler = responseHandler;
     }
-    //Server side done
+
+    // Return Product objects where product name or category is like 'value'
     public void FindProductByStringKey(String value, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PORDUCT_BY_STRING_KEY, KEY_STR_KEY ,value, responseHandler);
         this.lastProductHandler = responseHandler;
@@ -222,24 +220,21 @@ public class RemoteDatabase {
 
 
     // FIND STORES..........
-    //Server side done
-    public void FindStoreByID(ArrayList<Integer> ids, IDatabaseResponseHandler<Store> responseHandler) {
-        //TODO implemtns this !!!!!
-        String data = "";
-        FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, data , responseHandler);
-        this.lastStoreHandler = responseHandler;
-    }
 
+
+    // Return Store objects where store name is like 'key'
     public void FindStoreByName(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, key, responseHandler);
         this.lastStoreHandler = responseHandler;
     }
-    //Server side done
+
+    // Return Store objects where store location is like 'location'
     public void FindStoreByLocation(String location, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_LOCATION, Store.TAG_LOCATION, location, responseHandler );
         this.lastStoreHandler = responseHandler;
     }
 
+    // Return Store objects where store name is like 'name' and store location is like 'location'
     public void FindStoreByNameAndLocation(String name, String location, IDatabaseResponseHandler<Store> responseHandler) {
         String requestUrl = this.url + ACTION_FIND_STORE_BY_NAME_AND_LOCATION + "?" +
                 Store.TAG_NAME + "=" + name + "&" +
@@ -250,7 +245,8 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
         this.lastStoreHandler = responseHandler;
     }
-    //Server side done
+
+    // Return Store objects where store name or location is like 'key'
     public void FindStoreByStringKey(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_STRING_KEY, KEY_STR_KEY, key, responseHandler);
         this.lastStoreHandler = responseHandler;
@@ -268,6 +264,7 @@ public class RemoteDatabase {
 
     // FIND STORE PRODUCT PRICE
 
+    // Return StoreProductPrice objects (Store, Product and product price in store) matched by Product;
     public void FindStoreProductPrice(
             Product product,
             IDatabaseResponseHandler<StoreProductPrice> responseHandler){
@@ -281,6 +278,28 @@ public class RemoteDatabase {
         this.lastStoreProductPriceHandler = responseHandler;
     }
 
+    // DON NOT USES THIS..
+    public void GetFavoriteProducts(int userID, IDatabaseResponseHandler<Product> responseHandler) {
+
+
+    }
+
+    //DO NOT USE THIS
+    public void GetFavoriteStores(int userID, IDatabaseResponseHandler<Store> responseHandler) {
+        //TODO implemtns this !!!!!
+        String data = "";
+        FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, data , responseHandler);
+        this.lastStoreHandler = responseHandler;
+    }
+
+    public void GetNewUserId(String bullshitAboutUser, IDatabaseResponseHandler<String> responseHandler) {
+        String requestUrl = this.url + ACTION_GET_NEW_USER_ID + "?" + User.TAG_DATA + "=" + bullshitAboutUser;
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnString(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+    }
+
 
 
     //-----------------------------------------
@@ -292,8 +311,7 @@ public class RemoteDatabase {
         queue.add(request);
     }
 
-
-    // MANAGEER HELPER METHODS
+    // MANAGER HELPER METHODS
 
     private void ManageProductByAction(
             String action,
@@ -420,6 +438,7 @@ public class RemoteDatabase {
 
 
     // helper class for expected StoreProductPrice response
+    // pack out response and pass it to listeners as array of objects
     private class OnStoreProductPrice implements Response.Listener<String> {
 
         private ArrayList<StoreProductPrice> data;
@@ -427,9 +446,9 @@ public class RemoteDatabase {
         private Handler parseHandler = new Handler() {
           @Override
             public void handleMessage(Message msg) {
+
               if(handler == lastStoreProductPriceHandler) {
                   handler.onArrive(data);
-
               }
           }
         };
@@ -437,20 +456,16 @@ public class RemoteDatabase {
         public OnStoreProductPrice(IDatabaseResponseHandler h) {
             handler = h;
             data = new ArrayList<StoreProductPrice>();
-            Log.d("testthread" , "created");
         }
         @Override
         public void onResponse(String response) {
-
 
             final String res = response;
 
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
-                    Log.d("myapp.testthread" , "started");
                     try {
-                        Log.d("jsonerror", res);
                         JSONArray jarray = new JSONArray(res);
 
                         for(int i = 0; i < jarray.length(); i++) {
@@ -470,6 +485,7 @@ public class RemoteDatabase {
     }
 
     // helper class for expected Store response
+    // pack out response and pass it to listener as array of objects
     private class OnStore implements Response.Listener<String> {
 
         ArrayList<Store> data;
@@ -511,6 +527,7 @@ public class RemoteDatabase {
     }
 
     // helper class for expected Product response
+    // pack out response and pass it to listener as array of objects
     private class OnProduct implements Response.Listener<String> {
 
         private IDatabaseResponseHandler handler;
@@ -520,7 +537,6 @@ public class RemoteDatabase {
             public void handleMessage(Message msg) {
 
                 if(handler == lastProductHandler) {
-                    Log.d("error", "This is called");
                     handler.onArrive(data);
                 }
             }
@@ -556,6 +572,7 @@ public class RemoteDatabase {
     }
 
     // helper class for expected barcode response
+    // pack out response and pass it to listener as array of objects
     private class OnBarcode implements Response.Listener<String> {
 
         private IDatabaseResponseHandler handler;
@@ -601,6 +618,7 @@ public class RemoteDatabase {
 
 
     // helper class for expected String response
+    // pack out response and pass it to listener
     private class OnString implements Response.Listener<String> {
 
         private IDatabaseResponseHandler handler;
@@ -630,10 +648,5 @@ public class RemoteDatabase {
             handler.onError(error);
         }
     }
-
-
-    ////// CONNECTION RLATED METHODS .............
-
-
 
 }
