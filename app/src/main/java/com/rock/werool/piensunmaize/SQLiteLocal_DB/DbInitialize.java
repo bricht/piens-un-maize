@@ -118,7 +118,7 @@ public class DbInitialize extends IntentService {
 
 
 
-        RemoteDatabase rDb = new RemoteDatabase("http://zetsloka.tk/piens_un_maize_db/", getApplicationContext());
+        RemoteDatabase rDb = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
 
         rDb.GetAllProducts(new IDatabaseResponseHandler<Product>() {
             @Override
@@ -168,7 +168,7 @@ public class DbInitialize extends IntentService {
                     intent.putExtra(SQLiteAddData.ADD_TYPE, SQLiteAddData.ADD_BARCODE);
                     intent.putExtra(SQLiteAddData.BARCODE, b.getBarcode());
                     intent.putExtra(SQLiteAddData.PRODUCT_ID, b.getProduct_id());
-                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, str);
+//                    intent.putExtra(SQLiteAddData.PRODUCT_NAME, str);
                     getApplicationContext().startService(intent);
                 }
             }

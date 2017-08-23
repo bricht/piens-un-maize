@@ -169,8 +169,8 @@ public class SQLiteAddData extends IntentService {
        long productId;
        if(id == 0){
            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + ProductContract.TABLE_NAME + "." + ProductContract.COLUMN_PRODUCT_ID + "), 0) + 1 FROM " + ProductContract.TABLE_NAME, null);
-           cursor.moveToFirst();
            productId = cursor.getLong(cursor.getColumnIndex(ProductContract.COLUMN_PRODUCT_ID));
+           cursor.moveToFirst();
            cursor.close();
        }else{
            productId = id;
@@ -200,6 +200,7 @@ public class SQLiteAddData extends IntentService {
         if(id == 0){
             Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
             storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+            cursor.moveToFirst();
             cursor.close();
         }else{
             storeId = id;
