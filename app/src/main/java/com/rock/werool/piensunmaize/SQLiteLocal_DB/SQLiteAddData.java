@@ -197,14 +197,14 @@ public class SQLiteAddData extends IntentService {
     // Insert new store. If id is unknown or new store, int should be 0. If store name already exists, no insertion will be made - table requires unique store.
     private boolean insertStore(long id, String name, String address, boolean bool){
         long storeId;
-        if(id == 0){
-            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
-            storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
-            cursor.moveToFirst();
-            cursor.close();
-        }else{
+//        if(id == 0){
+//            Cursor cursor = database.rawQuery("SELECT COALESCE(MAX(" + StoreContract.TABLE_NAME + "." + StoreContract.COLUMN_STORE_ID + "), 0) + 1 FROM " + StoreContract.TABLE_NAME, null);
+//            storeId = cursor.getLong(cursor.getColumnIndex(StoreContract.COLUMN_STORE_ID));
+//            cursor.moveToFirst();
+//            cursor.close();
+//        }else{
             storeId = id;
-        }
+//        }
 
         ContentValues values = new ContentValues();
         values.put(StoreContract.COLUMN_STORE_ID, storeId);
