@@ -9,51 +9,29 @@
 
 
     <!-- Base application theme. -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">sans-serif</item>
 
 
+        <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+            <!-- Customize your theme here.
+             Theme.AppCompat.Light.DarkActionBar
+             android:textSize="32sp"
+             -->
+
+            <item name="colorPrimary">@color/colorPrimary</item>
+            <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+            <item name="colorAccent">@color/colorAccent</item>
+
+            <item name="android:switchTextAppearance">@color/textColorPrimary</item>
+            <item name="android:textColor">@color/textColorPrimary</item>
+            <item name="android:fontFamily">sans-serif-thin</item>
+            <item name="android:textSize">20sp</item>
+            <item name="android:textAllCaps">false</item>
+
+            <item name="android:textStyle">bold</item>
 
 
-    </style>
 
-    <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:fontFamily">sans-serif-light</item>
-        <!--
-
-        <item name="android:editTextColor">@android:color/holo_orange_dark</item>
-        <item name="android:textColorPrimary">@android:color/holo_orange_dark</item>
-        <item name="android:textColorSecondary">@android:color/holo_orange_dark</item>
-        <item name="android:textColorTertiary">@android:color/holo_orange_dark</item>
-        <item name="android:textColorPrimaryInverse">@android:color/holo_orange_dark</item>
-        <item name="android:textColorSecondaryInverse">@android:color/holo_orange_dark</item>
-        <item name="android:textColorTertiaryInverse">@android:color/holo_orange_dark</item>
-        <item name="android:windowBackground"></item>
-
-        android:fontFamily="sans-serif"
-        android:fontFamily="sans-serif-light"
-        android:fontFamily="sans-serif-condensed"
-        android:fontFamily="sans-serif-thin"
-
-       <item name="android:fontFamily">sans-serif-light</item>
-       <item name="android:textStyle">bold</item>
-
-       <item name="android:edittextColor"></item>
-       <item name="android:textColorPrimary"></item>
-       <item name="android:textColorSecondary"></item>
-       <item name="android:textColorTertiary"></item>
-       <item name="android:textColorPrimaryInverse"></item>
-       <item name="android:textColorSecondaryInverse"></item>
-       <item name="android:textColorTertiaryInverse"></item>
-
-       -->
-
-    </style>
+        </style>
 
 
     <style name="BarcodeScannerTheme" parent="Theme.AppCompat.Light.NoActionBar">

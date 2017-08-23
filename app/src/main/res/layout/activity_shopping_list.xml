@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_marginTop="16dp"
-            android:text="Shopping List"
+            android:text="@string/shopping_list_edit_text"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="start"
@@ -47,7 +47,7 @@
             android:background="@drawable/rounded_button"
             android:foreground="?attr/selectableItemBackground"
             android:clickable="true"
-            android:text="Clear"
+            android:text="@string/shopping_list_button"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
@@ -112,7 +112,7 @@
         android:layout_marginEnd="29dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="10dp"
-        android:text="Total price: ..."
+        android:text="@string/shopping_list_text_total"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
