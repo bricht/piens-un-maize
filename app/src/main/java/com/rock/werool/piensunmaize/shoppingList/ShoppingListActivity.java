@@ -32,7 +32,10 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
+        // read from shopping_list.txt
+
         // TEMPORARY ITEMS
+
         shoppingList.add(new Product("Orange", "42.00"));
         shoppingList.add(new Product("Apple", "21.00"));
         shoppingList.add(new Product("Orange", "42.00"));
