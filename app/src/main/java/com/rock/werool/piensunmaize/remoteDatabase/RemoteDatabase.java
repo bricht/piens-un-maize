@@ -53,6 +53,7 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_STORE_BY_LOCATION = "findStoreByLocation";
     private static final String ACTION_FIND_STORE_BY_STRING_KEY = "findStoreByStringKey.php";
     private static final String ACTION_FIND_STORE_BY_NAME_AND_LOCATION = "findStoreByNameAndLocation.php";
+    private static final String ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT = "findProductByNameLocationAndProduct.php";
 
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
     private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
@@ -275,11 +276,23 @@ public class RemoteDatabase {
 
     private void FindStoreByStringKey(String action, String key, String value, IDatabaseResponseHandler<Store> responseHandler) {
         String requestUrl = this.url + action + "?" + key + "=" + value;
-        Log.d("requestUrl", requestUrl);
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnStore(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
+    }
+
+    public void FindStoreByNameLocationAndProduct(
+            Product product, String storeName, String storeLocation, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
+        String requestUrl = removeWhiteSpaceFromUrl(createProductParamUrl(
+                product, ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT) + "&" +
+                Store.TAG_NAME + "=" + storeName + "&" +
+                Store.TAG_LOCATION + "=" + storeLocation);
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastStoreProductPriceHandler = responseHandler;
     }
 
 
