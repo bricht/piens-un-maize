@@ -63,6 +63,10 @@ public class RemoteDatabase {
     private static final String ACTION_GET_FAVORITE_STORES = "getFavoriteStores.php";
     private static final String ACTION_SET_FAVORITE_PRODUCT = "setFavoriteProduct.php";
     private static final String ACTION_SET_FAVORITE_STORE = "setFavoriteStore.php";
+    private static final String ACTION_DELETE_FAVORITE_PRODUCT = "deleteFavoriteProduct.php";
+    private static final String ACTION_DELETE_FAVORITE_STORE = "deleteFavoriteStore.php";
+
+
 
     private static final String ACTION_GET_NEW_USER_ID = "getNewUserID.php";
 
@@ -296,7 +300,7 @@ public class RemoteDatabase {
     }
 
     // DON NOT USES THIS..
-    public void GetFavoriteProducts(int userID, IDatabaseResponseHandler<Product> responseHandler) {
+    public void GetFavoriteProducts(IDatabaseResponseHandler<Product> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
                 this.url + ACTION_GET_FAVORITE_PRODUCTS + "?" +
                         User.TAG_ID + "=" + user.GetID());
@@ -308,7 +312,7 @@ public class RemoteDatabase {
     }
 
     //DO NOT USE THIS
-    public void GetFavoriteStores(int userID, IDatabaseResponseHandler<Store> responseHandler) {
+    public void GetFavoriteStores(IDatabaseResponseHandler<Store> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
                 this.url + ACTION_GET_FAVORITE_STORES + "?" +
                         User.TAG_ID + "=" + user.GetID());
@@ -338,6 +342,29 @@ public class RemoteDatabase {
                         new OnString(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
     }
+
+    public void DeleteFavoriteProduct(Product product, IDatabaseResponseHandler<Product> responseHandler) {
+
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + createProductParamUrl(product, ACTION_DELETE_FAVORITE_PRODUCT) +
+                        User.TAG_ID + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnString(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+    }
+
+    public void DeleteFavoriteStore(Store store, IDatabaseResponseHandler<Store> responseHandler) {
+
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + createStoreParamUrl(store, ACTION_DELETE_FAVORITE_STORE) +
+                        User.TAG_ID + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnString(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+    }
+
 
     public void GetNewUserId(String bullshitAboutUser, IDatabaseResponseHandler<String> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
