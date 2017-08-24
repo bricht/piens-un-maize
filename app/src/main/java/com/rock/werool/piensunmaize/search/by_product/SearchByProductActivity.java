@@ -204,6 +204,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
             holder.name.setText(array[position][0]);
             holder.averagePrice.setText(array[position][1]);
+            holder.productId = Long.parseLong(array[position][2]);
 
             return convertView;
         }
