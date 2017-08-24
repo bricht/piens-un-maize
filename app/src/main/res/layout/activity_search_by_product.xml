@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <EditText
         android:id="@+id/searchProductText"
         android:layout_width="0dp"

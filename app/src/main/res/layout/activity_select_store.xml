@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <EditText
         android:id="@+id/selectStoreNameText"
         android:layout_width="0dp"

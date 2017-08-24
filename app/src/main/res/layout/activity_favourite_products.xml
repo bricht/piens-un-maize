@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.rock.werool.piensunmaize.favourites.FavouriteProductsActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <Space
         android:layout_width="24dp"

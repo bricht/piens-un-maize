@@ -11,6 +11,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
         <TextView
             android:id="@+id/activityTitle"
             android:layout_height="wrap_content"

@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.rock.werool.piensunmaize.add.FillWithHandActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <Button
         android:id="@+id/addButton"
         android:layout_width="0dp"
