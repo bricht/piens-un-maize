@@ -163,6 +163,7 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                 final String clickedProductName = holder.name.getText().toString();
                 final String clickedProductAveragePrice = holder.averagePrice.getText().toString();
                 final long clickedProductId = holder.productId;
+                final int positionOfElement = position;
 
                 convertView.setTag(holder);                             //Important! Stores the holder in the View (row)
 
@@ -204,6 +205,17 @@ public class FavouriteProductsActivity extends AppCompatActivity {
 
                             }
                         });
+
+                        productList.remove(positionOfElement);
+                        String[][] array1 = new String[array.length-1][4];
+                        for (int i = 0; i < array.length; i++) {
+                            while (i != positionOfElement) {
+                                array1[i][1] = array[i][1];
+                                array1[i][2] = array[i][2];
+                                array1[i][3] = array[i][3];
+                            }
+                        }
+                        notifyDataSetChanged();
 
 //                        Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class); ///////which class???
 //                        intent.putExtra("clickedProductName", clickedProductName);      //Passes parameters to the activity

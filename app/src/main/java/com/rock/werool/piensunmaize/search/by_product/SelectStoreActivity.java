@@ -30,6 +30,7 @@ import com.rock.werool.piensunmaize.search.Store;
 
 import java.util.ArrayList;
 
+
 public class SelectStoreActivity extends AppCompatActivity {
     MyCustomAdapter dataAdapter;
     ArrayList<Store> stores = new ArrayList<>();
@@ -38,7 +39,7 @@ public class SelectStoreActivity extends AppCompatActivity {
     long clickedProductId;
     String [][] array;
     RemoteDatabase remoteDB;
-
+    ImageView buttonFav;
     @Override
     protected void onResume() {
         super.onResume();
@@ -57,7 +58,7 @@ public class SelectStoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_store);
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
-        ImageView buttonFav;
+
         buttonFav = (ImageView) findViewById(R.id.addToFavouritesProduct);
         buttonFav.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,13 +122,13 @@ public class SelectStoreActivity extends AppCompatActivity {
         addSearchBarListener(selectStoreName);
         addSearchBarListener(selectStoreAddress);    //Add listeners to both text fields
 
-        ImageView addToFavouritesProduct = (ImageView)findViewById(R.id.addToFavouritesProduct);
-        addToFavouritesProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO add selected product to favourites database
-            }
-        });
+//        ImageView addToFavouritesProduct = (ImageView)findViewById(R.id.addToFavouritesProduct);
+//        addToFavouritesProduct.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //TODO add selected product to favourites database
+//            }
+//        });
     }
     private void displayListView(ArrayList<String> inputList) {
 
