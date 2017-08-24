@@ -53,7 +53,8 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_STORE_BY_LOCATION = "findStoreByLocation";
     private static final String ACTION_FIND_STORE_BY_STRING_KEY = "findStoreByStringKey.php";
     private static final String ACTION_FIND_STORE_BY_NAME_AND_LOCATION = "findStoreByNameAndLocation.php";
-    private static final String ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT = "findProductByNameLocationAndProduct.php";
+    private static final String ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT = "findStoreByNameLocationAndProduct.php";
+    private static final String ACTION_FIND_STORE_BY_NAME_lOCATION_AND_PRODUCT_IN_FAVORITES = "findStoreByNameLocationAndProductInFavorites.php";
 
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
     private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
@@ -288,6 +289,21 @@ public class RemoteDatabase {
                 product, ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT) + "&" +
                 Store.TAG_NAME + "=" + storeName + "&" +
                 Store.TAG_LOCATION + "=" + storeLocation);
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastStoreProductPriceHandler = responseHandler;
+    }
+
+
+    public void FindStoreByNameLocationAndProductInFavorites(
+            Product product, String storeName, String storeLocation, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
+        String requestUrl = removeWhiteSpaceFromUrl(createProductParamUrl(
+                product, ACTION_FIND_STORE_BY_NAME_lOCATION_AND_PRODUCT_IN_FAVORITES) + "&" +
+                Store.TAG_NAME + "=" + storeName + "&" +
+                Store.TAG_LOCATION + "=" + storeLocation + "&" +
+                User.TAG_ID + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
@@ -562,7 +578,6 @@ public class RemoteDatabase {
 
                         for(int i = 0; i < jarray.length(); i++) {
                             JSONObject jobj = jarray.getJSONObject(i);
-                            data.add(new StoreProductPrice(jobj));
                             data.add(new StoreProductPrice(jobj));
                         }
 
