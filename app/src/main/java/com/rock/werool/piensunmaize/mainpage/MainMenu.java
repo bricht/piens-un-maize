@@ -13,7 +13,6 @@ import android.widget.Button;
 
 
 import com.rock.werool.piensunmaize.R;
-import com.rock.werool.piensunmaize.SQLiteLocal_DB.ClearDbActivity;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
 import com.rock.werool.piensunmaize.favourites.FavouritesMenu;

@@ -47,6 +47,7 @@ public class SelectStoreActivity extends AppCompatActivity {
     RemoteDatabase remoteDB;
     ImageView buttonFav;
     ShoppingListHandler shoppingListHandler;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -217,7 +218,7 @@ public class SelectStoreActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {        //TODO implement actions on click
                         Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
-                        shoppingListHandler.add(array[position][1], array[position][3]);
+                        shoppingListHandler.add(clickedProductName, array[position][3]);
                         Toast.makeText(context, "Product added to shopping list", Toast.LENGTH_SHORT).show();
                     }
                 });
