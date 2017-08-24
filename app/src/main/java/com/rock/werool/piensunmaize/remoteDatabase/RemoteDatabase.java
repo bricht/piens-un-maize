@@ -325,7 +325,7 @@ public class RemoteDatabase {
 
     public void SetFavoriteStore(int storeID, IDatabaseResponseHandler<String> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
-                this.url + ACTION_SET_FAVORITE_STORE + "?" + Store.TAG_NAME + "=" + storeID + "&" +
+                this.url + ACTION_SET_FAVORITE_STORE + "?" + Store.TAG_ID + "=" + storeID + "&" +
                             User.TAG_ID + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
@@ -335,7 +335,7 @@ public class RemoteDatabase {
 
     public void SetFavoriteProduct(int productID, IDatabaseResponseHandler<String> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
-                this.url + ACTION_SET_FAVORITE_PRODUCT + "?" +Product.TAG_NAME + "=" + productID + "&" +
+                this.url + ACTION_SET_FAVORITE_PRODUCT + "?" +Product.TAG_ID + "=" + productID + "&" +
                         User.TAG_ID + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
@@ -343,7 +343,7 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
     }
 
-    public void DeleteFavoriteProduct(Product product, IDatabaseResponseHandler<Product> responseHandler) {
+    public void DeleteFavoriteProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = removeWhiteSpaceFromUrl(
                 this.url + createProductParamUrl(product, ACTION_DELETE_FAVORITE_PRODUCT) +
@@ -354,7 +354,7 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
     }
 
-    public void DeleteFavoriteStore(Store store, IDatabaseResponseHandler<Store> responseHandler) {
+    public void DeleteFavoriteStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = removeWhiteSpaceFromUrl(
                 this.url + createStoreParamUrl(store, ACTION_DELETE_FAVORITE_STORE) +

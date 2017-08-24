@@ -7,6 +7,8 @@
         android:value="barcode" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -41,12 +43,12 @@
         <activity android:name=".favourites.FavouriteProductsActivity" />
         <activity android:name=".shoppingList.ShoppingListActivity" />
         <activity android:name=".favourites.FavouritesMenu" />
-        <activity android:name=".SQLiteLocal_DB.ClearDbActivity" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".SQLiteLocal_DB.ClearDbActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service
@@ -59,11 +61,7 @@
             android:name=".SQLiteLocal_DB.DbInitialize"
             android:exported="false" />
 
+        <activity android:name=".remoteDatabase.dbTestActivity"></activity>
     </application>
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-
 
 </manifest>

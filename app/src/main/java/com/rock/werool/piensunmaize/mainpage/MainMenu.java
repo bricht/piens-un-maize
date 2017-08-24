@@ -17,6 +17,7 @@ import com.rock.werool.piensunmaize.SQLiteLocal_DB.ClearDbActivity;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
 import com.rock.werool.piensunmaize.favourites.FavouritesMenu;
+import com.rock.werool.piensunmaize.remoteDatabase.dbTestActivity;
 import com.rock.werool.piensunmaize.search.SearchMenu;
 import com.rock.werool.piensunmaize.shoppingList.ShoppingListActivity;
 
@@ -26,8 +27,13 @@ public class MainMenu extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        Intent intent = new Intent(MainMenu.this, dbTestActivity.class);
+        startActivity(intent);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
