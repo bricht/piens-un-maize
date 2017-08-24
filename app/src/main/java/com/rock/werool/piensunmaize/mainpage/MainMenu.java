@@ -13,7 +13,9 @@ import android.widget.Button;
 
 
 import com.rock.werool.piensunmaize.R;
+import com.rock.werool.piensunmaize.add.FillWithHandActivity;
 import com.rock.werool.piensunmaize.add.addProductChoosePage;
+import com.rock.werool.piensunmaize.barcode.BarcodeScanner;
 import com.rock.werool.piensunmaize.favourites.FavouriteStoresActivity;
 import com.rock.werool.piensunmaize.favourites.FavouritesMenu;
 import com.rock.werool.piensunmaize.remoteDatabase.dbTestActivity;
@@ -64,7 +66,8 @@ public class MainMenu extends AppCompatActivity {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainMenu.this, addProductChoosePage.class);
+                Intent intent = new Intent(MainMenu.this, BarcodeScanner.class);
+                intent.putExtra("necessaryAction", "UPDATE_PRODUCT");
                 startActivity(intent);
             }
         });
