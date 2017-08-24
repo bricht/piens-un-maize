@@ -231,7 +231,10 @@ public class SelectStoreActivity extends AppCompatActivity {
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectStoreActivity");
                 */
-                remoteDB.FindStoreProductPrice(new Product(clickedProductId, null, null, null, 0), new IDatabaseResponseHandler<StoreProductPrice>() {
+                String storeName = ((EditText) findViewById(R.id.selectStoreNameText)).getText().toString();
+                String storeAddress = ((EditText) findViewById(R.id.selectStoreAddressText)).getText().toString();
+
+                remoteDB.FindStoreByNameLocationAndProduct(new Product(clickedProductId, null, null, null, 0), storeName, storeAddress, new IDatabaseResponseHandler<StoreProductPrice>() {
                     @Override
                     public void onArrive(ArrayList<StoreProductPrice> data) {
                         array = new String[data.size()][4];

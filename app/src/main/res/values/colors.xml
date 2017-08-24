@@ -7,6 +7,8 @@
     <color name="windowBackground">#b1e3fb</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#ff9d00</color>
+    <color name="textColorDark">#000000</color>
+    <color name="textColorSlightlyTransparent">#90000000</color>
     <!--
      <color name="colorPrimary">#9e9a94</color>
     <color name="colorPrimaryDark">#726d67</color>

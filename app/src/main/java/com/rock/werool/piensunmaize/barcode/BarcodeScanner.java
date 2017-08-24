@@ -53,7 +53,7 @@ public class BarcodeScanner extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         //unregisterReceiver(SearchProductList);         //Unregisters BroadcastReceivers
-        unregisterReceiver(SearchProductSQL);
+        //unregisterReceiver(SearchProductSQL);
     }
 
     @Override
@@ -187,9 +187,12 @@ public class BarcodeScanner extends AppCompatActivity {
                                     switch (necessaryAction) {
                                         case ("FIND_PRODUCT_INFO") : {
                                             if (data.size() > 0) {
-                                                Intent intent = new Intent(getApplicationContext(), SearchByProductActivity.class);
+                                                Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
                                                 String name = data.get(0).getName();
-                                                intent.putExtra("scannedProductName", name);
+                                                intent.putExtra("clickedProductName", data.get(0).getName());
+                                                intent.putExtra("clickedProductAveragePrice", data.get(0).getAvaragePricePrice());
+                                                intent.putExtra("clickedProductId", data.get(0).getId());
+                                                intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 startActivity(intent);
                                             } else {
                                                 Toast.makeText(getApplicationContext(), "Product not in database", Toast.LENGTH_SHORT).show();
@@ -199,8 +202,8 @@ public class BarcodeScanner extends AppCompatActivity {
                                                         activityOpen = false;
                                                     }
                                                 }, 500);
-                                                break;
                                             }
+                                            break;
                                         }case ("UPDATE_PRODUCT") : {
                                             if (data.size() > 0) {
                                                 Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
@@ -208,14 +211,14 @@ public class BarcodeScanner extends AppCompatActivity {
                                                 //intent.putExtra("scannedProductName", data.get(0).getName());
                                                 //intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("Product", data.get(0));
-                                                intent.putExtra("barcodeID", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("addNew", false);
                                                 startActivity(intent);
                                             } else {
                                                 Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
                                                 //intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("Product", data.get(0));
-                                                intent.putExtra("barcodeID", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("addNew", true);
                                                 startActivity(intent);
                                             }
@@ -223,7 +226,6 @@ public class BarcodeScanner extends AppCompatActivity {
                                         }
                                     }
                                 }
-
                                 @Override
                                 public void onError(VolleyError error) {
                                     Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
@@ -290,6 +292,7 @@ public class BarcodeScanner extends AppCompatActivity {
             }
         }
     }
+    /*
     BroadcastReceiver SearchProductSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -299,6 +302,7 @@ public class BarcodeScanner extends AppCompatActivity {
             executeNecessaryAction(necessaryAction, array[0][0]);           //TODO properly implement barcode query
         }
     };
+    */
     void executeNecessaryAction(String necessaryAction, String productName) {
         switch (necessaryAction) {
             case "UPDATE_PRODUCT" : {

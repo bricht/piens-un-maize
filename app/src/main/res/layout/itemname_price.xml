@@ -31,7 +31,7 @@
         android:layout_marginTop="4dp"
         android:inputType="textFilter|textMultiLine|textNoSuggestions"
         android:text="TextView"
-        android:textColor="#000000"
+        android:textColor="@color/textColorDark"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
