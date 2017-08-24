@@ -346,7 +346,7 @@ public class RemoteDatabase {
     public void DeleteFavoriteProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = removeWhiteSpaceFromUrl(
-                this.url + createProductParamUrl(product, ACTION_DELETE_FAVORITE_PRODUCT) +
+                createProductParamUrl(product, ACTION_DELETE_FAVORITE_PRODUCT) +
                         User.TAG_ID + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
@@ -357,7 +357,7 @@ public class RemoteDatabase {
     public void DeleteFavoriteStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
 
         String requestUrl = removeWhiteSpaceFromUrl(
-                this.url + createStoreParamUrl(store, ACTION_DELETE_FAVORITE_STORE) +
+                createStoreParamUrl(store, ACTION_DELETE_FAVORITE_STORE) +
                         User.TAG_ID + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
