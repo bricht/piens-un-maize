@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.remoteDatabase.ConnectionVerifyer;
 import com.rock.werool.piensunmaize.remoteDatabase.IRemoteDBConnectionFerifyHandler;
+import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 
 public class GreetingsActivity extends AppCompatActivity {
     private ProgressBar spinner;
@@ -26,7 +27,9 @@ public class GreetingsActivity extends AppCompatActivity {
 
         handler = new Handler();
 
-        final ConnectionVerifyer verifyer = new ConnectionVerifyer("http://zesloka.tk/piens_un_maize_db/", this);
+        RemoteDatabase db = new RemoteDatabase(getResources().getString(R.string.database_url), this);
+        final ConnectionVerifyer verifyer = new ConnectionVerifyer(
+                getResources().getString(R.string.database_url), this);
         verifyer.addListener(new IRemoteDBConnectionFerifyHandler() {
 
             @Override
@@ -46,7 +49,6 @@ public class GreetingsActivity extends AppCompatActivity {
                         startActivity(new Intent(GreetingsActivity.this, MainMenu.class));
                     }
                 }, 2000);
-
             }
         });
         verifyer.setTimeout(1000);

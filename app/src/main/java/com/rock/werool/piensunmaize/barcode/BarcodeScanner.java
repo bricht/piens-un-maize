@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,9 +21,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
+import com.android.volley.VolleyError;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -31,9 +34,14 @@ import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.add.FillWithHandActivity;
 import com.rock.werool.piensunmaize.mainpage.MainMenu;
+import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
+import com.rock.werool.piensunmaize.remoteDatabase.Product;
+import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity;
+import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BarcodeScanner extends AppCompatActivity {
     CameraSource cameraSource;
@@ -51,7 +59,7 @@ public class BarcodeScanner extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
+        //registerReceiver(SearchProductSQL , new IntentFilter ("QUERY_RESULT"));
         activityOpen = false;
     }
 
@@ -163,13 +171,64 @@ public class BarcodeScanner extends AppCompatActivity {
 
                     if (barcodes.size() != 0) {
                         if(activityOpen == false) {
+                            final String necessaryAction = getIntent().getExtras().getString("necessaryAction");
+                            /*
                             Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
                             intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
                             intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO implement barcode query
                             intentForSQL.putExtra(SQLiteQuery.SRC_STORE, (String) null);
                             intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
                             startService(intentForSQL);
+                            */
+                            final RemoteDatabase remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
+                            remoteDB.FindProductByBarCode(barcodes.valueAt(0).displayValue, new IDatabaseResponseHandler<Product>() {
+                                @Override
+                                public void onArrive(ArrayList<Product> data) {
+                                    switch (necessaryAction) {
+                                        case ("FIND_PRODUCT_INFO") : {
+                                            if (data.size() > 0) {
+                                                Intent intent = new Intent(getApplicationContext(), SearchByProductActivity.class);
+                                                String name = data.get(0).getName();
+                                                intent.putExtra("scannedProductName", name);
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Product not in database", Toast.LENGTH_SHORT).show();
+                                                new Handler().postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        activityOpen = false;
+                                                    }
+                                                }, 500);
+                                                break;
+                                            }
+                                        }case ("UPDATE_PRODUCT") : {
+                                            if (data.size() > 0) {
+                                                Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
+                                                //String name = data.get(0).getName();
+                                                //intent.putExtra("scannedProductName", data.get(0).getName());
+                                                //intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("Product", data.get(0));
+                                                intent.putExtra("barcodeID", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("addNew", false);
+                                                startActivity(intent);
+                                            } else {
+                                                Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
+                                                //intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("Product", data.get(0));
+                                                intent.putExtra("barcodeID", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("addNew", true);
+                                                startActivity(intent);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
 
+                                @Override
+                                public void onError(VolleyError error) {
+                                    Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+                                }
+                            });
                             activityOpen = true;
                         }else{
                             

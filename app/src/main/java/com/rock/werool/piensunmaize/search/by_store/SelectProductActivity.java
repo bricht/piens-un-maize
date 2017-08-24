@@ -18,8 +18,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
+import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
+import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
+import com.rock.werool.piensunmaize.remoteDatabase.StoreProductPrice;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
@@ -31,7 +35,9 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
     String clickedStoreName;
     String clickedStoreAddress;
+    int clickedStoreId;
     String[][] array;
+    RemoteDatabase remoteDB;
 
     @Override
     protected void onResume() {
@@ -49,13 +55,39 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_product);
+        remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
         Bundle extras = getIntent().getExtras();            //Recieves the passed parameters in a bundle
         clickedStoreName = extras.getString("clickedStoreName");     //Gets the specified param from the bundle
         clickedStoreAddress = extras.getString("clickedStoreAddress");
+        int test = extras.getInt("clickedStoreId");
+        clickedStoreId = extras.getInt("clickedStoreId");
+
         TextView storeNameAddressTextView = (TextView) findViewById(R.id.selectedStoreNameAddress);
         storeNameAddressTextView.setText(clickedStoreName + " " + clickedStoreAddress);
+        /*
+        remoteDB.FindProductInStoreByName(clickedStoreId, "", new IDatabaseResponseHandler<StoreProductPrice>() {
+            @Override
+            public void onArrive(ArrayList<StoreProductPrice> data) {
+                array = new String[data.size()][3];
+                ArrayList<String> al = new ArrayList<>();
+                for (int i = 0; i < data.size(); i++) {
+                    com.rock.werool.piensunmaize.remoteDatabase.Product ta = data.get(i).getProduct();
+                    array[i][0] = data.get(i).getProduct().getName();
+                    array[i][1] = Double.toString(data.get(i).getPrice());
+                    array[i][2] = Long.toString(data.get(i).getProduct().getId());
+                    al.add("q");
+                }
+                displayListView(al);
+            }
 
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+        */
+        /*
         Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
         intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
         intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "");     //All products
@@ -63,6 +95,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, clickedStoreAddress);
         startService(intentForSQL);             //Starts SQLite intent service
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
+        */
 
         addSearchBarListener();
 
@@ -184,6 +217,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                /*
                 Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
                 intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
                 intentForSQL.putExtra(SQLiteQuery.SRC_NAME, search.getText().toString());     //TODO may need to turn to lowercase
@@ -191,8 +225,27 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                 intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, clickedStoreAddress);
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
-            }
+                */
+                remoteDB.FindProductInStoreByName(clickedStoreId, search.getText().toString(), new IDatabaseResponseHandler<StoreProductPrice>() {
+                    @Override
+                    public void onArrive(ArrayList<StoreProductPrice> data) {
+                        array = new String[data.size()][3];
+                        ArrayList<String> al = new ArrayList<>();
+                        for (int i = 0; i < data.size(); i++) {
+                            array[i][0] = data.get(i).getProduct().getName();
+                            array[i][1] = Double.toString(data.get(i).getPrice());
+                            array[i][2] = Long.toString(data.get(i).getProduct().getId());
+                            al.add("q");
+                        }
+                        displayListView(al);
+                    }
 
+                    @Override
+                    public void onError(VolleyError error) {
+
+                    }
+                });
+            }
             @Override
             public void afterTextChanged(Editable editable) {
 

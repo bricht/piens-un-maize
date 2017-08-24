@@ -57,6 +57,7 @@
     <string name="shopping_list_edit_text">shopping list</string>
     <string name="shopping_list_button">clear</string>
     <string name="shopping_list_text_total">Total price: ...</string>
+    <string name="database_url">http://zesloka.tk/piens_un_maize_db/</string>
 
 
 </resources>

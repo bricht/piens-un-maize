@@ -17,8 +17,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
+import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
+import com.rock.werool.piensunmaize.remoteDatabase.Product;
+import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
 
@@ -30,6 +34,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     ArrayList<Store> stores = new ArrayList<>();
     ArrayList<Store> storeSearchResults = new ArrayList<>();            //ListView uses storeSearchResults instead of stores!
     String[][] array;
+    RemoteDatabase remoteDB;
 
     @Override
     protected void onResume() {
@@ -47,6 +52,30 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_store);
+        remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
+
+        remoteDB.FindStoreByNameAndLocation("", "", new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+            @Override
+            public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                array = new String[data.size()][4];
+                ArrayList<String> al = new ArrayList<>();
+                for (int i = 0; i < data.size(); i++) {
+                    array[i][1] = data.get(i).getName();
+                    array[i][2] = data.get(i).getLocation();
+                    array[i][3] = Integer.toString(data.get(i).getId());
+                    al.add("q");
+                }
+                displayListView(al);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                String message = error.getMessage();
+                array = null;
+            }
+        });
+
+        /*
         Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
         intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
         intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO may need to turn to lowercase
@@ -54,6 +83,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, "");     //All addresses
         startService(intentForSQL);             //Starts SQLite intent service
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
+        */
 
         final EditText searchStoreName = (EditText) findViewById(R.id.searchStoreNameText);
         final EditText searchStoreAddress = (EditText) findViewById(R.id.searchStoreAddressText);
@@ -83,6 +113,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         private class ViewHolder {
             TextView name;
             TextView address;
+            int storeId;
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -102,9 +133,12 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
 
                 holder.name.setText(array[position][1]);
                 holder.address.setText(array[position][2]);
+                holder.storeId = Integer.parseInt(array[position][3]);
 
                 final String clickedStoreName = holder.name.getText().toString();
                 final String clickedStoreAddress = holder.address.getText().toString();
+                final int clickedStoreId = holder.storeId;
+
 
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -112,6 +146,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                         Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedStoreId", clickedStoreId);
                         startActivity(intent);
                     }
                 });
@@ -121,6 +156,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                         Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedStoreId", clickedStoreId);
                         startActivity(intent);
                     }
                 });
@@ -130,6 +166,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                         Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedStoreId", clickedStoreId);
                         startActivity(intent);
                     }
                 });
@@ -154,6 +191,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             //holder.check.setTag(store);
             holder.name.setText(array[position][1]);
             holder.address.setText(array[position][2]);
+            holder.storeId = Integer.parseInt(array[position][3]);
             return convertView;
         }
     }
@@ -169,6 +207,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                /*
                 Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
                 intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
                 intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO may need to turn to lowercase
@@ -176,6 +215,27 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                 intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, searchStoreAddress.getText().toString());
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
+                */
+                remoteDB.FindStoreByNameAndLocation(searchStoreName.getText().toString(), searchStoreAddress.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+                    @Override
+                    public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                        array = new String[data.size()][4];
+                        ArrayList<String> al = new ArrayList<>();
+                        for (int i = 0; i < data.size(); i++) {
+                            array[i][1] = data.get(i).getName();
+                            array[i][2] = data.get(i).getLocation();
+                            array[i][3] = Integer.toString(data.get(i).getId());
+                            al.add("q");
+                        }
+                        displayListView(al);
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        String message = error.getMessage();
+                        array = null;
+                    }
+                });
             }
 
             @Override

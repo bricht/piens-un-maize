@@ -16,6 +16,11 @@ import android.widget.TextView;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Product;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,36 @@ public class ShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_list);
 
         // TEMPORARY ITEMS
+        File file = new File(getFilesDir(), "shoppingList.txt");
+
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        }
+        catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+
+        /*
+        if(file.exists()){
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(file, true);
+                writer.append(Long.toString(l));
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        */
         shoppingList.add(new Product("Orange", "42.00"));
         shoppingList.add(new Product("Apple", "21.00"));
         shoppingList.add(new Product("Orange", "42.00"));
