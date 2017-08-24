@@ -187,9 +187,12 @@ public class BarcodeScanner extends AppCompatActivity {
                                     switch (necessaryAction) {
                                         case ("FIND_PRODUCT_INFO") : {
                                             if (data.size() > 0) {
-                                                Intent intent = new Intent(getApplicationContext(), SearchByProductActivity.class);
+                                                Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
                                                 String name = data.get(0).getName();
-                                                intent.putExtra("scannedProductName", name);
+                                                intent.putExtra("clickedProductName", data.get(0).getName());
+                                                intent.putExtra("clickedProductAveragePrice", data.get(0).getAvaragePricePrice());
+                                                intent.putExtra("clickedProductId", data.get(0).getId());
+                                                intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 startActivity(intent);
                                             } else {
                                                 Toast.makeText(getApplicationContext(), "Product not in database", Toast.LENGTH_SHORT).show();
@@ -199,8 +202,8 @@ public class BarcodeScanner extends AppCompatActivity {
                                                         activityOpen = false;
                                                     }
                                                 }, 500);
-                                                break;
                                             }
+                                            break;
                                         }case ("UPDATE_PRODUCT") : {
                                             if (data.size() > 0) {
                                                 Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
@@ -208,7 +211,7 @@ public class BarcodeScanner extends AppCompatActivity {
                                                 //intent.putExtra("scannedProductName", data.get(0).getName());
                                                 //intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("Product", data.get(0));
-                                                intent.putExtra("barcodeID", barcodes.valueAt(0).displayValue);
+                                                intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("addNew", false);
                                                 startActivity(intent);
                                             } else {
