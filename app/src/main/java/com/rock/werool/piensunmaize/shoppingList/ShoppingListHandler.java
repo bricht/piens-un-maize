@@ -18,14 +18,23 @@ import java.util.ArrayList;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ShoppingListHandler {
-    private String fileName = "shopping_list.txt";
+    final private String fileName = "shopping_list.txt";
     private Context context;
     private ArrayList<Product> shoppingList;
 
-    public ShoppingListHandler(Context context, ArrayList<Product> shoppingList) {
+    public ShoppingListHandler(Context context) {
         this.context = context;
+        shoppingList = new ArrayList<>();
 
-        // Ensures there is shopping_list.txt file in devices internal storage
+        createFile();
+    }
+
+    public ArrayList<Product> getShoppingList() {
+        return shoppingList;
+    }
+
+    // Method ensures there is shopping_list.txt file in devices internal storage
+    private void createFile() {
         File file = new File(context.getFilesDir(), fileName);
         if (!file.exists()) {
             try {
@@ -34,10 +43,47 @@ public class ShoppingListHandler {
                 IOErrorDialog("ShoppingListHandler()", e.getMessage());
             }
         }
-        this.shoppingList = shoppingList;
     }
 
-    public void writeFile() {
+    public void readFile() {
+        createFile();
+
+        String temp;
+        String[] data;
+
+        try {
+            FileInputStream fis = context.openFileInput(fileName);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+
+            while ((temp = br.readLine()) != null) {
+                data = temp.split("\\^");
+                // Ensures that price is allways delimited by '.' (for double parsing)
+                if (data[1].contains(",")) {
+                    data[1] = data[1].replace(',', '.');
+                }
+                shoppingList.add(new Product(data[0], data[1]));
+            }
+            fis.close();
+        } catch (FileNotFoundException e) {
+            IOErrorDialog("ShoppingListHandler()", e.getMessage());
+        } catch (IOException e) {
+            IOErrorDialog("ShoppingListHandler()", e.getMessage());
+        }
+    }
+
+    public void add(Product product) {
+        createFile();
+        shoppingList.add(shoppingList.size(), product);
+
+        // TODO: WORK IN PROGRESS
+    }
+
+    public void remove(int id) {
+        context.deleteFile(fileName);
+        createFile();
+        shoppingList.remove(id);
+
         String data;
 
         try {
@@ -52,30 +98,20 @@ public class ShoppingListHandler {
             IOErrorDialog("ShoppingListHandler()", e.getMessage());
         } catch (IOException e) {
             IOErrorDialog("ShoppingListHandler()", e.getMessage());
-        } finally {
-
         }
     }
 
-    public void readFile() {
-        String temp;
-        String[] data;
+    public void clearFile () {
+        context.deleteFile(fileName);
+        shoppingList.clear();
+    }
 
-        try {
-            FileInputStream fis = context.openFileInput(fileName);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-
-            while ((temp = br.readLine()) != null) {
-                data = temp.split("\\^");
-                shoppingList.add(new Product(data[0], data[1]));
-            }
-            fis.close();
-        } catch (FileNotFoundException e) {
-            IOErrorDialog("ShoppingListHandler()", e.getMessage());
-        } catch (IOException e) {
-            IOErrorDialog("ShoppingListHandler()", e.getMessage());
+    public double calculateTotalPrice () {
+        double total = 0;
+        for (Product product : shoppingList) {
+            total += Double.parseDouble(product.getPrice());
         }
+        return total;
     }
 
     // Method for displaying file I/O error messages
@@ -89,25 +125,5 @@ public class ShoppingListHandler {
         alertDialog.setCancelable(false);
         alertDialog.setNeutralButton("OK", null);
         alertDialog.show();
-    }
-
-    // TEMPORARY
-    public void TESTDATA () {
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.00"));
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.00"));
-        shoppingList.add(new Product("Orange", "42.01"));
-        shoppingList.add(new Product("Apple", "21.01"));
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.50"));
-        shoppingList.add(new Product("Orange", "42.43"));
-        shoppingList.add(new Product("Apple", "21.00"));
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.99"));
-        shoppingList.add(new Product("Orange", "42.99"));
-        shoppingList.add(new Product("Apple", "42.99"));
-        writeFile();
-        shoppingList.clear();
     }
 }
