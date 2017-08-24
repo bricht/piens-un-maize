@@ -31,8 +31,11 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Intent intent = new Intent(MainMenu.this, dbTestActivity.class);
-        startActivity(intent);
+
+        //GUNTARS: this is my test page.. should be commented out.
+        //Intent intent = new Intent(MainMenu.this, dbTestActivity.class);
+        //startActivity(intent);
+        //END OF GUNTARS:
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
