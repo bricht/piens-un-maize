@@ -39,6 +39,7 @@ public class ShoppingListHandler {
 
     public void writeFile() {
         String data;
+
         try {
             FileOutputStream fos = context.openFileOutput(fileName, MODE_PRIVATE);
 
@@ -51,6 +52,8 @@ public class ShoppingListHandler {
             IOErrorDialog("ShoppingListHandler()", e.getMessage());
         } catch (IOException e) {
             IOErrorDialog("ShoppingListHandler()", e.getMessage());
+        } finally {
+
         }
     }
 

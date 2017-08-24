@@ -16,17 +16,12 @@ import android.widget.TextView;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Product;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity {
-    String filename = "shopping_list.txt";
-    private CustomAdapter listAdapter;
-    private ArrayList<Product> shoppingList = new ArrayList<>();
+    ShoppingListHandler listHandler;
+    private ArrayList<Product> shoppingList;
     private double total = 0;
 
     @Override
@@ -34,13 +29,14 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
-        readShoppingListFile();
+        shoppingList = new ArrayList<>();
+        listHandler = new ShoppingListHandler(this, shoppingList);
+        listHandler.readFile();
+        displayShoppingList(shoppingList);
 
         for (Product product : shoppingList) {
             total += Double.parseDouble(product.getPrice());
         }
-
-        displayShoppingList(shoppingList);
         displayTotal(total);
 
         final Button clearButton = (Button) findViewById(R.id.clear_btn);
@@ -54,71 +50,13 @@ public class ShoppingListActivity extends AppCompatActivity {
         });
     }
 
-    private void readShoppingListFile() {
-        String temp;
-        String[] data = null;
-
-        try {
-            FileInputStream fis = openFileInput(filename);
-            if ( fis != null ) {
-                InputStreamReader isr = new InputStreamReader(fis);
-                BufferedReader br = new BufferedReader(isr);
-
-                while ( (temp = br.readLine()) != null ) {
-                    data = temp.split("\\^");
-                    shoppingList.add(new Product(data[0], data[1]));
-                }
-                fis.close();
-            }
-            else {
-                fis.close();
-                FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
-                fos.close();
-            }
-            // TEMP
-            //else {
-                //ArrayList<Product> tempList = new ArrayList<>();
-                //tempList.add(new Product("Orange", "42.00"));
-                //tempList.add(new Product("Apple", "21.00"));
-                //tempList.add(new Product("Orange", "42.00"));
-                //tempList.add(new Product("Apple", "21.00"));
-                //tempList.add(new Product("Orange", "42.01"));
-                //tempList.add(new Product("Apple", "21.01"));
-                //tempList.add(new Product("Orange", "42.00"));
-                //tempList.add(new Product("Apple", "21.50"));
-                //tempList.add(new Product("Orange", "42.43"));
-                //tempList.add(new Product("Apple", "21.00"));
-                //tempList.add(new Product("Orange", "42.00"));
-                //tempList.add(new Product("Apple", "21.99"));
-                //tempList.add(new Product("Orange", "42.99"));
-                //tempList.add(new Product("Apple", "42.99"));
-                //String data;
-                //try {
-                    //FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
-
-                    //for (Product p : shoppingList) {
-                        //data = p.getName() + "^" + p.getPrice() + "\n";
-                        //fos.write(data.getBytes());
-                    //}
-                    //fos.close();
-                //}
-                //catch (Exception e) {
-                    //e.printStackTrace();
-                //}
-            //}
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
     private void displayShoppingList(ArrayList<Product> inputList) {
         ListView productList = (ListView) findViewById(R.id.productListView);
-        listAdapter = new CustomAdapter(shoppingList, productList.getContext());
+        CustomAdapter listAdapter = new CustomAdapter(shoppingList, productList.getContext());
         productList.setAdapter(listAdapter);
     }
 
-    private void displayTotal(double totalPrice){
+    private void displayTotal(double totalPrice) {
         String total = String.format("%.2f", totalPrice);
         TextView textView = (TextView) findViewById(R.id.totalPrice);
         textView.setText("Total price: " + total);
@@ -146,7 +84,7 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            // This should return ID of the record in local DB (if there is an ID)
+            // This should return ID of the record in local DB
             return 0;
         }
 
