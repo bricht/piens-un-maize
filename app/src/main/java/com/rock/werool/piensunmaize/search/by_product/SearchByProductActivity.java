@@ -62,6 +62,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             scannedProductName = getIntent().getExtras().getString("scannedProductName");     //Recieves the passed parameters
             TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
             productNameTextView.setText(scannedProductName);
+            productNameTextView.setEnabled(false);
         }
 
         remoteDB.FindProductByName(scannedProductName, new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {

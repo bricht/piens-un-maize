@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
+import com.rock.werool.piensunmaize.add.FillWithHandActivity;
 import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
 import com.rock.werool.piensunmaize.remoteDatabase.Product;
 import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
@@ -35,6 +36,11 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     ArrayList<Store> storeSearchResults = new ArrayList<>();            //ListView uses storeSearchResults instead of stores!
     String[][] array;
     RemoteDatabase remoteDB;
+    boolean selectStoreFromEdit = false;
+    Product productForEdit;
+    ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> storesListForEdit;
+    String scannedProductBarcode;
+    Boolean addNewForEdit;
 
     @Override
     protected void onResume() {
@@ -54,6 +60,13 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         setContentView(R.layout.activity_search_by_store);
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
+        if (getIntent().hasExtra("selectStoreFromEdit")) {              //Checks if called from add/edit product activity
+            selectStoreFromEdit = getIntent().getExtras().getBoolean("selectStoreFromEdit");
+            productForEdit = (Product) getIntent().getExtras().getSerializable("Product");
+            scannedProductBarcode = getIntent().getExtras().getString("scannedProductBarcode");
+            addNewForEdit = getIntent().getExtras().getBoolean("addNew");
+        }
+
         remoteDB.FindStoreByNameAndLocation("", "", new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
             @Override
             public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
@@ -65,6 +78,8 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                     array[i][3] = Integer.toString(data.get(i).getId());
                     al.add("q");
                 }
+                storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
+                storesListForEdit.addAll(data);
                 displayListView(al);
             }
 
@@ -113,6 +128,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         private class ViewHolder {
             TextView name;
             TextView address;
+            com.rock.werool.piensunmaize.remoteDatabase.Store store;
             int storeId;
         }
         @Override
@@ -134,64 +150,81 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                 holder.name.setText(array[position][1]);
                 holder.address.setText(array[position][2]);
                 holder.storeId = Integer.parseInt(array[position][3]);
+                holder.store = storesListForEdit.get(position);
 
                 final String clickedStoreName = holder.name.getText().toString();
                 final String clickedStoreAddress = holder.address.getText().toString();
                 final int clickedStoreId = holder.storeId;
+                final com.rock.werool.piensunmaize.remoteDatabase.Store storeForEdit = holder.store;
 
 
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
+                        Intent intent;
+                        if(selectStoreFromEdit) {              //Decides which activity to call depending on the passed parameter
+                            intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
+                        } else {
+                            intent = new Intent(getApplicationContext(), SelectProductActivity.class);
+                        }
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
                         intent.putExtra("clickedStoreId", clickedStoreId);
+                        intent.putExtra("scannedProductBarcode", scannedProductBarcode);    //For FillWitHandActivity
+                        intent.putExtra("Product", productForEdit);
+                        intent.putExtra("Store", storeForEdit);
+                        intent.putExtra("addNew", addNewForEdit);
                         startActivity(intent);
                     }
                 });
                 holder.address.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
+                        Intent intent;
+                        if(selectStoreFromEdit) {              //Decides which activity to call depending on the passed parameter
+                            intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
+                        } else {
+                            intent = new Intent(getApplicationContext(), SelectProductActivity.class);
+                        }
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
                         intent.putExtra("clickedStoreId", clickedStoreId);
+                        intent.putExtra("scannedProductBarcode", scannedProductBarcode);    //For FillWitHandActivity
+                        intent.putExtra("Product", productForEdit);
+                        intent.putExtra("Store", storeForEdit);
+                        intent.putExtra("addNew", addNewForEdit);
+
                         startActivity(intent);
                     }
                 });
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
+                        Intent intent;
+                        if(selectStoreFromEdit) {              //Decides which activity to call depending on the passed parameter
+                            intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
+                        } else {
+                            intent = new Intent(getApplicationContext(), SelectProductActivity.class);
+                        }
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
                         intent.putExtra("clickedStoreId", clickedStoreId);
+                        intent.putExtra("scannedProductBarcode", scannedProductBarcode);    //For FillWitHandActivity
+                        intent.putExtra("Product", productForEdit);
+                        intent.putExtra("Store", storeForEdit);
+                        intent.putExtra("addNew", addNewForEdit);
+
                         startActivity(intent);
                     }
                 });
-                /*
-                holder.check.setOnClickListener(new View.OnClickListener() {            //Ignore this don't delete
-                    public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
-                        Store store = (Store) cb.getTag();
-                        Toast.makeText(getApplicationContext(),
-                                "Clicked on Checkbox: " + cb.getText() +
-                                        " is " + cb.isChecked(),
-                                Toast.LENGTH_LONG).show();
-                        store.setChecked(cb.isChecked());
-                    }
-                });
-                */
             }
             else {
                 holder = (ViewHolder) convertView.getTag();                     //If row is already created then get the holder from it
             }
-            //holder.check.setChecked(store.getChecked());                      //Ignore this
-            //holder.check.setTag(store);
             holder.name.setText(array[position][1]);
             holder.address.setText(array[position][2]);
             holder.storeId = Integer.parseInt(array[position][3]);
+            holder.store = storesListForEdit.get(position);
             return convertView;
         }
     }
@@ -227,6 +260,8 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                             array[i][3] = Integer.toString(data.get(i).getId());
                             al.add("q");
                         }
+                        storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
+                        storesListForEdit.addAll(data);
                         displayListView(al);
                     }
 
