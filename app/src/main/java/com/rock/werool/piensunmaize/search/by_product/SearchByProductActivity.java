@@ -135,16 +135,17 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             TextView averagePrice;
             long productId;
             Space productClckSpace;
-
+            int index;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
             ViewHolder holder = null;
+            View v;
             Log.v("ConvertView", String.valueOf(position));
 
-            if (convertView == null) {
+
+            if (true) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.itemname_price, null);
@@ -157,10 +158,13 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                 holder.name.setText(array[position][0]);
                 holder.averagePrice.setText(array[position][1]);
                 holder.productId = Long.parseLong(array[position][2]);
+                //Log.v("ConvertView", "productId: " + holder.productId);
 
                 final String clickedProductName = holder.name.getText().toString();
                 final String clickedProductAveragePrice = holder.averagePrice.getText().toString();
                 final long clickedProductId = holder.productId;
+
+                Log.v("ConvertView", "productId: " + clickedProductId);
 
                 convertView.setTag(holder);                     //Important! Stores the holder in the View (row)
                 holder.name.setOnClickListener(new View.OnClickListener() {
@@ -183,20 +187,6 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                         startActivity(intent);
                     }
                 });
-
-                /*
-                holder.check.setOnClickListener(new View.OnClickListener() {        //Ignore this don't delete
-                    public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
-                        Product product = (Product) cb.getTag();
-                        Toast.makeText(getApplicationContext(),
-                                "Clicked on Checkbox: " + cb.getText() +
-                                        " is " + cb.isChecked(),
-                                Toast.LENGTH_LONG).show();
-                        product.setChecked(cb.isChecked());
-                    }
-                });
-                */
             }
             else {
                 holder = (ViewHolder) convertView.getTag();                         //If row is already created then get the holder from it
@@ -205,6 +195,8 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             holder.name.setText(array[position][0]);
             holder.averagePrice.setText(array[position][1]);
             holder.productId = Long.parseLong(array[position][2]);
+            //Log.v("ConvertView", "productId: " + holder.productId);
+
 
             return convertView;
         }

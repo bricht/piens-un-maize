@@ -154,7 +154,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             ViewHolder holder = null;
             Log.v("ConvertView", String.valueOf(position));
 
-            if (convertView == null) {
+            if (true) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.storename_address, null);
