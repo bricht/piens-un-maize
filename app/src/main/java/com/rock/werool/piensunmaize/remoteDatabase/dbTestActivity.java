@@ -20,6 +20,8 @@ public class dbTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db_test);
+
+
         db = new RemoteDatabase(getResources().getString(R.string.database_url), this);
 
         final Button button = (Button)findViewById(R.id.btn_db_test);
@@ -28,10 +30,10 @@ public class dbTestActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.GetFavoriteStores(new IDatabaseResponseHandler<Store>() {
+                db.DeleteFavoriteProduct(new Product(12, "", "", "", 0.0),new IDatabaseResponseHandler<String>() {
                     @Override
-                    public void onArrive(ArrayList<Store> data) {
-                        text.setText(data.get(0).getId());
+                    public void onArrive(ArrayList<String> data) {
+                        text.setText(data.get(0));
                     }
 
                     @Override

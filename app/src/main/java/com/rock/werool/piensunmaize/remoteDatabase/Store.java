@@ -3,11 +3,13 @@ package com.rock.werool.piensunmaize.remoteDatabase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by guntt on 17.08.2017.
  */
 
-public class Store {
+public class Store implements Serializable {
 
     public static final String TAG_ID = "s_id";
     public static final String TAG_NAME = "s_name";

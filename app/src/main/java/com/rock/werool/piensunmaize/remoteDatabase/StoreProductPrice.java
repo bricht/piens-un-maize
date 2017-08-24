@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.sql.Date;
 
@@ -14,17 +15,7 @@ import java.sql.Date;
  * Created by guntt on 17.08.2017.
  */
 
-public class StoreProductPrice {
-
-    //public static final String TAG_PRODUCT_ID = "p_id";
-    //public static final String TAG_PRODUCT_NAME = "p_name";
-    //public static final String TAG_PRODUCT_CATEGORY = "p_category";
-    //public static final String TAG_PRODUCT_DESCRIPTION = "p_descript";
-    //public static final String TAG_PRODUCT_AVERAGE_PRICE = "p_price";
-
-    //public static final String TAG_STORE_ID = "s_id";
-    //public static final String TAG_STORE_NAME = "s_name";
-    //public static final String TAG_STORE_LOCATION = "s_location";
+public class StoreProductPrice implements Serializable {
 
     public static final String TAG_PRICE = "spp_price";
     public static final String TAG_LAST_UPDATED = "spp_last_update";
