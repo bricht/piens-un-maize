@@ -14,11 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
+import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
+import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
 import com.rock.werool.piensunmaize.search.by_store.SelectProductActivity;
@@ -31,36 +35,59 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
     ArrayList<Store> stores = new ArrayList<>();
     ArrayList<Store> storeSearchResults = new ArrayList<>();            //ListView uses storeSearchResults instead of stores!
     String[][] array;
+    RemoteDatabase remoteDB;
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(SearchStoreSQL , new IntentFilter ("QUERY_RESULT"));
+        //registerReceiver(SearchStoreSQL , new IntentFilter ("QUERY_RESULT"));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(SearchStoreSQL);
+        //unregisterReceiver(SearchStoreSQL);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_stores);
-        Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
-        intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
-        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO may need to turn to lowercase
-        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, "");       //All stores
-        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, "");     //All addresses
-        startService(intentForSQL);             //Starts SQLite intent service
-        Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
+        remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
+        remoteDB.GetFavoriteStores(new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+            @Override
+            public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                array = new String[data.size()][4];
+                ArrayList<String> al = new ArrayList<>();
+                for (int i = 0; i < data.size(); i++) {
+                    array[i][1] = data.get(i).getName();
+                    array[i][2] = data.get(i).getLocation();
+                    array[i][3] = Integer.toString(data.get(i).getId());
+                    al.add("q");
+                }
+                displayListView(al);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                String message = error.getMessage();
+                array = null;
+            }
+        });
+//        Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
+//        intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRICE);     //Price for specific product
+//        intentForSQL.putExtra(SQLiteQuery.SRC_NAME, (String) null);     //TODO may need to turn to lowercase
+//        intentForSQL.putExtra(SQLiteQuery.SRC_STORE, "");       //All stores
+//        intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, "");     //All addresses
+//        startService(intentForSQL);             //Starts SQLite intent service
+//        Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
     }
+
     private void displayListView(ArrayList<String> inputArray) {
 
         dataAdapter = new MyCustomAdapter(this, R.layout.storename_address_remove, inputArray);
-        ListView listView = (ListView)findViewById(R.id.listviewfavouritestore);
+        ListView listView = (ListView) findViewById(R.id.listviewfavouritestore);
         listView.setAdapter(dataAdapter);
     }
 
@@ -76,31 +103,41 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
             this.storeArray = storeList;
             this.context = context;
         }
+
         private class ViewHolder {
             TextView name;
             TextView address;
+            int storeId;
+            ImageView remove;
         }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
             Log.v("ConvertView", String.valueOf(position));
 
             if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(
+                LayoutInflater vi = (LayoutInflater) getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.storename_address_remove, null);
 
                 holder = new ViewHolder();                              //makes holder object with the values of the fields
                 holder.name = (TextView) convertView.findViewById(R.id.favStoreName);
                 holder.address = (TextView) convertView.findViewById(R.id.favStoreAddress);
+                holder.remove = (ImageView) convertView.findViewById(R.id.removeFromFav1);
 
                 convertView.setTag(holder);                             //Important! Stores the holder in the View (row)
 
+
+
                 holder.name.setText(array[position][1]);
                 holder.address.setText(array[position][2]);
+                holder.storeId = Integer.parseInt(array[position][3]);
 
+                final int positionOfElement = position;
                 final String clickedStoreName = holder.name.getText().toString();
                 final String clickedStoreAddress = holder.address.getText().toString();
+                final int clickedStoreId = holder.storeId;
 
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -108,6 +145,7 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
                         Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedStoreId", clickedStoreId);
                         startActivity(intent);
                     }
                 });
@@ -117,6 +155,7 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
                         Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedStoreId", clickedStoreId);
                         startActivity(intent);
                     }
                 });
@@ -126,9 +165,37 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
                         Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);
                         intent.putExtra("clickedStoreName", clickedStoreName);      //Passes parameters to the activity
                         intent.putExtra("clickedStoreAddress", clickedStoreAddress);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedStoreId", clickedStoreId);
                         startActivity(intent);
                     }
                 });
+                holder.remove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {        //TODO implement actions on click
+                        com.rock.werool.piensunmaize.remoteDatabase.Store tempStore = new com.rock.werool.piensunmaize.remoteDatabase.Store(clickedStoreId, clickedStoreName, clickedStoreAddress);
+
+                        remoteDB.DeleteFavoriteStore(tempStore, new IDatabaseResponseHandler<String>() {
+                            @Override
+                            public void onArrive(ArrayList<String> data) {
+                            }
+                            @Override
+                            public void onError(VolleyError error) {
+                            }
+                        });
+
+                        storeArray.remove(positionOfElement);
+                        String[][] array1 = new String[array.length-1][4];
+                        for (int i = 0; i < array.length; i++) {
+                            while (i != positionOfElement) {
+                            array1[i][1] = array[i][1];
+                            array1[i][2] = array[i][2];
+                            array1[i][3] = array[i][3];
+                            }
+                        }
+                        notifyDataSetChanged();
+                    }
+                });
+
                 /*
                 holder.check.setOnClickListener(new View.OnClickListener() {            //Ignore this don't delete
                     public void onClick(View v) {
@@ -142,17 +209,18 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
                     }
                 });
                 */
-            }
-            else {
+            } else {
                 holder = (ViewHolder) convertView.getTag();                     //If row is already created then get the holder from it
             }
             //holder.check.setChecked(store.getChecked());                      //Ignore this
             //holder.check.setTag(store);
             holder.name.setText(array[position][1]);
             holder.address.setText(array[position][2]);
+            holder.storeId = Integer.parseInt(array[position][3]);
             return convertView;
         }
     }
+}
 
 //    private void addSearchBarListener(EditText textFieldForListener) {                               //Updates results in ListView
 //        final EditText searchStoreName = (EditText)findViewById(R.id.searchStoreNameText);
@@ -191,25 +259,25 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
 
     };
     */
-    BroadcastReceiver SearchStoreSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
-        @Override
-        public void onReceive(Context context, Intent intent) {
-//            Intent intentForService = new Intent();
-//            intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
-//            intentForService.putExtra("currentQuery", "SEND_STORENAME_GET_PRODUCTNAME_PRODUCTPRICE");
-            Bundle bun = intent.getBundleExtra(SQLiteQuery.QUERY_RESULT);
-            array = (String[][]) bun.getSerializable("String[][]");
-            ArrayList<String> array1D = new ArrayList<>();
-            if (array != null) {
-                //array1D = new String[array.length];
-                for (int i = 0; i < array.length; i++) {
-                    array1D.add(array[i][0]);
-                }
-            }
-            displayListView(array1D);
-        }
-    };
-}
+//    BroadcastReceiver SearchStoreSQL = new BroadcastReceiver() {              //Receives broadcast from SQLite database class
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+////            Intent intentForService = new Intent();
+////            intentForService.putExtra("Cursor", "PLACEHOLDER");     //TODO use real cursor
+////            intentForService.putExtra("currentQuery", "SEND_STORENAME_GET_PRODUCTNAME_PRODUCTPRICE");
+//            Bundle bun = intent.getBundleExtra(SQLiteQuery.QUERY_RESULT);
+//            array = (String[][]) bun.getSerializable("String[][]");
+//            ArrayList<String> array1D = new ArrayList<>();
+//            if (array != null) {
+//                //array1D = new String[array.length];
+//                for (int i = 0; i < array.length; i++) {
+//                    array1D.add(array[i][0]);
+//                }
+//            }
+//            displayListView(array1D);
+//        }
+//    };
+//}
 
 
 //package com.rock.werool.piensunmaize.favourites;
