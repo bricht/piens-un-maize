@@ -11,6 +11,7 @@
         layout="@layout/toolbar" />
 
     <EditText
+        style="@style/myForms"
         android:id="@+id/searchStoreNameText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -25,9 +26,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="5dp" />
 
     <EditText
+        style="@style/myForms"
         android:id="@+id/searchStoreAddressText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,7 +37,7 @@
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:ems="10"
         android:hint="@string/search_by_store_edit_text_address"
         android:inputType="textPersonName"
@@ -52,7 +54,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/search_by_store_switch"
-        android:textSize="20sp"
+        android:textColor="@color/textColorSlightlyTransparent"
+        android:textSize="18sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchStoreAddressText" />
 
@@ -79,6 +82,7 @@
         android:layout_marginBottom="8dp" />
 
     <ListView
+        style="@style/myListViews"
         android:id="@+id/listviewsearchstore"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -88,8 +92,6 @@
         android:layout_marginRight="0dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_background"
-        android:divider="@android:color/white"
-        android:dividerHeight="1dp"
         android:isScrollContainer="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

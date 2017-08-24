@@ -33,6 +33,7 @@
         android:layout_marginBottom="8dp" />
 
     <TextView
+        style="@style/MyTextViewStyle"
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -47,6 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <ListView
+        style="@style/myListViews"
         android:id="@+id/listviewfavouriteproduct"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -56,8 +58,6 @@
         android:layout_marginRight="0dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_background"
-        android:divider="@android:color/white"
-        android:dividerHeight="3dp"
         android:isScrollContainer="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
