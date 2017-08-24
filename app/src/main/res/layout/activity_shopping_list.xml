@@ -52,16 +52,17 @@
     <Button
         android:id="@+id/clear_btn"
         android:layout_width="80dp"
-        android:layout_height="40dp"
+        android:layout_height="41dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="25dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/rounded_button"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:text="@string/shopping_list_button"
-        tools:layout_editor_absoluteX="280dp"
-        app:layout_constraintTop_toBottomOf="@+id/activityTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/activityTitle"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/topLayout" />
 
     <TextView
         android:id="@+id/activityTitle"
