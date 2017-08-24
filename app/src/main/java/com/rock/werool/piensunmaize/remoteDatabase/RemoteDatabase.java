@@ -46,7 +46,7 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_PRODUCT_BY_CATEGORY = "findProductByCategory.php";
     private static final String ACTION_FIND_PORDUCT_BY_STRING_KEY = "findProductByStringKey.php";
     private static final String ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID = "findProductByNameAndStoreID.php";
-    private static final String ACTION_FIND_PORDUCT_BY_ID = "findProductByID.php";
+    private static final String ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_IN_FAVORITES = "findProductsByNameAndStoreInFavorites.php";
 
 
     private static final String ACTION_FIND_STORE_BY_NAME = "findStoreByName";
@@ -54,7 +54,8 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_STORE_BY_STRING_KEY = "findStoreByStringKey.php";
     private static final String ACTION_FIND_STORE_BY_NAME_AND_LOCATION = "findStoreByNameAndLocation.php";
     private static final String ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT = "findStoreByNameLocationAndProduct.php";
-    private static final String ACTION_FIND_STORE_BY_NAME_lOCATION_AND_PRODUCT_IN_FAVORITES = "findStoreByNameLocationAndProductInFavorites.php";
+    private static final String ACTION_FIND_STORE_BY_NAME_lOCATION_AND_PRODUCT_IN_FAVORITES =
+            "findStoreByNameLocationAndProductInFavorites.php";
 
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
     private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
@@ -238,6 +239,22 @@ public class RemoteDatabase {
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnProduct(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
+    }
+
+
+    public void FindProductByNameAndStoreInFavorites(
+            Store store, String productName, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
+
+        String requestUrl = removeWhiteSpaceFromUrl(createStoreParamUrl(
+                store, ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_IN_FAVORITES) + "&" +
+                Product.TAG_NAME + "=" + productName + "&" +
+                User.TAG_ID + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastStoreProductPriceHandler = responseHandler;
+
     }
 
 
