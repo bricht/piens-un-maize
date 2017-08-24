@@ -29,6 +29,7 @@ public class RemoteDatabase {
     private static final String ACTION_ADD_STORE = "addStore.php";
     private static final String ACTION_ADD_STOREPRODUCTPRICE = "addStoreProductPrice.php";
     private static final String ACTION_ADD_BARCODE = "addBarcode.php";
+    private static final String ACTION_ADD_PRODUCT_AND_BARCODE = "addProductAndBarcode.php";
 
     private static final String ACTION_UPDATE_PRODUCT = "updateProduct.php";
     private static final String ACTION_UPDATE_STORE = "updateStore.php";
@@ -60,6 +61,8 @@ public class RemoteDatabase {
 
     private static final String ACTION_GET_FAVORITE_PRODUCTS = "getFavoriteProducts.php";
     private static final String ACTION_GET_FAVORITE_STORES = "getFavoriteStores.php";
+    private static final String ACTION_SET_FAVORITE_PRODUCT = "setFavoriteProduct.php";
+    private static final String ACTION_SET_FAVORITE_STORE = "setFavoriteStore.php";
 
     private static final String ACTION_GET_NEW_USER_ID = "getNewUserID.php";
 
@@ -90,6 +93,19 @@ public class RemoteDatabase {
 
     public void AddProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_ADD_PRODUCT, product, responseHandler);
+    }
+
+
+    // Use this for barcode scan to add new products
+    public void AddProductAndBarcode(Product product, String barcode, IDatabaseResponseHandler<String> responseHandler) {
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url +
+                        createProductParamUrl(product,ACTION_ADD_PRODUCT_AND_BARCODE) + "&" +
+                        Barcode.TAG_BARCODE + "=" + barcode);
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnString(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
     }
 
     public void AddStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
@@ -281,24 +297,59 @@ public class RemoteDatabase {
 
     // DON NOT USES THIS..
     public void GetFavoriteProducts(int userID, IDatabaseResponseHandler<Product> responseHandler) {
-
-
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + ACTION_GET_FAVORITE_PRODUCTS + "?" +
+                        User.TAG_ID + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnProduct(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastProductHandler = responseHandler;
     }
 
     //DO NOT USE THIS
     public void GetFavoriteStores(int userID, IDatabaseResponseHandler<Store> responseHandler) {
-        //TODO implemtns this !!!!!
-        String data = "";
-        FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, data , responseHandler);
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + ACTION_GET_FAVORITE_STORES + "?" +
+                        User.TAG_ID + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnStore(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
         this.lastStoreHandler = responseHandler;
     }
 
-    public void GetNewUserId(String bullshitAboutUser, IDatabaseResponseHandler<String> responseHandler) {
-        String requestUrl = this.url + ACTION_GET_NEW_USER_ID + "?" + User.TAG_DATA + "=" + bullshitAboutUser;
+    public void SetFavoriteStore(int storeID, IDatabaseResponseHandler<String> responseHandler) {
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + ACTION_SET_FAVORITE_STORE + "?" + Store.TAG_NAME + "=" + storeID + "&" +
+                            User.TAG_ID + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,
                         new OnString(responseHandler), new OnError(responseHandler));
         this.ExecuteStringRequest(strRequest);
+    }
+
+    public void SetFavoriteProduct(int productID, IDatabaseResponseHandler<String> responseHandler) {
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + ACTION_SET_FAVORITE_PRODUCT + "?" +Product.TAG_NAME + "=" + productID + "&" +
+                        User.TAG_ID + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnString(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+    }
+
+    public void GetNewUserId(String bullshitAboutUser, IDatabaseResponseHandler<String> responseHandler) {
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + ACTION_GET_NEW_USER_ID + "?" + User.TAG_DATA + "=" + bullshitAboutUser);
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnString(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+    }
+
+    public void SetUserIdentity(){
+        UserIdentity ui = new UserIdentity(this, context);
     }
 
 
@@ -471,6 +522,7 @@ public class RemoteDatabase {
 
                         for(int i = 0; i < jarray.length(); i++) {
                             JSONObject jobj = jarray.getJSONObject(i);
+                            data.add(new StoreProductPrice(jobj));
                             data.add(new StoreProductPrice(jobj));
                         }
 

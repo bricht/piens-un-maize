@@ -23,7 +23,6 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        startActivity(new Intent(this, ClearDbActivity.class));
 
         //SHOW ICON
         getSupportActionBar().setLogo(R.mipmap.applogo);
