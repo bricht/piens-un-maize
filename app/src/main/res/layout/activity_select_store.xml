@@ -16,7 +16,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="@string/select_store_edit_text_name"
+        android:hint="Store name"
         android:inputType="textPersonName"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -33,7 +33,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="@string/select_store_edit_text_address"
+        android:hint="Store address"
         android:inputType="textPersonName"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -103,11 +103,11 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/addToFavouritesStore"
+        app:layout_constraintRight_toLeftOf="@+id/addToFavouritesProduct"
         android:layout_marginRight="8dp" />
 
     <ImageView
-        android:id="@+id/addToFavouritesStore"
+        android:id="@+id/addToFavouritesProduct"
         android:layout_width="35dp"
         android:layout_height="35dp"
         app:srcCompat="@drawable/add_favourite"
