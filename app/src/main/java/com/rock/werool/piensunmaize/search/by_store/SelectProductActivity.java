@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
@@ -64,11 +65,12 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                 remoteDB.SetFavoriteStore(clickedStoreId, new IDatabaseResponseHandler<String>() {
                     @Override
                     public void onArrive(ArrayList<String> data) {
-
+                        Toast.makeText(getApplicationContext(), "Store added to favourites", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error adding store to favourites", Toast.LENGTH_SHORT).show();
 
                     }
                 });

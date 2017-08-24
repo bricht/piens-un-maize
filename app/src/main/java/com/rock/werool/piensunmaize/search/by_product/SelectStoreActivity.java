@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
@@ -29,7 +30,6 @@ import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
 
 import java.util.ArrayList;
-
 
 public class SelectStoreActivity extends AppCompatActivity {
     MyCustomAdapter dataAdapter;
@@ -66,12 +66,12 @@ public class SelectStoreActivity extends AppCompatActivity {
                 remoteDB.SetFavoriteProduct((int)clickedProductId, new IDatabaseResponseHandler<String>() {
                     @Override
                     public void onArrive(ArrayList<String> data) {
-
+                        Toast.makeText(getApplicationContext(), "Product added to favourites", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(VolleyError error) {
-
+                        Toast.makeText(getApplicationContext(), "Error adding product to favourites", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
