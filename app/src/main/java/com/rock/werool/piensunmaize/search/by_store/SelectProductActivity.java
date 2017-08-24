@@ -199,8 +199,8 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                     @Override
                     public void onClick(View view) {        //TODO implement actions on click
                         Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
-                        shoppingListHandler.add(array[position][1], array[position][2]);
-
+                        shoppingListHandler.add(array[position][0], array[position][1]);
+                        Toast.makeText(context, "Product added to shopping list", Toast.LENGTH_SHORT).show();
                     }
                 });
                 holder.name.setOnClickListener(new View.OnClickListener() {
