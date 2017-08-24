@@ -172,7 +172,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
             MyCustomAdapter.ViewHolder holder = null;
             Log.v("ConvertView", String.valueOf(position));
 
-            if (convertView == null) {
+            if (true) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.itemname_price_addtolist, null);
