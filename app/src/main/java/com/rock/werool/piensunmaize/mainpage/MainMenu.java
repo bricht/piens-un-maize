@@ -1,11 +1,16 @@
 package com.rock.werool.piensunmaize.mainpage;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toolbar;
+
 
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.ClearDbActivity;
@@ -25,12 +30,17 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         startActivity(new Intent(this, ClearDbActivity.class));
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         //SHOW ICON
         getSupportActionBar().setLogo(R.mipmap.applogo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setIcon(R.mipmap.applogo);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         // /SHOW ICON
+        Spannable word = new SpannableString("bread n milk");
+        word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(word);
 
         //setContentView(R.layout.checkbox_list);
         //Intent intent = new Intent(this, BarcodeScanner.class);
