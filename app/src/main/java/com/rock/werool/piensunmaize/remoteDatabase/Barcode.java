@@ -3,11 +3,13 @@ package com.rock.werool.piensunmaize.remoteDatabase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by guntt on 17.08.2017.
  */
 
-public class Barcode {
+public class Barcode implements Serializable{
 
     public static final String TAG_BARCODE = "b_barcode";
     public static final String TAG_PRODUCT_ID = "b_productID";

@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
@@ -20,7 +21,8 @@ import java.util.ArrayList;
 
 public class UserIdentity {
 
-    private static final String FILE_NAME = "piens_un_maize.user";
+    private static final String FILE_NAME = "user.pum";
+    private static final String FOLDER_NAME = "piensunmaize";
 
     private Integer id;
     private boolean validID = false;
@@ -30,23 +32,26 @@ public class UserIdentity {
     }
 
     private void Initialize(RemoteDatabase db, final Context context) {
-        File file = new File(FILE_NAME);
+        File file = new File(context.getFilesDir() + File.separator, FILE_NAME);
         if(!file.exists()) {
             db.GetNewUserId("random user v 1.0", new IDatabaseResponseHandler<String>() {
                 @Override
                 public void onArrive(ArrayList<String> data) {
-                    if(data.size() == 1) {
-                        try {
-                            id = Integer.parseInt(data.get(0));
-                            FileOutputStream fos = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
-                            ObjectOutputStream os = new ObjectOutputStream(fos);
-                            os.writeObject(UserIdentity.this.id);
-                            os.close();
-                            fos.close();
-                            UserIdentity.this.validID = true;
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
+                    if (data.size() == 1) {
+
+                            ObjectOutput out = null;
+
+                            try {
+                                id = parseInteger(data.get(0));
+                                out = new ObjectOutputStream(new FileOutputStream(
+                                        new File(context.getFilesDir() + File.separator + FILE_NAME)));
+                                out.writeObject(id);
+                                out.close();
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                     }
                 }
 
@@ -56,14 +61,16 @@ public class UserIdentity {
                 }
             });
         } else {
+
             FileInputStream fis = null;
             try {
-                fis = context.openFileInput(FILE_NAME);
+                fis = new FileInputStream(new File(context.getFilesDir() + File.separator + FILE_NAME));
                 ObjectInputStream is = new ObjectInputStream(fis);
                 UserIdentity.this.id = (Integer) is.readObject();
                 is.close();
                 fis.close();
                 UserIdentity.this.validID = true;
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -71,6 +78,7 @@ public class UserIdentity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -79,5 +87,9 @@ public class UserIdentity {
             return this.id.intValue();
         }
         return -1;
+    }
+
+    private int parseInteger(String integer) {
+        return Integer.parseInt(integer.replaceAll(" ", ""));
     }
 }

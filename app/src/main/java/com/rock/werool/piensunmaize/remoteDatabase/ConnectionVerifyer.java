@@ -23,8 +23,6 @@ import static android.R.attr.timePickerDialogTheme;
  * Created by guntt on 22.08.2017.
  */
 
-
-
 public class ConnectionVerifyer {
 
     public static final String ACTION_VERIFY_CONNECTION = "verifyConnection.php";

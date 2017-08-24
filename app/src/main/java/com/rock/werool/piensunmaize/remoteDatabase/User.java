@@ -1,10 +1,12 @@
 package com.rock.werool.piensunmaize.remoteDatabase;
 
+import java.io.Serializable;
+
 /**
  * Created by guntt on 24.08.2017.
  */
 
-public class User {
+public class User implements Serializable {
 
     public final static String TAG_ID = "u_id";
     public final static String TAG_DATA = "u_data";

@@ -20,8 +20,11 @@ import android.widget.ListView;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
+import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
+import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 
@@ -32,6 +35,8 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     ArrayList<Product> products = new ArrayList<>();
     ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
     String [][] array;
+    String scannedProductName = "";
+    RemoteDatabase remoteDB;
 
     @Override
     protected void onResume() {
@@ -51,12 +56,35 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_product);
+        remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
+
         if (getIntent().hasExtra("scannedProductName")) {
-            String scannedProductName = getIntent().getExtras().getString("scannedProductName");     //Recieves the passed parameters
+            scannedProductName = getIntent().getExtras().getString("scannedProductName");     //Recieves the passed parameters
             TextView productNameTextView = (TextView) findViewById(R.id.searchProductText);
             productNameTextView.setText(scannedProductName);
         }
 
+        remoteDB.FindProductByName(scannedProductName, new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
+            @Override
+            public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
+                array = new String[data.size()][3];
+                ArrayList<String> al = new ArrayList<>();
+                for (int i = 0; i < data.size(); i++) {
+                    array[i][0] = data.get(i).getName();
+                    array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
+                    array[i][2] = Long.toString(data.get(i).getId());
+                    al.add("q");
+                }
+                displayListView(al);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+
+        /*
         Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
         intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
         intentForSQL.putExtra(SQLiteQuery.SRC_NAME, "");     //All products
@@ -64,6 +92,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
         intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
         startService(intentForSQL);             //Starts SQLite intent service
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
+        */
 
         addSearchBarListener();
     }
@@ -85,6 +114,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
         private class ViewHolder {
             TextView name;
             TextView averagePrice;
+            long productId;
             Space productClckSpace;
 
         }
@@ -107,9 +137,11 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
                 holder.name.setText(array[position][0]);
                 holder.averagePrice.setText(array[position][1]);
+                holder.productId = Long.parseLong(array[position][2]);
 
                 final String clickedProductName = holder.name.getText().toString();
                 final String clickedProductAveragePrice = holder.averagePrice.getText().toString();
+                final long clickedProductId = holder.productId;
 
                 convertView.setTag(holder);                     //Important! Stores the holder in the View (row)
                 holder.name.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +150,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                         Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
                         intent.putExtra("clickedProductName", clickedProductName);      //Passes parameters to the activity
                         intent.putExtra("clickedProductAveragePrice", clickedProductAveragePrice);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedProductId", clickedProductId);
                         startActivity(intent);
                     }
                 });
@@ -127,6 +160,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                         Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
                         intent.putExtra("clickedProductName", clickedProductName);      //Passes parameters to the activity
                         intent.putExtra("clickedProductAveragePrice", clickedProductAveragePrice);    //.putExtra(variableName, variableValue)
+                        intent.putExtra("clickedProductId", clickedProductId);
                         startActivity(intent);
                     }
                 });
@@ -166,6 +200,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                /*
                 Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
                 intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product
                 intentForSQL.putExtra(SQLiteQuery.SRC_NAME, search.getText().toString());     //TODO may need to turn to lowercase
@@ -173,6 +208,26 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                 intentForSQL.putExtra(SQLiteQuery.SRC_ADDRESS, (String) null);
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
+                */
+                remoteDB.FindProductByName(search.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
+                    @Override
+                    public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
+                        array = new String[data.size()][3];
+                        ArrayList<String> al = new ArrayList<>();
+                        for (int i = 0; i < data.size(); i++) {
+                            array[i][0] = data.get(i).getName();
+                            array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
+                            array[i][2] = Long.toString(data.get(i).getId());
+                            al.add("q");
+                        }
+                        displayListView(al);
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+
+                    }
+                });
             }
 
             @Override
