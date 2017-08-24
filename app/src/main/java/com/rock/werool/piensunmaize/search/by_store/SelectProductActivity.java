@@ -32,6 +32,7 @@ import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.remoteDatabase.StoreProductPrice;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
+import com.rock.werool.piensunmaize.shoppingList.ShoppingListHandler;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
     int clickedStoreId;
     String[][] array;
     RemoteDatabase remoteDB;
+    ShoppingListHandler shoppingListHandler;
 
     @Override
     protected void onResume() {
@@ -75,6 +77,8 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         getSupportActionBar().setTitle(word);
 
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
+
+        shoppingListHandler = new ShoppingListHandler(this);
 
         ImageView buttonFav = (ImageView) findViewById(R.id.addToFavouritesStore);
         buttonFav.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +171,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
             MyCustomAdapter.ViewHolder holder = null;
             Log.v("ConvertView", String.valueOf(position));
@@ -195,6 +199,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                     @Override
                     public void onClick(View view) {        //TODO implement actions on click
                         Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
+                        shoppingListHandler.add(array[position][1], array[position][2]);
 
                     }
                 });

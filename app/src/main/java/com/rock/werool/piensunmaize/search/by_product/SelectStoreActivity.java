@@ -33,6 +33,7 @@ import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.remoteDatabase.StoreProductPrice;
 import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 import com.rock.werool.piensunmaize.search.Store;
+import com.rock.werool.piensunmaize.shoppingList.ShoppingListHandler;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,7 @@ public class SelectStoreActivity extends AppCompatActivity {
     String [][] array;
     RemoteDatabase remoteDB;
     ImageView buttonFav;
+    ShoppingListHandler shoppingListHandler;
     @Override
     protected void onResume() {
         super.onResume();
@@ -75,6 +77,7 @@ public class SelectStoreActivity extends AppCompatActivity {
 
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
+        shoppingListHandler = new ShoppingListHandler(this);
 
         buttonFav = (ImageView) findViewById(R.id.addToFavouritesProduct);
         buttonFav.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +177,7 @@ public class SelectStoreActivity extends AppCompatActivity {
             ImageView cart;
         }
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             MyCustomAdapter.ViewHolder holder = null;
             Log.v("ConvertView", String.valueOf(position));
 
@@ -214,7 +217,8 @@ public class SelectStoreActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {        //TODO implement actions on click
                         Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);
-
+                        shoppingListHandler.add(array[position][1], array[position][3]);
+                        Toast.makeText(context, "Product added to shopping list", Toast.LENGTH_SHORT).show();
                     }
                 });
                 convertView.setOnClickListener(new View.OnClickListener() {

@@ -13,8 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_APPEND;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ShoppingListHandler {
@@ -72,11 +74,20 @@ public class ShoppingListHandler {
         }
     }
 
-    public void add(Product product) {
+    public void add(String product, String price) {
         createFile();
-        shoppingList.add(shoppingList.size(), product);
+        shoppingList.add(shoppingList.size(), new Product(product, price));
+        String data = product + "^" + price + "\n";
 
-        // TODO: WORK IN PROGRESS
+        try {
+            FileOutputStream fos = context.openFileOutput(fileName, MODE_APPEND);
+            fos.write(data.getBytes());
+            fos.close();
+        } catch (FileNotFoundException e) {
+            IOErrorDialog("ShoppingListHandler()", e.getMessage());
+        } catch (IOException e) {
+            IOErrorDialog("ShoppingListHandler()", e.getMessage());
+        }
     }
 
     public void remove(int id) {
