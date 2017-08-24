@@ -4,10 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +63,19 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_by_store);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //SHOW ICON
+        getSupportActionBar().setLogo(R.mipmap.applogo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.applogo);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // /SHOW ICON
+        Spannable word = new SpannableString("bread n milk");
+        word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(word);
+
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
         if (getIntent().hasExtra("selectStoreFromEdit")) {              //Checks if called from add/edit product activity

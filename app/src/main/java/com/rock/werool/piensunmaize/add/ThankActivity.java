@@ -19,6 +19,8 @@ public class ThankActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thank);
 
+        
+
         handler = new Handler();
 
         handler.postDelayed(new Runnable() {
