@@ -16,15 +16,17 @@ import android.widget.TextView;
 import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.search.Product;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity {
+    String filename = "shopping_list.txt";
     private CustomAdapter listAdapter;
-    // TODO: ? store/access shopping list in/from the local DB
-    // TODO: change arrayList to an Array
     private ArrayList<Product> shoppingList = new ArrayList<>();
-    private String[][] shoppingListArray;
     private double total = 0;
 
     @Override
@@ -32,30 +34,13 @@ public class ShoppingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
-        // read from shopping_list.txt
-
-        // TEMPORARY ITEMS
-
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.00"));
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.00"));
-        shoppingList.add(new Product("Orange", "42.01"));
-        shoppingList.add(new Product("Apple", "21.01"));
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.50"));
-        shoppingList.add(new Product("Orange", "42.43"));
-        shoppingList.add(new Product("Apple", "21.00"));
-        shoppingList.add(new Product("Orange", "42.00"));
-        shoppingList.add(new Product("Apple", "21.99"));
-        shoppingList.add(new Product("Orange", "42.99"));
-        shoppingList.add(new Product("Apple", "42.99"));
+        readShoppingListFile();
 
         for (Product product : shoppingList) {
             total += Double.parseDouble(product.getPrice());
         }
 
-        displayListView(shoppingList);
+        displayShoppingList(shoppingList);
         displayTotal(total);
 
         final Button clearButton = (Button) findViewById(R.id.clear_btn);
@@ -64,12 +49,70 @@ public class ShoppingListActivity extends AppCompatActivity {
                 total = 0;
                 displayTotal(total);
                 shoppingList.clear();
-                displayListView(shoppingList);
+                displayShoppingList(shoppingList);
             }
         });
     }
 
-    private void displayListView(ArrayList<Product> inputList) {
+    private void readShoppingListFile() {
+        String temp;
+        String[] data = null;
+
+        try {
+            FileInputStream fis = openFileInput(filename);
+            if ( fis != null ) {
+                InputStreamReader isr = new InputStreamReader(fis);
+                BufferedReader br = new BufferedReader(isr);
+
+                while ( (temp = br.readLine()) != null ) {
+                    data = temp.split("\\^");
+                    shoppingList.add(new Product(data[0], data[1]));
+                }
+                fis.close();
+            }
+            else {
+                fis.close();
+                FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
+                fos.close();
+            }
+            // TEMP
+            //else {
+                //ArrayList<Product> tempList = new ArrayList<>();
+                //tempList.add(new Product("Orange", "42.00"));
+                //tempList.add(new Product("Apple", "21.00"));
+                //tempList.add(new Product("Orange", "42.00"));
+                //tempList.add(new Product("Apple", "21.00"));
+                //tempList.add(new Product("Orange", "42.01"));
+                //tempList.add(new Product("Apple", "21.01"));
+                //tempList.add(new Product("Orange", "42.00"));
+                //tempList.add(new Product("Apple", "21.50"));
+                //tempList.add(new Product("Orange", "42.43"));
+                //tempList.add(new Product("Apple", "21.00"));
+                //tempList.add(new Product("Orange", "42.00"));
+                //tempList.add(new Product("Apple", "21.99"));
+                //tempList.add(new Product("Orange", "42.99"));
+                //tempList.add(new Product("Apple", "42.99"));
+                //String data;
+                //try {
+                    //FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE);
+
+                    //for (Product p : shoppingList) {
+                        //data = p.getName() + "^" + p.getPrice() + "\n";
+                        //fos.write(data.getBytes());
+                    //}
+                    //fos.close();
+                //}
+                //catch (Exception e) {
+                    //e.printStackTrace();
+                //}
+            //}
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void displayShoppingList(ArrayList<Product> inputList) {
         ListView productList = (ListView) findViewById(R.id.productListView);
         listAdapter = new CustomAdapter(shoppingList, productList.getContext());
         productList.setAdapter(listAdapter);
@@ -110,6 +153,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
+
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.itemname_price_remove, null);
@@ -136,7 +180,4 @@ public class ShoppingListActivity extends AppCompatActivity {
             return view;
         }
     }
-
-    // (maybe) Add method and button to add products to the shopping list
-    // Clicking the button could open the product searching activity.
 }
