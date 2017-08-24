@@ -57,6 +57,25 @@ public class SelectStoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_store);
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
+        ImageView buttonFav;
+        buttonFav = (ImageView) findViewById(R.id.addToFavouritesProduct);
+        buttonFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remoteDB.SetFavoriteProduct((int)clickedProductId, new IDatabaseResponseHandler<String>() {
+                    @Override
+                    public void onArrive(ArrayList<String> data) {
+
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+
+                    }
+                });
+            }
+        });
+
         clickedProductName = getIntent().getExtras().getString("clickedProductName");     //Gets the passed parameter
         clickedProductId = getIntent().getExtras().getLong("clickedProductId");
         //String clickedProductAveragePrice = extras.getString("clickedAveragePrice");

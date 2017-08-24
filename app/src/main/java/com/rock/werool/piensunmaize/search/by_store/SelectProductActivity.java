@@ -57,6 +57,25 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         setContentView(R.layout.activity_select_product);
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
+        ImageView buttonFav = (ImageView) findViewById(R.id.addToFavouritesStore);
+        buttonFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remoteDB.SetFavoriteStore(clickedStoreId, new IDatabaseResponseHandler<String>() {
+                    @Override
+                    public void onArrive(ArrayList<String> data) {
+
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+
+                    }
+                });
+            }
+        });
+
+
         Bundle extras = getIntent().getExtras();            //Recieves the passed parameters in a bundle
         clickedStoreName = extras.getString("clickedStoreName");     //Gets the specified param from the bundle
         clickedStoreAddress = extras.getString("clickedStoreAddress");
@@ -99,13 +118,6 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
         addSearchBarListener();
 
-        ImageView addToFavouritesStore = (ImageView)findViewById(R.id.addToFavouritesStore);
-        addToFavouritesStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO add selected store to favourites database
-            }
-        });
     }
     private void displayListView(ArrayList<String> inputList) {
 
