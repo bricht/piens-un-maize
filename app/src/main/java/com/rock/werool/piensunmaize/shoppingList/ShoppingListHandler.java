@@ -91,7 +91,23 @@ public class ShoppingListHandler {
         alertDialog.show();
     }
 
-    private void TESTDATA () {
-
+    // TEMPORARY
+    public void TESTDATA () {
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.00"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.00"));
+        shoppingList.add(new Product("Orange", "42.01"));
+        shoppingList.add(new Product("Apple", "21.01"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.50"));
+        shoppingList.add(new Product("Orange", "42.43"));
+        shoppingList.add(new Product("Apple", "21.00"));
+        shoppingList.add(new Product("Orange", "42.00"));
+        shoppingList.add(new Product("Apple", "21.99"));
+        shoppingList.add(new Product("Orange", "42.99"));
+        shoppingList.add(new Product("Apple", "42.99"));
+        writeFile();
+        shoppingList.clear();
     }
 }

@@ -31,6 +31,8 @@ public class ShoppingListActivity extends AppCompatActivity {
 
         shoppingList = new ArrayList<>();
         listHandler = new ShoppingListHandler(this, shoppingList);
+        // TEMPORARY
+        //listHandler.TESTDATA();
         listHandler.readFile();
         displayShoppingList(shoppingList);
 
