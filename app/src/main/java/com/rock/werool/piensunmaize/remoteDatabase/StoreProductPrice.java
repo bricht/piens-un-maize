@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.sql.Date;
-
+import java.util.Calendar;
 
 
 /**
@@ -26,6 +26,10 @@ public class StoreProductPrice implements Serializable {
         this.product = product;
         this.price = price;
         this.lastUpdated = lastUpdated;
+    }
+
+    public StoreProductPrice(Store store, Product product, double price) {
+        this(store, product, price, new Date(Calendar.getInstance().getTime().getTime()));
     }
 
     public StoreProductPrice(JSONObject jobj) {
