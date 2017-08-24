@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.rock.werool.piensunmaize.mainpage.MainMenu">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <Button
         android:id="@+id/mainMenuShoppingList"
