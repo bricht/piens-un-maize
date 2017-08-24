@@ -177,6 +177,8 @@ public class FillWithHandActivity extends AppCompatActivity {
     protected void executeUpdate() {
         RemoteDatabase remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
         if (addNew) {
+            Toast.makeText(getApplicationContext(), "Work in progress. Functionality disabled.", Toast.LENGTH_LONG).show();
+            /*
             remoteDB.AddProductAndBarcode(product, scannedProductBarcode, new IDatabaseResponseHandler<String>() {
                 @Override
                 public void onArrive(ArrayList<String> data) {
@@ -188,6 +190,7 @@ public class FillWithHandActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Error while adding to database", Toast.LENGTH_SHORT).show();
                 }
             });
+            */
         } else {
             remoteDB.UpdateProduct(product, new IDatabaseResponseHandler<String>() {
                 @Override
