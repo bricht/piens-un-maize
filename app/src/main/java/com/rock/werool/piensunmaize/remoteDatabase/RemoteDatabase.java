@@ -20,7 +20,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by guntt on 16.08.2017.
+ * Created by Guntars Bērziņš on 16.08.2017.
+ * Class handles connections to online database and provides functionaltiy
+ * to interact with it.
  */
 
 public class RemoteDatabase {
@@ -102,16 +104,21 @@ public class RemoteDatabase {
         user = new UserIdentity(this, context);
     }
 
+    /**
+     * Request to add product and return server thoughts about this operation.
+     * @param product object to add
+     * @param responseHandler this handles returned server response message
+     */
     public void AddProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_ADD_PRODUCT, product, responseHandler);
     }
 
 
     /**
-     *
-     * @param product product from space
-     * @param barcode space product barcode
-     * @param responseHandler a guy hwo cares what server think about this operation
+     * Request to add product with barcode and return server thoughts about this operation.
+     * @param barcode object to add
+     * @param product object to add
+     * @param responseHandler this handles returned server response message
      */
     public void AddProductAndBarcode(Product product, String barcode, IDatabaseResponseHandler<String> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
@@ -124,21 +131,36 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
     }
 
+    /**
+     * Request to add store and return server thoughts about this operation.
+     * @param store object to add
+     * @param responseHandler this handles returned server response message
+     */
     public void AddStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_ADD_STORE, store, responseHandler);
     }
 
+    /**
+     * Request to add store product price and return server thoughts about this operation.
+     * @param storePruductPrice object to add
+     * @param responseHandler this handles returned server response message
+     */
     public void AddStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_ADD_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
+    /**
+     * Request to add barcode and return server thoughts about this operation.
+     * @param barcode object to add
+     * @param responseHandler this handles returned server response message
+     */
     public void AddBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_ADD_BARCODE, barcode, responseHandler);
     }
 
     /**
      * Request to update barcode and return server thoughts about this operation.
-     * @param product object to delete
+     * @param product object to update
      * @param responseHandler this handles returned server response message
      */
     public void UpdateProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
@@ -147,7 +169,7 @@ public class RemoteDatabase {
 
     /**
      * Request to update store and return server thoughts about this operation.
-     * @param store object to delete
+     * @param store object to update
      * @param responseHandler this handles returned server response message
      */
     public void UpdateStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
@@ -156,7 +178,7 @@ public class RemoteDatabase {
 
     /**
      * Request to update store product price and return server thoughts about this operation.
-     * @param storePruductPrice object to delete
+     * @param storePruductPrice object to update
      * @param responseHandler this handles returned server response message
      */
     public void UpdateStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
@@ -165,7 +187,7 @@ public class RemoteDatabase {
 
     /**
      * Request to update barcode and return server thoughts about this operation.
-     * @param barcode object to delete
+     * @param barcode object to update
      * @param responseHandler this handles returned server response message
      */
     public void UpdateBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
@@ -296,7 +318,7 @@ public class RemoteDatabase {
     }
 
     public void FindProductByNameInFavorites(String name, IDatabaseResponseHandler<Product> responseHandler) {
-        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_ADD_PRODUCT_AND_BARCODE +
+        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_NAME_IN_FAVORITES +
                 "?" + Product.TAG_NAME + "=" + name + "&" + User.TAG_ID  + "=" + user.GetID());
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,

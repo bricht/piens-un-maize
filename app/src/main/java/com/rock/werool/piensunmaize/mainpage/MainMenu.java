@@ -34,8 +34,8 @@ public class MainMenu extends AppCompatActivity {
 
 
         //GUNTARS: this is my test page.. should be commented out.
-        //Intent intent = new Intent(MainMenu.this, dbTestActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(MainMenu.this, dbTestActivity.class);
+        startActivity(intent);
         //END OF GUNTARS:
 
 
