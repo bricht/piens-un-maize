@@ -18,8 +18,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**
+ * Created by Ernests on 2017.08.20.
+ */
 
-public class SQLiteAddData extends IntentService {
+/**
+ * Class that provides a way for other activities to send and add data to database trough an intent object. Intent object contains key-value pairs of data.
+ * Keys are defined in this class and each key should contain specific data.
+ * This class enables other activities to add data to product, store, barcode and storeproductprice tables.
+ * Activity or service, that wants to use this class to add data, must call  startService method and as a parameter it should contain explicit intent object
+ * with corresponding information for each add type. If insufficient data is provided, no data will be added.
+ */
+public final class SQLiteAddData extends IntentService {
 
     // Japadod intent ar astoniem laukiem
     // Key SQLiteAddData.ADD_TYPE           Value SQLiteADD.ADD_BARCODE/ADD_PRODUCT/ADD_STORE/ADD_STORE_PRODUCT_PRICE
@@ -31,39 +41,85 @@ public class SQLiteAddData extends IntentService {
     // Key SQLiteAddData.STORE_NAME         Value String string or null
     // Key SQLiteAddData.STORE_ADDRESS      Value String string or null
 
+    /**
+     *Key that points to field containing data that 	determines 							what data should be added.
+     */
     public static final String ADD_TYPE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.TYPE";
+    /**
+     *Value that should be used in combination with key ADD_TYPE that informs that new barcode should be added. This add type should provide barcode and product name or product DI fields.
+     */
     public static final int ADD_BARCODE = 1;
+    /**
+     *Value that should be used in combination with key ADD_TYPE that informs that new product should be added.  This add type should provide product name and category. If no ID is provided, it will be auto generated.
+     */
     public static final int ADD_PRODUCT = 2;
+    /**
+     *Value that should be used in combination with key ADD_TYPE that informs that new store should be added.  This add type should provide store name and store address. If no ID is provided, it will be auto generated.
+     */
     public static final int ADD_STORE = 3;
+    /**
+     *Value that should be used in combination with key ADD_TYPE that informs that new product price should be added.  This add type should provide product name or product ID and store name and address or store ID.
+     */
     public static final int ADD_STORE_PRODUCT_PRICE = 4;
+    /**
+     *Value that should be used in combination with key ADD_TYPE that informs that product price should be updated. This update type should provide product name or product ID and store name and address or store ID.
+     */
     public static final int UPDATE_STORE_PRODUCT_PRICE = 5;
-
+    /**
+     *Points to string data containing barcode
+     */
     public static final String BARCODE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.BARCODE_DATA";
+    /**
+     *Points to string data containing product name
+     */
     public static final String PRODUCT_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_NAME_DATA";
+    /**
+     *Points to string data containing product ID
+     */
     public static final String PRODUCT_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRODUCT_ID_DATA";
+    /**
+     *Points to string data containing product category
+     */
     public static final String CATEGORY = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.CATEGORY_DATA";
+    /**
+     *Points to double data containing product price
+     */
     public static final String PRICE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.PRICE_DATA";
+    /**
+     *Points to string data containing store name
+     */
     public static final String STORE_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_NAME_DATA";
+    /**
+     *Points to string data containing store address
+     */
     public static final String STORE_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ADDRESS_DATA";
+    /**
+     *Points to string data containing store ID
+     */
     public static final String STORE_ID = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.STORE_ID_DATA";
-    public static final String NEW = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.NEW_DATA";;
+    /**
+     *Points to boolean data containing true if added entry is new entry. (Previously not present in table).
+     */
+    public static final String NEW = "com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteAddData.NEW_DATA";
 
     private String date;
     private String query = null;
 
     private SQLiteHelper helper;
     private SQLiteDatabase database;
-
     private RemoteDatabase remoteDatabase;
 
 
-    public SQLiteAddData(){
+    private SQLiteAddData(){
         super(SQLiteAddData.class.getName());
     }
-    public SQLiteAddData(String name) {
+    private SQLiteAddData(String name) {
         super(name);
     }
 
+    /**
+     * Executes code in it's body that initializes connection to database.
+     */
     @Override
     public void onCreate(){
         super.onCreate();
@@ -74,6 +130,10 @@ public class SQLiteAddData extends IntentService {
         remoteDatabase = new RemoteDatabase("http://zsloka.tk/piens_un_maize_db/", getApplicationContext());
     }
 
+    /**
+     * Executes code in it's body that determines add type and accordingly adds data to corresponding table.
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         int i = intent.getIntExtra(ADD_TYPE, 0);
@@ -263,6 +323,7 @@ public class SQLiteAddData extends IntentService {
             return false;
         }
    }
+
 
    private boolean updatePrice(String pName, String sName, String address, double price){
        long productId;

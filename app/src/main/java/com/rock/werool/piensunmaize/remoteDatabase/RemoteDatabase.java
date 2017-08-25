@@ -47,7 +47,7 @@ public class RemoteDatabase {
     private static final String ACTION_FIND_PORDUCT_BY_STRING_KEY = "findProductByStringKey.php";
     private static final String ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID = "findProductByNameAndStoreID.php";
     private static final String ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_IN_FAVORITES = "findProductsByNameAndStoreInFavorites.php";
-
+    private static final String ACTION_FIND_PRODUCTS_BY_NAME_IN_FAVORITES = "findProductsByNameInFavorites";
 
     private static final String ACTION_FIND_STORE_BY_NAME = "findStoreByName";
     private static final String ACTION_FIND_STORE_BY_LOCATION = "findStoreByLocation";
@@ -56,6 +56,7 @@ public class RemoteDatabase {
     private static final String ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT = "findStoreByNameLocationAndProduct.php";
     private static final String ACTION_FIND_STORE_BY_NAME_lOCATION_AND_PRODUCT_IN_FAVORITES =
             "findStoreByNameLocationAndProductInFavorites.php";
+    private static final String ACTION_FIND_STORE_BY_NAME_ADN_LOCATION_IN_FAVORITES = "findStoreByNameAndLocationInFavorites.php";
 
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts.php";
     private static final String ACTION_GET_ALL_STORES = "getAllStores.php";
@@ -103,7 +104,12 @@ public class RemoteDatabase {
     }
 
 
-    // Use this for barcode scan to add new products
+    /**
+     *
+     * @param product product from space
+     * @param barcode space product barcode
+     * @param responseHandler a guy hwo cares what server think about this operation
+     */
     public void AddProductAndBarcode(Product product, String barcode, IDatabaseResponseHandler<String> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
                 this.url +
@@ -127,61 +133,113 @@ public class RemoteDatabase {
         ManageBarcodeByAction(ACTION_ADD_BARCODE, barcode, responseHandler);
     }
 
+    /**
+     * Request to update barcode and return server thoughts about this operation.
+     * @param product object to delete
+     * @param responseHandler this handles returned server response message
+     */
     public void UpdateProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_UPDATE_PRODUCT, product, responseHandler);
     }
 
+    /**
+     * Request to update store and return server thoughts about this operation.
+     * @param store object to delete
+     * @param responseHandler this handles returned server response message
+     */
     public void UpdateStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_UPDATE_STORE, store, responseHandler);
     }
 
+    /**
+     * Request to update store product price and return server thoughts about this operation.
+     * @param storePruductPrice object to delete
+     * @param responseHandler this handles returned server response message
+     */
     public void UpdateStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_UPDATE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
+    /**
+     * Request to update barcode and return server thoughts about this operation.
+     * @param barcode object to delete
+     * @param responseHandler this handles returned server response message
+     */
     public void UpdateBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_UPDATE_BACRODE, barcode, responseHandler);
     }
 
+    /**
+     * Request to delete product and return server thoughts about this operation.
+     * @param product object to delete
+     * @param responseHandler this handles returned server response message
+     */
     // TODO make sure it delete all references in database
     public void DeleteProduct(Product product, IDatabaseResponseHandler<String> responseHandler) {
         ManageProductByAction(ACTION_DELETE_PRODUCT, product, responseHandler);
     }
 
+    /**
+     * Request to delete store and return server thoughts about this operation.
+     * @param store object to delete
+     * @param responseHandler this handles returned server response message
+     */
     // TODO make sure it delete all references in database
     public void DeleteStore(Store store, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreByAction(ACTION_DELETE_STORE, store, responseHandler);
     }
 
-    // Does what it says
+    /**
+     * Request to delete product price in store and return server thoughts about this operation.
+     * @param storePruductPrice describes product price in store
+     * @param responseHandler this handles returned server response message
+     */
     public void DeleteStoreProductPrice(StoreProductPrice storePruductPrice, IDatabaseResponseHandler<String> responseHandler) {
         ManageStoreProductPriceByAction(ACTION_DELETE_STOREPRODUCTPRICE, storePruductPrice, responseHandler);
     }
 
-    // Does what it says
+    /**
+     * Request to delete barcode and return server thoughts about this operation.
+     * @param barcode object to delete
+     * @param responseHandler this handles returned server response message
+     */
     public void DeleteBarcode(Barcode barcode, IDatabaseResponseHandler<String> responseHandler) {
         ManageBarcodeByAction(ACTION_DELETE_BACRODE, barcode, responseHandler);
     }
 
 
-    // GETTERS ...
 
-
+    /**
+     * It does what it says.. use it carefully.. data could be huge.
+     * @param responseHandler this handle returned data
+     */
     public void GetAllProducts(IDatabaseResponseHandler<Product> responseHandler) {
         this.doThis(ACTION_GET_ALL_PRODUCTS, responseHandler, new OnProduct(responseHandler));
         this.lastProductHandler = responseHandler;
     }
 
+    /**
+     * It does what it says.. use it carefully.. data could be huge.
+     * @param responseHandler this handle returned data
+     */
     public void GetAllStores(IDatabaseResponseHandler<Store> responseHandler) {
         this.doThis(ACTION_GET_ALL_STORES, responseHandler, new OnStore(responseHandler));
         this.lastStoreHandler = responseHandler;
     }
 
+    /**
+     * It does what it says.. use it carefully.. data could be huge.
+     * @param responseHandler this handle returned data
+     */
     public void GetAllBarcodes(IDatabaseResponseHandler<Barcode> responseHandler) {
         this.doThis(ACTION_GET_ALL_BARCODES, responseHandler, new OnBarcode(responseHandler));
         this.lastBarcodeHandler = responseHandler;
     }
 
+    /**
+     * It does what it says.. use it carefully.. data could be huge.
+     * @param responseHandler this handle returned data
+     */
     public void GetAllStoreProductPrices(IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
         this.doThis(ACTION_GET_ALL_STOREPRODUCTPRICES, responseHandler, new OnStoreProductPrice(responseHandler));
         this.lastStoreProductPriceHandler = responseHandler;
@@ -197,37 +255,68 @@ public class RemoteDatabase {
     }
 
 
-    // Return StoreProductPrice objects(Store, Product and their price in store)
-    // where product is in store('storeID') and product name is like 'productName'
+    /**
+     * Return StoreProductPrice objects(Store, Product and their price in store)
+     * where product is in store('storeID') and product name is like 'productName'
+     * @param storeId
+     * @param productName
+     * @param responseHandler
+     */
     public void FindProductInStoreByName(int storeId, String productName, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
-        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID +
-                "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productName);
-        StringRequest strRequest =
-                new StringRequest(Request.Method.GET, requestUrl,
-                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
-        this.ExecuteStringRequest(strRequest);
-        this.lastStoreProductPriceHandler = responseHandler;
+
     }
 
-    // Return Product object where product barcode equals  'barCode'
+    /**
+     * Return Product objectString requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID +
+     "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productName);
+     StringRequest strRequest =
+     new StringRequest(Request.Method.GET, requestUrl,
+     new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
+     this.ExecuteStringRequest(strRequest);
+     this.lastStoreProductPriceHandler = responseHandler; where product barcode equals  'barCode'
+     * @param barCode
+     * @param responseHandler this handles returned data
+     */
     public void FindProductByBarCode(String barCode, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_BARCODE, Barcode.TAG_BARCODE, barCode, responseHandler);
         this.lastProductHandler = responseHandler;
     }
 
-    // Return Product objects where product name is like 'name'
+    /**
+     *  Return Product objects where product name is like 'name'
+     * @param name
+     * @param responseHandler this handle returned data
+     */
     public void FindProductByName(String name, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_NAME, Product.TAG_NAME, name, responseHandler);
         this.lastProductHandler = responseHandler;
     }
 
-    // Return Product objects were product category is like 'category'
+    public void FindProductByNameInFavorites(String name, IDatabaseResponseHandler<Product> responseHandler) {
+        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_ADD_PRODUCT_AND_BARCODE +
+                "?" + Product.TAG_NAME + "=" + name + "&" + User.TAG_ID  + "=" + user.GetID());
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnProduct(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastProductHandler = responseHandler;
+    }
+
+    /**
+     * Return Product objects where product name or category is like 'value'
+     * @param category
+     * @param responseHandler
+     */
     public void FindProductByCategory(String category, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PRODUCT_BY_CATEGORY, Product.TAG_CATEGORY, category, responseHandler);
         this.lastProductHandler = responseHandler;
     }
 
-    // Return Product objects where product name or category is like 'value'
+    /**
+     * Return Product objects where product name or category is like 'value'
+     * @param value
+     * @param responseHandler this handles returned data
+     */
     public void FindProductByStringKey(String value, IDatabaseResponseHandler<Product> responseHandler) {
         FindProductByStringKey(ACTION_FIND_PORDUCT_BY_STRING_KEY, KEY_STR_KEY ,value, responseHandler);
         this.lastProductHandler = responseHandler;
@@ -242,6 +331,12 @@ public class RemoteDatabase {
     }
 
 
+    /**
+     * Returned Products filtered by name and Store and are in user Favorite Products
+     * @param store
+     * @param productName
+     * @param responseHandler
+     */
     public void FindProductByNameAndStoreInFavorites(
             Store store, String productName, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
 
@@ -261,20 +356,32 @@ public class RemoteDatabase {
 
     // FIND STORES..........
 
-
-    // Return Store objects where store name is like 'key'
+    /**
+     * Return Store objects where store name is like 'key'
+     * @param key
+     * @param responseHandler this handles returned data
+     */
     public void FindStoreByName(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_NAME, Store.TAG_NAME, key, responseHandler);
         this.lastStoreHandler = responseHandler;
     }
 
-    // Return Store objects where store location is like 'location'
+    /**
+     * Return Store objects where store location is like 'location'
+     * @param location
+     * @param responseHandler this handles returned data
+     */
     public void FindStoreByLocation(String location, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_LOCATION, Store.TAG_LOCATION, location, responseHandler );
         this.lastStoreHandler = responseHandler;
     }
 
-    // Return Store objects where store name is like 'name' and store location is like 'location'
+    /**
+     * Return Store objects where store name is like 'name' and store location is like 'location'
+     * @param name
+     * @param location
+     * @param responseHandler this handles returned data
+     */
     public void FindStoreByNameAndLocation(String name, String location, IDatabaseResponseHandler<Store> responseHandler) {
         String requestUrl = this.url + ACTION_FIND_STORE_BY_NAME_AND_LOCATION + "?" +
                 Store.TAG_NAME + "=" + name + "&" +
@@ -286,7 +393,26 @@ public class RemoteDatabase {
         this.lastStoreHandler = responseHandler;
     }
 
-    // Return Store objects where store name or location is like 'key'
+    public void FindStoreByNameAndLocationInFavorites(String name, String location, IDatabaseResponseHandler<Store> responseHandler) {
+        String requestUrl = this.url + ACTION_FIND_STORE_BY_NAME_ADN_LOCATION_IN_FAVORITES + "?" +
+                Store.TAG_NAME + "=" + name + "&" +
+                Store.TAG_LOCATION + "=" + location + "&" +
+                User.TAG_ID + "=" + user.GetID();
+
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnStore(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastStoreHandler = responseHandler;
+    }
+
+
+
+    /**
+     * Return Store objects where store name or location is like 'key'
+     * @param key
+     * @param responseHandler this should implement logic for returnde data
+     */
     public void FindStoreByStringKey(String key, IDatabaseResponseHandler<Store> responseHandler) {
         FindStoreByStringKey(ACTION_FIND_STORE_BY_STRING_KEY, KEY_STR_KEY, key, responseHandler);
         this.lastStoreHandler = responseHandler;
@@ -300,6 +426,15 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
     }
 
+
+    /**
+     * Return store array where Store name like storeName and Store location like storeLocation
+     * and Store contains this product
+     * @param product desired product
+     * @param storeName store name key
+     * @param storeLocation store product key
+     * @param responseHandler this should know what to do with returned data
+     */
     public void FindStoreByNameLocationAndProduct(
             Product product, String storeName, String storeLocation, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(createProductParamUrl(
@@ -314,6 +449,14 @@ public class RemoteDatabase {
     }
 
 
+    /**
+     * Return Store and product price in this store where filtered by product name store name and locaction
+     * and all stores should be in user Favorites
+     * @param product chosen product by user
+     * @param storeName desired store name
+     * @param storeLocation desired store location
+     * @param responseHandler a guy hwo cares what will happen after this call
+     */
     public void FindStoreByNameLocationAndProductInFavorites(
             Product product, String storeName, String storeLocation, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(createProductParamUrl(
@@ -329,9 +472,13 @@ public class RemoteDatabase {
     }
 
 
-    // FIND STORE PRODUCT PRICE
 
-    // Return StoreProductPrice objects (Store, Product and product price in store) matched by Product;
+
+    /**
+     * Return StoreProductPrice objects (Store, Product and product price in store) matched by Product;
+     * @param product Product returned form sever in some previous search
+     * @param responseHandler a guy who cares about returned data
+     */
     public void FindStoreProductPrice(
             Product product,
             IDatabaseResponseHandler<StoreProductPrice> responseHandler){
@@ -345,7 +492,10 @@ public class RemoteDatabase {
         this.lastStoreProductPriceHandler = responseHandler;
     }
 
-    // DON NOT USES THIS..
+    /**
+     * Return all Products identified by unique user id assigned to machine
+     * @param responseHandler a guy hwo cares about data returned form server
+     */
     public void GetFavoriteProducts(IDatabaseResponseHandler<Product> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(
                 this.url + ACTION_GET_FAVORITE_PRODUCTS + "?" +

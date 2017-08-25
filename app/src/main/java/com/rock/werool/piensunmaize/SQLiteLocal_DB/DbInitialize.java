@@ -20,30 +20,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
+ * Created by Erensts on 2017.08.20.
  */
-public class DbInitialize extends IntentService {
+
+/**
+ * Service class that should be used only when passing intent to it in SQLiteHelper class onCreate method.
+ * It is a service that upon database creation copies data from online database into it.
+ * This class onHandleIntent method, that executes data pasting in database can be called when passing explicit intent to it.
+ */
+
+public final class DbInitialize extends IntentService {
     private SQLiteHelper helper;
     private SQLiteDatabase database;
 
-    public DbInitialize(){
+    private DbInitialize(){
         super(SQLiteQuery.class.getName());
     }
 
-    public DbInitialize(String name) {
+    private DbInitialize(String name) {
         super(name);
     }
 
+    /**
+     * Initializes connection to database.
+     */
     @Override
     public void onCreate(){
         super.onCreate();
         helper = new SQLiteHelper(getApplicationContext());
         database = helper.getWritableDatabase();
     }
+
+    /**
+     * Copies data from online database to local database.
+     * @param intent
+     */
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
