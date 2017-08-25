@@ -19,9 +19,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.rock.werool.piensunmaize.R;
 import com.rock.werool.piensunmaize.SQLiteLocal_DB.SQLiteQuery;
 import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
 import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
+import com.rock.werool.piensunmaize.remoteDatabase.Store;
 import com.rock.werool.piensunmaize.remoteDatabase.StoreProductPrice;
 import com.rock.werool.piensunmaize.search.Product;
 import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
@@ -39,14 +42,15 @@ import java.util.ArrayList;
 
 public class SelectProductActivity extends AppCompatActivity {      //TODO this is just a copy of SearchByProductActivity
     MyCustomAdapter dataAdapter;
-    ArrayList<Product> products = new ArrayList<>();
-    ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
+    //ArrayList<Product> products = new ArrayList<>();
+    //ArrayList<Product> productSearchResults = new ArrayList<>();               //ListView uses productSearchResults instead of products!
     String clickedStoreName;
     String clickedStoreAddress;
     int clickedStoreId;
     String[][] array;
     RemoteDatabase remoteDB;
     ShoppingListHandler shoppingListHandler;
+    boolean showOnlyFavourites;
 
     @Override
     protected void onResume() {
@@ -77,7 +81,54 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(word);
 
-        SwitchCompat favouriteSwitch = (SwitchCompat) findViewById(R.id.selectProductFavouriteSwitch);
+        showOnlyFavourites = false;
+        Switch favouriteSwitch = (Switch) findViewById(R.id.selectProductFavouriteSwitch);
+        favouriteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                showOnlyFavourites = b;
+                final EditText search = (EditText)findViewById(R.id.selectProductNameText);
+                if (b) {
+                    remoteDB.FindProductByNameAndStoreInFavorites(new Store(clickedStoreId, null, null), search.getText().toString(), new IDatabaseResponseHandler<StoreProductPrice>() {
+                        @Override
+                        public void onArrive(ArrayList<StoreProductPrice> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getProduct().getName();
+                                array[i][1] = Double.toString(data.get(i).getPrice());
+                                array[i][2] = Long.toString(data.get(i).getProduct().getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                        }
+                    });
+                } else {
+                    remoteDB.FindProductInStoreByName(clickedStoreId, search.getText().toString(), new IDatabaseResponseHandler<StoreProductPrice>() {
+                        @Override
+                        public void onArrive(ArrayList<StoreProductPrice> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getProduct().getName();
+                                array[i][1] = Double.toString(data.get(i).getPrice());
+                                array[i][2] = Long.toString(data.get(i).getProduct().getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                        }
+                    });
+                }
+            }
+        });
 
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
@@ -266,25 +317,45 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SelectProductActivity");
                 */
-                remoteDB.FindProductInStoreByName(clickedStoreId, search.getText().toString(), new IDatabaseResponseHandler<StoreProductPrice>() {
-                    @Override
-                    public void onArrive(ArrayList<StoreProductPrice> data) {
-                        array = new String[data.size()][3];
-                        ArrayList<String> al = new ArrayList<>();
-                        for (int i = 0; i < data.size(); i++) {
-                            array[i][0] = data.get(i).getProduct().getName();
-                            array[i][1] = Double.toString(data.get(i).getPrice());
-                            array[i][2] = Long.toString(data.get(i).getProduct().getId());
-                            al.add("q");
+                if (showOnlyFavourites) {
+                    remoteDB.FindProductByNameAndStoreInFavorites(new Store(clickedStoreId, null, null), search.getText().toString(), new IDatabaseResponseHandler<StoreProductPrice>() {
+                        @Override
+                        public void onArrive(ArrayList<StoreProductPrice> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getProduct().getName();
+                                array[i][1] = Double.toString(data.get(i).getPrice());
+                                array[i][2] = Long.toString(data.get(i).getProduct().getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
                         }
-                        displayListView(al);
-                    }
 
-                    @Override
-                    public void onError(VolleyError error) {
+                        @Override
+                        public void onError(VolleyError error) {
+                        }
+                    });
+                } else {
+                    remoteDB.FindProductInStoreByName(clickedStoreId, search.getText().toString(), new IDatabaseResponseHandler<StoreProductPrice>() {
+                        @Override
+                        public void onArrive(ArrayList<StoreProductPrice> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getProduct().getName();
+                                array[i][1] = Double.toString(data.get(i).getPrice());
+                                array[i][2] = Long.toString(data.get(i).getProduct().getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onError(VolleyError error) {
+                        }
+                    });
+                }
             }
             @Override
             public void afterTextChanged(Editable editable) {

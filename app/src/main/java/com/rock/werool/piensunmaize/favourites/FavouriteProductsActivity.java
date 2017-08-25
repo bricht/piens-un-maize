@@ -226,14 +226,17 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                         });
 
                         productList.remove(positionOfElement);
-                        String[][] array1 = new String[array.length-1][4];
+                        String[][] array1 = new String[array.length][4];
+                        int n = 0;
                         for (int i = 0; i < array.length; i++) {
-                            while (i != positionOfElement) {
-                                array1[i][1] = array[i][1];
-                                array1[i][2] = array[i][2];
-                                array1[i][3] = array[i][3];
+                            if (i != positionOfElement) {
+                                array1[n][0] = array[i][0];
+                                array1[n][1] = array[i][1];
+                                array1[n][2] = array[i][2];
+                                n++;
                             }
                         }
+                        array = array1;
                         notifyDataSetChanged();
 
 //                        Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class); ///////which class???
