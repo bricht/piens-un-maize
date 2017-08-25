@@ -20,7 +20,9 @@ import static android.R.attr.action;
 import static android.R.attr.timePickerDialogTheme;
 
 /**
- * Created by guntt on 22.08.2017.
+ * Created by Guntars Bērziņš  on 22.08.2017.
+ * Class to verify connection to online databse
+ *
  */
 
 public class ConnectionVerifyer {
@@ -75,15 +77,25 @@ public class ConnectionVerifyer {
 
     private final Runnable statusVerifyer = new StatucChekRunnable();
 
+    /**
+     * Starts beckgroud thread to check connection by time delay parameter
+     */
     public void Start(){
         Thread t = new Thread(statusVerifyer);
         t.start();
     }
 
+    /**
+     * Terminates thread for checking connection status
+     */
     public void Stop() {
         this.running = false;
     }
 
+    /**
+     * Sets timeout for conection statuc chek
+     * @param timeout
+     */
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
@@ -92,19 +104,35 @@ public class ConnectionVerifyer {
         return this.timeout;
     }
 
+
+    /**
+     * Return boolean if verifyer instance is running thread to verify connection status
+     * @return
+     */
     public boolean IsRunning() {
         return this.running;
     }
 
+    /**
+     * Per
+     */
     public void VerifyConnection() {
         StatucChekRunnable sch = (StatucChekRunnable)statusVerifyer;
         sch.CheckStatus();
     }
 
+    /**
+     * Add handler for connection status change events
+     * @param listener
+     */
     public void addListener(IRemoteDBConnectionFerifyHandler listener) {
         this.listeners.add(listener);
     }
 
+    /**
+     * Remove handler for connection status change events
+     * @param listener
+     */
     public void removeListener(IRemoteDBConnectionFerifyHandler listener) {
         this.listeners.remove(listener);
     }

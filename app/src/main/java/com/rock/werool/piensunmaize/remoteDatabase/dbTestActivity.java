@@ -30,9 +30,9 @@ public class dbTestActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.FindProductByNameInFavorites("file", new IDatabaseResponseHandler<Product>() {
+                db.FindStoreByNameAndLocationInFavorites("max", "deg", new IDatabaseResponseHandler<Store>() {
                     @Override
-                    public void onArrive(ArrayList<Product> data) {
+                    public void onArrive(ArrayList<Store> data) {
                         text.setText(data.get(0).getName());
                     }
 

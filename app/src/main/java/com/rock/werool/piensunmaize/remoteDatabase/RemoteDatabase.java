@@ -419,10 +419,12 @@ public class RemoteDatabase {
     }
 
     public void FindStoreByNameAndLocationInFavorites(String name, String location, IDatabaseResponseHandler<Store> responseHandler) {
-        String requestUrl = this.url + ACTION_FIND_STORE_BY_NAME_ADN_LOCATION_IN_FAVORITES + "?" +
-                Store.TAG_NAME + "=" + name + "&" +
-                Store.TAG_LOCATION + "=" + location + "&" +
-                User.TAG_ID + "=" + user.GetID();
+        String requestUrl = removeWhiteSpaceFromUrl(
+                this.url + ACTION_FIND_STORE_BY_NAME_ADN_LOCATION_IN_FAVORITES + "?" +
+                        Store.TAG_NAME + "=" + name + "&" +
+                        Store.TAG_LOCATION + "=" + location + "&" +
+                        User.TAG_ID + "=" + user.GetID()
+        );
 
         StringRequest strRequest =
                 new StringRequest(Request.Method.GET, requestUrl,

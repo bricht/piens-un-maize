@@ -6,7 +6,8 @@ import org.json.JSONObject;
 import java.io.Serializable;
 
 /**
- * Created by guntt on 17.08.2017.
+ * Created by Guntars Berzins on 17.08.2017.
+ * Container class for relations Barcode and product (id)
  */
 
 public class Barcode implements Serializable{
