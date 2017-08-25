@@ -28,23 +28,37 @@ import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
 import java.util.ArrayList;
 
+
+/**
+ * Displays a list of favourite products defined previously by the user in another activity.
+ * Favourite products can be removed from the list and deleted from the remote database.
+ * Information regarding favourite stores is stored and retrieved from a remote database.
+ */
 public class FavouriteProductsActivity extends AppCompatActivity {
     MyCustomAdapter dataAdapter;
-    String [][] array;
+    String[][] array;
     RemoteDatabase remoteDB;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onResume() {
         super.onResume();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onPause() {
         super.onPause();
 
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +80,10 @@ public class FavouriteProductsActivity extends AppCompatActivity {
 
 
         remoteDB.GetFavoriteProducts(new IDatabaseResponseHandler<Product>() {
+
+            /**
+             * Fills an array with the data provided by GetFavoriteProducts
+             */
             @Override
             public void onArrive(ArrayList<Product> data) {
                 array = new String[data.size()][3];
@@ -78,6 +96,7 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                 }
                 displayListView(al);
             }
+
             @Override
             public void onError(VolleyError error) {
 
@@ -85,27 +104,50 @@ public class FavouriteProductsActivity extends AppCompatActivity {
         });
 
     }
+
     private void displayListView(ArrayList<String> inputList) {
+
+
         dataAdapter = new MyCustomAdapter(this, R.layout.itemname_price_remove, inputList);
-        ListView listView = (ListView)findViewById(R.id.listviewfavouriteproduct);
+        ListView listView = (ListView) findViewById(R.id.listviewfavouriteproduct);
         listView.setAdapter(dataAdapter);
     }
 
+    /**
+     * Returns views constructed from the input data collection.
+     */
     private class MyCustomAdapter extends ArrayAdapter<String> {
         private ArrayList<String> productList;
 
+
+        /**
+         * Returns views constructed from the productList.
+         * @param context application context.
+         * @param textViewResourceId the layout location of the view to be used in list view.
+         * @param productList input data collection to be returned as views.
+         */
         public MyCustomAdapter(Context context, int textViewResourceId,
                                ArrayList<String> productList) {
             super(context, textViewResourceId, productList);
             this.productList = productList;
         }
 
+        /**
+         *Defines and used to instantiate the variables to be converted in views.
+         */
         private class ViewHolder {
             TextView name;
             TextView averagePrice;
             ImageView remove;
             long productId;
         }
+
+        /**
+         * {@inheritDoc}
+         * @param position position of the view to be rendered
+         * @param convertView recycled instance of View previously returned
+         * @param parent ViewGroup which is filled with views
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -113,7 +155,7 @@ public class FavouriteProductsActivity extends AppCompatActivity {
             Log.v("ConvertView", String.valueOf(position));
 
             if (convertView == null) {
-                LayoutInflater vi = (LayoutInflater)getSystemService(
+                LayoutInflater vi = (LayoutInflater) getSystemService(
                         Context.LAYOUT_INFLATER_SERVICE);
                 convertView = vi.inflate(R.layout.itemname_price_remove, null);
 
@@ -132,7 +174,9 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                 final int positionOfElement = position;
 
                 convertView.setTag(holder);                             //Important! Stores the holder in the View (row)
-
+                /**
+                 * Leads to SelectStoreActivity providing search results for the product, which was clicked on.
+                 */
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -143,6 +187,9 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+                /**
+                 * Leads to SelectStoreActivity providing search results for the product, which was clicked on.
+                 */
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -153,10 +200,13 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-
+                /**
+                 * Removes the clicked entry from Favourite Products list and deletes it from the remote database.
+                 */
                 holder.remove.setOnClickListener(new View.OnClickListener() {
                     double clickedProductAveragePriceD = Double.parseDouble(clickedProductAveragePrice);
                     Product tempProduct = new Product(clickedProductId, clickedProductName, "dummy", "dummy", clickedProductAveragePriceD);
+
                     @Override
                     public void onClick(View view) {        //TODO implement actions on click
 
@@ -189,10 +239,7 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                     }
                 });
 
-            }
-
-
-            else {
+            } else {
                 holder = (ViewHolder) convertView.getTag();                         //If row is already created then get the holder from it
             }
 
