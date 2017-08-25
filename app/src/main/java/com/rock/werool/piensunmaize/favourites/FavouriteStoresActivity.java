@@ -75,12 +75,12 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
         remoteDB.GetFavoriteStores(new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
             @Override
             public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
-                array = new String[data.size()][4];
+                array = new String[data.size()][3];
                 ArrayList<String> al = new ArrayList<>();
                 for (int i = 0; i < data.size(); i++) {
-                    array[i][1] = data.get(i).getName();
-                    array[i][2] = data.get(i).getLocation();
-                    array[i][3] = Integer.toString(data.get(i).getId());
+                    array[i][0] = data.get(i).getName();
+                    array[i][1] = data.get(i).getLocation();
+                    array[i][2] = Integer.toString(data.get(i).getId());
                     al.add("q");
                 }
                 displayListView(al);
@@ -147,9 +147,9 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
 
 
 
-                holder.name.setText(array[position][1]);
-                holder.address.setText(array[position][2]);
-                holder.storeId = Integer.parseInt(array[position][3]);
+                holder.name.setText(array[position][0]);
+                holder.address.setText(array[position][1]);
+                holder.storeId = Integer.parseInt(array[position][2]);
 
                 final int positionOfElement = position;
                 final String clickedStoreName = holder.name.getText().toString();
@@ -201,14 +201,17 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
                         });
 
                         storeArray.remove(positionOfElement);
-                        String[][] array1 = new String[array.length-1][4];
+                        String[][] array1 = new String[array.length][4];
+                        int n = 0;
                         for (int i = 0; i < array.length; i++) {
-                            while (i != positionOfElement) {
-                            array1[i][1] = array[i][1];
-                            array1[i][2] = array[i][2];
-                            array1[i][3] = array[i][3];
+                            if (i != positionOfElement) {
+                                array1[n][0] = array[i][0];
+                                array1[n][1] = array[i][1];
+                                array1[n][2] = array[i][2];
+                                n++;
                             }
                         }
+                        array = array1;
                         notifyDataSetChanged();
                     }
                 });
@@ -231,9 +234,9 @@ public class FavouriteStoresActivity extends AppCompatActivity {      //TODO imp
             }
             //holder.check.setChecked(store.getChecked());                      //Ignore this
             //holder.check.setTag(store);
-            holder.name.setText(array[position][1]);
-            holder.address.setText(array[position][2]);
-            holder.storeId = Integer.parseInt(array[position][3]);
+            holder.name.setText(array[position][0]);
+            holder.address.setText(array[position][1]);
+            holder.storeId = Integer.parseInt(array[position][2]);
             return convertView;
         }
     }
