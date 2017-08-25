@@ -30,6 +30,7 @@ import com.rock.werool.piensunmaize.remoteDatabase.IDatabaseResponseHandler;
 import com.rock.werool.piensunmaize.remoteDatabase.Product;
 import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.remoteDatabase.Store;
+import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 import com.rock.werool.piensunmaize.search.by_store.SelectProductActivity;
 //import com.rock.werool.piensunmaize.search.by_store.SelectProductActivity;
 //import com.rock.werool.piensunmaize.search.Store;
@@ -188,7 +189,7 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                 holder.name.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);  //TODO For some reason Martins has SelectStoreActivity.class here
+                        Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);  //TODO For some reason Martins has SelectStoreActivity.class here
                         intent.putExtra("clickedProductName", clickedProductName);      //Passes parameters to the activity
                         intent.putExtra("clickedProductAveragePrice", clickedProductAveragePrice);    //.putExtra(variableName, variableValue)
                         intent.putExtra("clickedProductId", clickedProductId);
@@ -198,7 +199,7 @@ public class FavouriteProductsActivity extends AppCompatActivity {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(), SelectProductActivity.class);  //TODO For some reason Martins has SelectStoreActivity.class here
+                        Intent intent = new Intent(getApplicationContext(), SelectStoreActivity.class);  //TODO For some reason Martins has SelectStoreActivity.class here
                         intent.putExtra("clickedProductName", clickedProductName);      //Passes parameters to the activity
                         intent.putExtra("clickedProductAveragePrice", clickedProductAveragePrice);    //.putExtra(variableName, variableValue)
                         intent.putExtra("clickedProductId", clickedProductId);

@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spannable;
@@ -75,6 +76,8 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
         Spannable word = new SpannableString("bread n milk");
         word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(word);
+
+        SwitchCompat favouriteSwitch = (SwitchCompat) findViewById(R.id.selectProductFavouriteSwitch);
 
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
