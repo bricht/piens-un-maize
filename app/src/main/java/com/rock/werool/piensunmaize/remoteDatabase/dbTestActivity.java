@@ -44,9 +44,5 @@ public class dbTestActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
     }
 }
