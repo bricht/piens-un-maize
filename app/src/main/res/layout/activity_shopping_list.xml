@@ -50,6 +50,7 @@
         -->
 
     <Button
+        style="@style/myButtonStyle"
         android:id="@+id/clear_btn"
         android:layout_width="80dp"
         android:layout_height="41dp"
@@ -65,6 +66,7 @@
         app:layout_constraintRight_toRightOf="@+id/topLayout" />
 
     <TextView
+        style="@style/MyTextViewStyle"
         android:id="@+id/activityTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,11 +74,11 @@
         android:layout_marginTop="16dp"
         android:gravity="start"
         android:text="@string/shopping_list_edit_text"
-        android:textSize="18sp"
+        android:textSize="25sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/topLayout"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLayout" />
 
     <Space
         android:layout_width="24dp"
@@ -108,19 +110,19 @@
         android:text="@string/shopping_list_text_total"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/textColorDark"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ListView
+        style="@style/myListViews"
         android:id="@+id/productListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/rounded_background"
-        android:divider="@android:color/white"
-        android:dividerHeight="1dp"
         android:isScrollContainer="false"
         app:layout_constraintBottom_toTopOf="@+id/totalPrice"
         app:layout_constraintHorizontal_bias="1.0"

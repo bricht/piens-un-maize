@@ -113,7 +113,6 @@ public class SelectStoreActivity extends AppCompatActivity {
                     com.rock.werool.piensunmaize.remoteDatabase.Store store = data.get(i).getStore();
                     array[i][1] = store.getName();
                     array[i][2] = store.getLocation();
-                    StoreProductPrice prod = data.get(i);
                     array[i][3] = Double.toString(data.get(i).getPrice());
                     al.add("q");
                 }

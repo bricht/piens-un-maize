@@ -217,7 +217,6 @@ public class BarcodeScanner extends AppCompatActivity {
                                             } else {
                                                 Intent intent = new Intent(getApplicationContext(), FillWithHandActivity.class);
                                                 //intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
-                                                intent.putExtra("Product", data.get(0));
                                                 intent.putExtra("scannedProductBarcode", barcodes.valueAt(0).displayValue);
                                                 intent.putExtra("addNew", true);
                                                 startActivity(intent);

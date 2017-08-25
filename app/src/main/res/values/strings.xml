@@ -10,7 +10,7 @@
 
 
     <string name="menu_button_search">search</string>
-    <string name="menu_button_share">share</string>
+    <string name="menu_button_share">add/update product</string>
     <string name="menu_button_favourites">favourites</string>
     <string name="menu_button_shopping_list">shopping list</string>
 

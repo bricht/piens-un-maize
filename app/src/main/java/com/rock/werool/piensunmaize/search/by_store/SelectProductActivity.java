@@ -108,7 +108,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
         TextView storeNameAddressTextView = (TextView) findViewById(R.id.selectedStoreNameAddress);
         storeNameAddressTextView.setText(clickedStoreName + " " + clickedStoreAddress);
-        /*
+
         remoteDB.FindProductInStoreByName(clickedStoreId, "", new IDatabaseResponseHandler<StoreProductPrice>() {
             @Override
             public void onArrive(ArrayList<StoreProductPrice> data) {
@@ -129,7 +129,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
 
             }
         });
-        */
+
         /*
         Intent intentForSQL = new Intent(getApplicationContext(), SQLiteQuery.class);
         intentForSQL.putExtra(SQLiteQuery.SRC_TYPE, SQLiteQuery.SRC_PRODUCT_AVG_PRICE);     //Average price for product

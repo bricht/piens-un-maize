@@ -29,7 +29,7 @@ public class ThankActivity extends AppCompatActivity {
                 startActivity(new Intent(ThankActivity.this, MainMenu.class));
 
             }
-        }, 1500);
+        }, 2500);
 
     }
 }

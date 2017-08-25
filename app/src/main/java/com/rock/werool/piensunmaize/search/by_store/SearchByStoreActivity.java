@@ -46,6 +46,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> storesListForEdit;
     String scannedProductBarcode;
     Boolean addNewForEdit;
+    Double productPriceForEdit;
 
     @Override
     protected void onResume() {
@@ -83,6 +84,9 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
             productForEdit = (Product) getIntent().getExtras().getSerializable("Product");
             scannedProductBarcode = getIntent().getExtras().getString("scannedProductBarcode");
             addNewForEdit = getIntent().getExtras().getBoolean("addNew");
+            if (getIntent().hasExtra("scannedProductPrice")) {
+                productPriceForEdit = getIntent().getExtras().getDouble("scannedProductPrice");
+            }
         }
 
         remoteDB.FindStoreByNameAndLocation("", "", new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
@@ -192,6 +196,8 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                         intent.putExtra("Product", productForEdit);
                         intent.putExtra("Store", storeForEdit);
                         intent.putExtra("addNew", addNewForEdit);
+                        intent.putExtra("scannedProductPrice", productPriceForEdit);
+
                         startActivity(intent);
                     }
                 });
@@ -211,6 +217,8 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                         intent.putExtra("Product", productForEdit);
                         intent.putExtra("Store", storeForEdit);
                         intent.putExtra("addNew", addNewForEdit);
+                        intent.putExtra("scannedProductPrice", productPriceForEdit);
+
 
                         startActivity(intent);
                     }
@@ -231,6 +239,8 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                         intent.putExtra("Product", productForEdit);
                         intent.putExtra("Store", storeForEdit);
                         intent.putExtra("addNew", addNewForEdit);
+                        intent.putExtra("scannedProductPrice", productPriceForEdit);
+
 
                         startActivity(intent);
                     }

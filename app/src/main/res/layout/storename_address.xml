@@ -7,13 +7,12 @@
     tools:context="com.rock.werool.piensunmaize.search.by_product.SearchByProductActivity">
 
     <TextView
+        style="@style/myWeeText"
         android:id="@+id/storeName"
         android:inputType="textFilter|textMultiLine|textNoSuggestions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textColor="@color/textColorDark"
-        android:textSize="18sp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
@@ -25,10 +24,9 @@
         android:layout_marginTop="2dp" />
 
     <TextView
+        style="@style/myWeeText"
         android:id="@+id/storeAddress"
         android:inputType="textFilter|textMultiLine|textNoSuggestions"
-        android:textColor="@color/textColorSlightlyTransparent"
-        android:textSize="16sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="TextView"

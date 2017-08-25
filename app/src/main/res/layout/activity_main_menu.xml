@@ -12,73 +12,79 @@
 
     <Button
         android:id="@+id/mainMenuShoppingList"
+        style="@style/myButtonStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
         android:background="@drawable/rounded_button"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:text="@string/menu_button_shopping_list"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainMenuFavourites" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="50dp" />
 
     <Button
         android:id="@+id/mainMenuFavourites"
+        style="@style/myButtonStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
         android:background="@drawable/rounded_button"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:text="@string/menu_button_favourites"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/space3" />
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/mainMenuShoppingList" />
 
     <Button
         android:id="@+id/mainMenuSearch"
+        style="@style/myButtonStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_height="80dp"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
         android:background="@drawable/rounded_button"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:text="@string/menu_button_search"
-        app:layout_constraintBottom_toTopOf="@+id/mainMenuShare"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/mainMenuShare" />
 
     <Button
         android:id="@+id/mainMenuShare"
+        style="@style/myButtonStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_marginEnd="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="32dp"
         android:background="@drawable/rounded_button"
-        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:text="@string/menu_button_share"
-        app:layout_constraintBottom_toTopOf="@+id/space3"
+        app:layout_constraintBottom_toTopOf="@+id/mainMenuFavourites"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="32dp" />
 
     <Space
         android:id="@+id/space3"

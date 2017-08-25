@@ -7,13 +7,12 @@
     tools:context="com.rock.werool.piensunmaize.search.favourites.FavouriteProductsActivity">
 
     <TextView
+        style="@style/myWeeText"
         android:id="@+id/favProductName"
         android:inputType="textFilter|textMultiLine|textNoSuggestions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textColor="@color/textColorDark"
-        android:textSize="18sp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"

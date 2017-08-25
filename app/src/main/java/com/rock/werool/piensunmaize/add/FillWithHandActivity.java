@@ -1,7 +1,9 @@
 package com.rock.werool.piensunmaize.add;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -30,8 +32,9 @@ public class FillWithHandActivity extends AppCompatActivity {
     boolean addNew = false;
     String scannedProductName = "";
     String scannedProductBarcode;
+    String scannedProductCategory;
     RemoteDatabase remoteDB;
-    Double productPrice;
+    Double productPrice = 0.0;
 
     String selectedStoreNameAddress = "";
     int selectedStoreId = -1;
@@ -62,9 +65,20 @@ public class FillWithHandActivity extends AppCompatActivity {
         if (getIntent().hasExtra("Product")) {
             product = (Product) getIntent().getExtras().getSerializable("Product");
             scannedProductName = product.getName();
+            scannedProductCategory = product.getCategory();
             TextView productNameTextView = (TextView) findViewById(R.id.editProductName);
             productNameTextView.setText(scannedProductName);
             productNameTextView.setEnabled(false);
+
+            TextView productCategoryTextView = (TextView) findViewById(R.id.editCategory);
+            productCategoryTextView.setText(scannedProductCategory);
+            productCategoryTextView.setEnabled(false);
+        }
+        if (getIntent().hasExtra("scannedProductPrice")) {
+            productPrice = getIntent().getExtras().getDouble("scannedProductPrice");
+            TextView productPriceTextView = (TextView) findViewById(R.id.editPrice);
+            if (productPrice > 0)
+                productPriceTextView.setText(Double.toString(productPrice));
         }
         if (getIntent().hasExtra("Store")) {
             store = (Store) getIntent().getExtras().getSerializable("Store");
@@ -87,6 +101,8 @@ public class FillWithHandActivity extends AppCompatActivity {
         }
         if (getIntent().hasExtra("clickedStoreId")) {
             selectedStoreId = getIntent().getExtras().getInt("clickedStoreId");
+            //Toast.makeText(getApplicationContext(), Integer.toString(selectedStoreId), Toast.LENGTH_SHORT).show();
+
         }
 
         remoteDB.FindProductByBarCode(scannedProductBarcode, new IDatabaseResponseHandler<Product>() {
@@ -107,65 +123,26 @@ public class FillWithHandActivity extends AppCompatActivity {
         thankButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*              //TODO DON'T DELETE THIS! ITS COMMENTED JUST SO IT CANT CHANGE DB.
-                RemoteDatabase remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
-                productPrice = Double.parseDouble(((EditText) findViewById(R.id.editPrice)).getText().toString());
 
                 if (!(productName.getText().toString().equals(""))) {
 
-                    if (selectedStoreId < 0) {
+                    if (selectedStoreId > 0) {
+                        productPrice = Double.parseDouble(((EditText) findViewById(R.id.editPrice)).getText().toString());
+                        if (productPrice != null && productPrice > 0) {
+                            product.setName(scannedProductName);
 
-                        if (productPrice != null && productPrice < 0) {
+                            new AlertDialog.Builder(FillWithHandActivity.this)
+                                    .setTitle("Confirmation")
+                                    .setMessage("Are you sure the entered data is correct?")
+                                    .setIcon(getResources().getIdentifier("warning", "drawable", getPackageName()))
+                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                            product.setName(productName.getText().toString());
-                            if (addNew) {
-                                remoteDB.AddProductAndBarcode(product, scannedProductBarcode, new IDatabaseResponseHandler<String>() {
-                                    @Override
-                                    public void onArrive(ArrayList<String> data) {
-                                        Toast.makeText(getApplicationContext(), "Product successfully added", Toast.LENGTH_SHORT).show();
-                                    }
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            executeUpdate();        //WARNING!!! writes changes to online DB
+                                        }})
+                                    .setNegativeButton("NO", null).show();
 
-                                    @Override
-                                    public void onError(VolleyError error) {
-                                        Toast.makeText(getApplicationContext(), "Error while adding to database", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            } else {
-                                remoteDB.UpdateProduct(product, new IDatabaseResponseHandler<String>() {
-                                    @Override
-                                    public void onArrive(ArrayList<String> data) {
-                                        Toast.makeText(getApplicationContext(), "Product successfully updating", Toast.LENGTH_SHORT).show();
-                                    }
 
-                                    @Override
-                                    public void onError(VolleyError error) {
-                                        Toast.makeText(getApplicationContext(), "Error while updating database", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                            StoreProductPrice storeProductPrice = new StoreProductPrice(store, product, productPrice);
-                            remoteDB.AddStoreProductPrice(storeProductPrice, new IDatabaseResponseHandler<String>() {
-                                @Override
-                                public void onArrive(ArrayList<String> data) {
-                                }
-
-                                @Override
-                                public void onError(VolleyError error) {
-                                }
-                            });
-                            remoteDB.UpdateStoreProductPrice(storeProductPrice, new IDatabaseResponseHandler<String>() {
-                                @Override
-                                public void onArrive(ArrayList<String> data) {
-                                }
-
-                                @Override
-                                public void onError(VolleyError error) {
-                                }
-                            });
-
-                            Intent intent = new Intent(FillWithHandActivity.this, ThankActivity.class);
-                            startActivity(intent);
                         } else {    //productPrice = null || productPrice > 0
                             Toast.makeText(getApplicationContext(), "Product price is incorrect", Toast.LENGTH_SHORT).show();
                         }
@@ -175,21 +152,80 @@ public class FillWithHandActivity extends AppCompatActivity {
                 } else {    //productName.getText().toString().equals("")
                     Toast.makeText(getApplicationContext(), "Product name is empty", Toast.LENGTH_SHORT).show();
                 }
-                */              //TODO DON'T DELETE THIS! ITS COMMENTED JUST SO IT CANT CHANGE DB.
             }
         });
         chooseStore = (Button) findViewById(R.id.editChooseStore);
         chooseStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TextView productPriceTextView = (TextView) findViewById(R.id.editPrice);
+                if (productPriceTextView.getText().toString().length() > 0) {
+                    productPrice = Double.parseDouble(productPriceTextView.getText().toString());
+                }
+
                 Intent intent = new Intent(getApplicationContext(), SearchByStoreActivity.class);
                 intent.putExtra("selectStoreFromEdit", true);
                 intent.putExtra("Product", product);    //Sends product so activity can start this activity with the same data after selection
                 intent.putExtra("scannedProductBarcode", scannedProductBarcode);
                 intent.putExtra("addNew", addNew);
+                intent.putExtra("scannedProductPrice", productPrice);
                 startActivity(intent);
             }
         });
 
+    }
+    protected void executeUpdate() {
+        RemoteDatabase remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", getApplicationContext());
+        if (addNew) {
+            Toast.makeText(getApplicationContext(), "Work in progress. Functionality disabled.", Toast.LENGTH_LONG).show();
+            /*
+            remoteDB.AddProductAndBarcode(product, scannedProductBarcode, new IDatabaseResponseHandler<String>() {
+                @Override
+                public void onArrive(ArrayList<String> data) {
+                    Toast.makeText(getApplicationContext(), "Product successfully added", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Error while adding to database", Toast.LENGTH_SHORT).show();
+                }
+            });
+            */
+        } else {
+            remoteDB.UpdateProduct(product, new IDatabaseResponseHandler<String>() {
+                @Override
+                public void onArrive(ArrayList<String> data) {
+                    Toast.makeText(getApplicationContext(), "Product successfully updating", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Error while updating database", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        StoreProductPrice storeProductPrice = new StoreProductPrice(store, product, productPrice);
+        remoteDB.AddStoreProductPrice(storeProductPrice, new IDatabaseResponseHandler<String>() {
+            @Override
+            public void onArrive(ArrayList<String> data) {
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+            }
+        });
+        remoteDB.UpdateStoreProductPrice(storeProductPrice, new IDatabaseResponseHandler<String>() {
+            @Override
+            public void onArrive(ArrayList<String> data) {
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+            }
+        });
+
+        Intent intent = new Intent(FillWithHandActivity.this, ThankActivity.class);
+        startActivity(intent);
     }
 }
