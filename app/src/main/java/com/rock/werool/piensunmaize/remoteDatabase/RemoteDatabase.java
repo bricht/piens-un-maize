@@ -74,8 +74,6 @@ public class RemoteDatabase {
 
     private static final String ACTION_GET_NEW_USER_ID = "getNewUserID.php";
 
-
-
     private static final String ACTION_FIND_STORE_PRODUCT_PRICE = "findStoreProductPrice.php";
 
     public static final String KEY_STR_KEY = "str_key";
@@ -93,6 +91,11 @@ public class RemoteDatabase {
         this.url = url;
     }
 
+    /**
+     *
+     * @param url server url where to call php files
+     * @param context application con
+     */
     public RemoteDatabase(String url, Context context) {
         this.url = url;
         this.context = context;
@@ -263,17 +266,17 @@ public class RemoteDatabase {
      * @param responseHandler
      */
     public void FindProductInStoreByName(int storeId, String productName, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
-
+        String requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID +
+                "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productName);
+        StringRequest strRequest =
+                new StringRequest(Request.Method.GET, requestUrl,
+                        new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
+        this.ExecuteStringRequest(strRequest);
+        this.lastStoreProductPriceHandler = responseHandler;
     }
 
     /**
-     * Return Product objectString requestUrl = this.removeWhiteSpaceFromUrl(this.url + ACTION_FIND_PRODUCTS_BY_NAME_AND_STORE_ID +
-     "?" + Store.TAG_ID + "=" + storeId + "&" + Product.TAG_NAME  + "=" + productName);
-     StringRequest strRequest =
-     new StringRequest(Request.Method.GET, requestUrl,
-     new OnStoreProductPrice(responseHandler), new OnError(responseHandler));
-     this.ExecuteStringRequest(strRequest);
-     this.lastStoreProductPriceHandler = responseHandler; where product barcode equals  'barCode'
+     * Return Product object
      * @param barCode
      * @param responseHandler this handles returned data
      */
