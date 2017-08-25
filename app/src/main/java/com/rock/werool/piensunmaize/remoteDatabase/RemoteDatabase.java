@@ -435,7 +435,7 @@ public class RemoteDatabase {
      * @param storeLocation store product key
      * @param responseHandler this should know what to do with returned data
      */
-    public void FindStoreByNameLocationAndPrtoduct(
+    public void FindStoreByNameLocationAndProduct(
             Product product, String storeName, String storeLocation, IDatabaseResponseHandler<StoreProductPrice> responseHandler) {
         String requestUrl = removeWhiteSpaceFromUrl(createProductParamUrl(
                 product, ACTION_STORE_BY_NAME_LOCATION_AND_PRODUCT) + "&" +
@@ -470,6 +470,8 @@ public class RemoteDatabase {
         this.ExecuteStringRequest(strRequest);
         this.lastStoreProductPriceHandler = responseHandler;
     }
+
+
 
 
     /**
