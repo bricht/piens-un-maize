@@ -20,11 +20,29 @@ import android.widget.TextView;
 
 import com.rock.werool.piensunmaize.R;
 
+/**
+ * Activity for displaying and manipulating user's shopping list.
+ * Shopping list is displayed in a ListView component. Total price of items
+ * in the shopping list is displayed in a TextView component. Each list entry
+ * has added products name and price. It is possible to delete a list entry by
+ * pressing the "X" button next to product details. Button "Clear" deletes
+ * all entries from the shopping list. Shopping list is stored in a text
+ * file in devices internal storage. This file is generated and updated by
+ * {@link ShoppingListHandler} class.
+ * @author Lauris Lazda
+ */
 public class ShoppingListActivity extends AppCompatActivity {
     private Button clearButton;
     ShoppingListHandler shoppingListHandler;
     private double total = 0;
 
+    /**
+     * Loads shopping list layout. Initialises title bar and Clear button.
+     * Creates {@link ShoppingListHandler} object and gets all entries stored
+     * in the shopping list file. Calls {@link #displayShoppingList()} method.
+     * Gets total price of stored items and calls {@link #displayTotal(double)}
+     * method.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +60,6 @@ public class ShoppingListActivity extends AppCompatActivity {
         word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(word);
 
-        shoppingListHandler = new ShoppingListHandler(this);
-        shoppingListHandler.readFile();
-        displayShoppingList();
-
-        total = shoppingListHandler.calculateTotalPrice();
-        displayTotal(total);
-
         clearButton = (Button) findViewById(R.id.clear_btn);
         clearButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -58,14 +69,31 @@ public class ShoppingListActivity extends AppCompatActivity {
                 displayShoppingList();
             }
         });
+
+        shoppingListHandler = new ShoppingListHandler(this);
+        shoppingListHandler.readFile();
+        displayShoppingList();
+
+        total = shoppingListHandler.calculateTotalPrice();
+        displayTotal(total);
     }
 
+    /**
+     * Initialises ListView component for shoving content of shopping list file.
+     * Creates object of inner class {@link CustomAdapter} and applies it to the
+     * ListView component.
+     */
     private void displayShoppingList() {
         ListView productList = (ListView) findViewById(R.id.productListView);
         CustomAdapter listAdapter = new CustomAdapter(productList.getContext());
         productList.setAdapter(listAdapter);
     }
 
+    /**
+     * Gets total price, formats it to show 2 decimal places and displays the
+     * result in TextView element.
+     * @param totalPrice total price of the items in the shopping list
+     */
     private void displayTotal(double totalPrice) {
         String total = String.format("%.2f", totalPrice);
         TextView textView = (TextView) findViewById(R.id.totalPrice);
