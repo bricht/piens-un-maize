@@ -20,9 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Space;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -35,6 +37,12 @@ import com.rock.werool.piensunmaize.search.QueryProcessingIntentService;
 
 import java.util.ArrayList;
 
+/**
+ * Allows the user to select a product from the database by its name.
+ * The product name is typed in a EditText field, and the matching results are automatically displayed in a listView.
+ * Clicking on a result launches SelectStoreActivity so the user can select a store for the product.
+ * The search query is case insensitive and the string can be in the middle of the name to allow minor mistakes.
+ */
 public class SearchByProductActivity extends AppCompatActivity {              //TODO implement action for clicking on a row
     MyCustomAdapter dataAdapter;
     ArrayList<Product> products = new ArrayList<>();
@@ -42,6 +50,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
     String [][] array;
     String scannedProductName = "";
     RemoteDatabase remoteDB;
+    boolean showOnlyFavourites;
 
     @Override
     protected void onResume() {
@@ -74,6 +83,57 @@ public class SearchByProductActivity extends AppCompatActivity {              //
         word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(word);
 
+        showOnlyFavourites = false;
+        final EditText search = (EditText)findViewById(R.id.searchProductText);
+        Switch favouriteSwitch = (Switch) findViewById(R.id.searchProductFavouriteSwitch);
+        favouriteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                showOnlyFavourites = b;
+                if (showOnlyFavourites) {
+                    remoteDB.FindProductByNameInFavorites(search.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getName();
+                                array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
+                                array[i][2] = Long.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+
+                        }
+                    });
+                } else {
+                    remoteDB.FindProductByName(search.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getName();
+                                array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
+                                array[i][2] = Long.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+
+                        }
+                    });
+                }
+            }
+        });
+
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
         if (getIntent().hasExtra("scannedProductName")) {
@@ -82,7 +142,6 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             productNameTextView.setText(scannedProductName);
             productNameTextView.setEnabled(false);
         }
-
         remoteDB.FindProductByName(scannedProductName, new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
             @Override
             public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
@@ -156,7 +215,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                 holder.productClckSpace = (Space) convertView.findViewById(R.id.searchProductClickSpace);
 
                 holder.name.setText(array[position][0]);
-                holder.averagePrice.setText(array[position][1]);
+                holder.averagePrice.setText(array[position][1] + " €");
                 holder.productId = Long.parseLong(array[position][2]);
                 //Log.v("ConvertView", "productId: " + holder.productId);
 
@@ -193,7 +252,7 @@ public class SearchByProductActivity extends AppCompatActivity {              //
             }
 
             holder.name.setText(array[position][0]);
-            holder.averagePrice.setText(array[position][1]);
+            holder.averagePrice.setText(array[position][1] + " €");
             holder.productId = Long.parseLong(array[position][2]);
             //Log.v("ConvertView", "productId: " + holder.productId);
 
@@ -221,25 +280,47 @@ public class SearchByProductActivity extends AppCompatActivity {              //
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByProductActivity");
                 */
-                remoteDB.FindProductByName(search.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
-                    @Override
-                    public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
-                        array = new String[data.size()][3];
-                        ArrayList<String> al = new ArrayList<>();
-                        for (int i = 0; i < data.size(); i++) {
-                            array[i][0] = data.get(i).getName();
-                            array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
-                            array[i][2] = Long.toString(data.get(i).getId());
-                            al.add("q");
+                if (showOnlyFavourites) {
+                    remoteDB.FindProductByNameInFavorites(search.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getName();
+                                array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
+                                array[i][2] = Long.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
                         }
-                        displayListView(al);
-                    }
 
-                    @Override
-                    public void onError(VolleyError error) {
+                        @Override
+                        public void onError(VolleyError error) {
 
-                    }
-                });
+                        }
+                    });
+                } else {
+                    remoteDB.FindProductByName(search.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Product>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Product> data) {
+                            array = new String[data.size()][3];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][0] = data.get(i).getName();
+                                array[i][1] = Double.toString(data.get(i).getAvaragePricePrice());
+                                array[i][2] = Long.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+
+                        }
+                    });
+                }
             }
 
             @Override

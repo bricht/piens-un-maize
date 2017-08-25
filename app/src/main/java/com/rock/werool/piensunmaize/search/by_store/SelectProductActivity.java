@@ -241,7 +241,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
                 holder.cart = (ImageView) convertView.findViewById(R.id.selectProductToList);
 
                 holder.name.setText(array[position][0]);
-                holder.priceInStore.setText(array[position][1]);
+                holder.priceInStore.setText(array[position][1] + " €");
 
                 final String clickedProductName = holder.name.getText().toString();
                 final String clickedProductAveragePrice = holder.priceInStore.getText().toString();
@@ -293,7 +293,7 @@ public class SelectProductActivity extends AppCompatActivity {      //TODO this 
             //holder.check.setChecked(product.getChecked());                //Ignore this
             //holder.check.setTag(product);
             holder.name.setText(array[position][0]);
-            holder.priceInStore.setText(array[position][1]);
+            holder.priceInStore.setText(array[position][1] + " €");
             return convertView;
         }
     }

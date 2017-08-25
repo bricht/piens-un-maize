@@ -18,8 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -47,6 +49,7 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
     String scannedProductBarcode;
     Boolean addNewForEdit;
     Double productPriceForEdit;
+    boolean showOnlyFavourites;
 
     @Override
     protected void onResume() {
@@ -76,6 +79,64 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         Spannable word = new SpannableString("bread n milk");
         word.setSpan(new ForegroundColorSpan(Color.rgb(177, 227, 251)), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         getSupportActionBar().setTitle(word);
+
+        showOnlyFavourites = false;
+        final EditText searchStoreName = (EditText)findViewById(R.id.searchStoreNameText);
+        final EditText searchStoreAddress = (EditText)findViewById(R.id.searchStoreAddressText);
+        Switch favouriteSwitch = (Switch) findViewById(R.id.searchStoreFavouriteSwitch);
+        favouriteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                showOnlyFavourites = b;
+                if (showOnlyFavourites) {
+                    remoteDB.FindStoreByNameAndLocationInFavorites(searchStoreName.getText().toString(), searchStoreAddress.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                            array = new String[data.size()][4];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][1] = data.get(i).getName();
+                                array[i][2] = data.get(i).getLocation();
+                                array[i][3] = Integer.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
+                            storesListForEdit.addAll(data);
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            String message = error.getMessage();
+                            array = null;
+                        }
+                    });
+                } else {
+                    remoteDB.FindStoreByNameAndLocation(searchStoreName.getText().toString(), searchStoreAddress.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                            array = new String[data.size()][4];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][1] = data.get(i).getName();
+                                array[i][2] = data.get(i).getLocation();
+                                array[i][3] = Integer.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
+                            storesListForEdit.addAll(data);
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            String message = error.getMessage();
+                            array = null;
+                        }
+                    });
+                }
+            }
+        });
 
         remoteDB = new RemoteDatabase("http://zesloka.tk/piens_un_maize_db/", this);
 
@@ -122,8 +183,6 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
         Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
         */
 
-        final EditText searchStoreName = (EditText) findViewById(R.id.searchStoreNameText);
-        final EditText searchStoreAddress = (EditText) findViewById(R.id.searchStoreAddressText);
         addSearchBarListener(searchStoreName);
         addSearchBarListener(searchStoreAddress);
 
@@ -277,28 +336,53 @@ public class SearchByStoreActivity extends AppCompatActivity {      //TODO imple
                 startService(intentForSQL);             //Starts SQLite intent service
                 Log.v("BroadcastDebug", "SQLite query broadcast sent from SearchByStoreActivity");
                 */
-                remoteDB.FindStoreByNameAndLocation(searchStoreName.getText().toString(), searchStoreAddress.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
-                    @Override
-                    public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
-                        array = new String[data.size()][4];
-                        ArrayList<String> al = new ArrayList<>();
-                        for (int i = 0; i < data.size(); i++) {
-                            array[i][1] = data.get(i).getName();
-                            array[i][2] = data.get(i).getLocation();
-                            array[i][3] = Integer.toString(data.get(i).getId());
-                            al.add("q");
+                if (showOnlyFavourites) {
+                    remoteDB.FindStoreByNameAndLocationInFavorites(searchStoreName.getText().toString(), searchStoreAddress.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                            array = new String[data.size()][4];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][1] = data.get(i).getName();
+                                array[i][2] = data.get(i).getLocation();
+                                array[i][3] = Integer.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
+                            storesListForEdit.addAll(data);
+                            displayListView(al);
                         }
-                        storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
-                        storesListForEdit.addAll(data);
-                        displayListView(al);
-                    }
 
-                    @Override
-                    public void onError(VolleyError error) {
-                        String message = error.getMessage();
-                        array = null;
-                    }
-                });
+                        @Override
+                        public void onError(VolleyError error) {
+                            String message = error.getMessage();
+                            array = null;
+                        }
+                    });
+                } else {
+                    remoteDB.FindStoreByNameAndLocation(searchStoreName.getText().toString(), searchStoreAddress.getText().toString(), new IDatabaseResponseHandler<com.rock.werool.piensunmaize.remoteDatabase.Store>() {
+                        @Override
+                        public void onArrive(ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store> data) {
+                            array = new String[data.size()][4];
+                            ArrayList<String> al = new ArrayList<>();
+                            for (int i = 0; i < data.size(); i++) {
+                                array[i][1] = data.get(i).getName();
+                                array[i][2] = data.get(i).getLocation();
+                                array[i][3] = Integer.toString(data.get(i).getId());
+                                al.add("q");
+                            }
+                            storesListForEdit = new ArrayList<com.rock.werool.piensunmaize.remoteDatabase.Store>();
+                            storesListForEdit.addAll(data);
+                            displayListView(al);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            String message = error.getMessage();
+                            array = null;
+                        }
+                    });
+                }
             }
 
             @Override
