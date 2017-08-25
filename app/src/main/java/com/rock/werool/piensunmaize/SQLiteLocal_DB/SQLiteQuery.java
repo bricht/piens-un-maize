@@ -8,7 +8,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 /**
- * Created by user on 2017.08.20.
+ * Created by Ernests on 2017.08.20.
+ */
+
+/**
+ * p
+ * Provides a way for other activities to retrieve data from database trough an intent object. Intent object contains key-value pairs of data.
+ * Keys are defined in this class and each key should contain specific data.This class enables other activities to get data from product,
+ * store and storeproductprice tables.
+ * Activity or service, that wants to use this class to get data, must call  startService method with an explicit intent object that should
+ * contain corresponding information for each search type. If insufficient data is provided, no data will be returned. Data is returned as a
+ * broadcast message with intent that contains a bundle, that contains an array of results.
  */
 
 public class SQLiteQuery extends IntentService{
@@ -19,35 +29,62 @@ public class SQLiteQuery extends IntentService{
     // Key SQLiteQuery.SRC_STORE            Value String string or null
     // Key SQLiteQuery.SRC_ADDRESS          Value String string or null
 
+    /**
+     * Key that points to field containing data that 									determines what data should be searched.
+     */
     public static final String SRC_TYPE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.TYPE";   // search type
+    /**
+     *Value that should be used in combination 									with key SRC_TYPE that informs that 									product average price should be searched.
+     This search type should provide product 									name to be searched.
+     */
     public static final int SRC_PRODUCT_AVG_PRICE = 1;                                          // expected result - average price in all stores
+    /**
+     *Value that should be used in combination 									with key SRC_TYPE that informs that price 								in one store should be searched. This search 								type should provide product name and 									store name and address to be searched.
+     */
     public static final int SRC_PRICE = 2;                                                      // expected result - price one store different search criteria
+    /**
+     *Value that should be used in combination 									with key SRC_TYPE that informs that price 								for all products in single store  should be 									searched. This search type should provide 									store name and address to be searched.
+     */
     public static final int SRC_NAME_PRICE_ALL = 3;                                             // expected result - price for all products in single store
-
+    /**
+     *Points to string data containing product 									name.
+     */
     public static final String SRC_NAME = "com.rock.werool.piensunmaize.SQLiteLocal_DB.NAME";                   // search parameter - product name
+    /**
+     *Points to string data containing store name.
+     */
     public static final String SRC_STORE = "com.rock.werool.piensunmaize.SQLiteLocal_DB.STORE";                 // search parameter - store name
+    /**
+     *Points to string data containing store 									address.
+     */
     public static final String SRC_ADDRESS = "com.rock.werool.piensunmaize.SQLiteLocal_DB.ADDRESS";             // search parameter - store address
+    /**
+     *Points to bundle data containing search 									result.
+     */
 
     public static final String QUERY_RESULT = "queryResult";                                                    // obtained values
 
 
     private Cursor result;
-    String [][] resultArray;
+    private String [][] resultArray;
     private String query;
-    Intent reply;
+    private Intent reply;
 
     private SQLiteHelper helper;
     private SQLiteDatabase database;
 
-    public SQLiteQuery(){
+    private SQLiteQuery(){
         super(SQLiteQuery.class.getName());
     }
 
-    public SQLiteQuery(String name) {
+    private SQLiteQuery(String name) {
         super(name);
     }
     // Override IntentService methods
 
+    /**
+     *Initializes connection to database.
+     */
     @Override
     public void onCreate(){
         super.onCreate();
@@ -56,6 +93,10 @@ public class SQLiteQuery extends IntentService{
         reply = new Intent("QUERY_RESULT");
     }
 
+    /**
+     *When executed, decides what search action should be done. Searches for requested data and returns it as a broadcast message with intent object containing
+     * intent that contains bundle with result array. Constant QUERY_RESULT ponts to result data in broadcast intent.
+     */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         int i = intent.getIntExtra(SRC_TYPE, 0);
