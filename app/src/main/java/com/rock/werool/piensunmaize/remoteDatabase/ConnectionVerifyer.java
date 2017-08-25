@@ -20,7 +20,7 @@ import static android.R.attr.action;
 import static android.R.attr.timePickerDialogTheme;
 
 /**
- * Created by Guntars Bērziņš  on 22.08.2017.
+ * Created by Guntars Berzins  on 22.08.2017.
  * Class to verify connection to online databse
  *
  */

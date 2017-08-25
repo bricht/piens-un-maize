@@ -27,7 +27,9 @@ import com.rock.werool.piensunmaize.remoteDatabase.RemoteDatabase;
 import com.rock.werool.piensunmaize.search.by_product.SelectStoreActivity;
 
 import java.util.ArrayList;
-
+/**
+ * Created by Jekabs on 2017.08.20.
+ */
 
 /**
  * Displays a list of favourite products defined previously by the user in another activity.

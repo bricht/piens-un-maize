@@ -35,6 +35,10 @@ import com.rock.werool.piensunmaize.search.by_store.SelectProductActivity;
 import java.util.ArrayList;
 
 /**
+ * Created by Jekabs on 2017.08.20.
+ */
+
+/**
  * Displays a list of favourite stores defined previously by the user in another activity.
  * Favourite stores can be removed from the list and deleted from the remote database.
  * Information regarding favourite stores is stored and retrieved from a remote database.
