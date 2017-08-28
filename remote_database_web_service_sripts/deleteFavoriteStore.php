@@ -1,6 +1,7 @@
  <?php
  
-	$name = str_replace("%20", " ", $_GET['s_name']);
+	$u_id = str_replace("%20", " ", $_GET['u_id']);
+	$s_id = str_replace("%20", " ", $_GET['s_id']);
 
 	$loginurl = parse_ini_file('/init/login_url.ini');
 	$login = parse_ini_file($loginurl['url']);
@@ -9,18 +10,17 @@
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	}
-	
-	$sql = "select * from store where s_name like '%$name%' limit 200";
-	$result = $conn->query($sql);
-	$jsonData = array();
-	if ($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()) {
-			$jsonData[] = $row;
-		}
-		echo json_encode($jsonData);
+
+	$sql = "delete from favoritestore  
+	where fs_storeID = $s_id and fs_userID = $u_id
+	";
+
+	if ($conn->query($sql) === TRUE) {
+		echo "Record deleted";
 	} else {
-		echo "[]";
+		echo "-Error: " . $sql. " " . $conn->error;
 	}
+	
 
 	$conn->close();
 	

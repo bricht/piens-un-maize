@@ -1,7 +1,9 @@
  <?php
  
-	$p_id = str_replace("%20", " ", $_GET['p_id']);
-
+	$s_id = str_replace("%20", " ", $_GET['s_id']);
+	$p_name = str_replace("%20", " ", $_GET['p_name']);
+	
+	
 	$loginurl = parse_ini_file('/init/login_url.ini');
 	$login = parse_ini_file($loginurl['url']);
 	
@@ -10,14 +12,11 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "select product.*, 
-			store.*, 
-			storeproductprice.spp_price, storeproductprice.spp_last_update
-			from storeproductprice
-			JOIN store on storeproductprice.spp_storeID = store.s_id
-			JOIN product on storeproductprice.spp_productID = product.p_id
-			where spp_productID = $p_id
-			limit 200";
+	$sql = "select store.*, product.*, storeproductprice.spp_price, storeproductprice.spp_last_update 
+			from
+			store, product, storeproductprice
+            where product.p_name like '%$p_name%' and store.s_id = $s_id
+			limit 200;";
 	$result = $conn->query($sql);	
 	if($result) {
 		$jsonData = array();
@@ -30,8 +29,9 @@
 				echo "[]";
 			}
 	} else {
-		echo "-Error: sql query failed!";
+		echo $conn->error;
 	}
 
 	$conn->close();
+	
 ?> 

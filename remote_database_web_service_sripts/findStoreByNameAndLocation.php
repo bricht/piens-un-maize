@@ -1,6 +1,7 @@
  <?php
  
 	$name = str_replace("%20", " ", $_GET['s_name']);
+	$location = str_replace("%20", " ", $_GET['s_location']);
 
 	$loginurl = parse_ini_file('/init/login_url.ini');
 	$login = parse_ini_file($loginurl['url']);
@@ -9,8 +10,8 @@
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	}
-	
-	$sql = "select * from store where s_name like '%$name%' limit 200";
+			
+	$sql = "select * from store where s_name like '%$name%' and s_location like '%$location%' limit 200";
 	$result = $conn->query($sql);
 	$jsonData = array();
 	if ($result->num_rows > 0) {
