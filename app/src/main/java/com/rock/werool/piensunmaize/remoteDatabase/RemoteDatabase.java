@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by Guntars Bērziņš on 16.08.2017.
+ * Created by Guntars Berzins on 16.08.2017.
  * Class handles connections to online database and provides functionaltiy
  * to interact with it.
  */

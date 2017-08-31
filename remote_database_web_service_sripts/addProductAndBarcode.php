@@ -7,13 +7,10 @@
 	$barcode = str_replace("%20", " ", $_GET['b_barcode']);
 
 
-	$servername = "zesloka.tk";
-	$username = "user";
-	$password = "parolee";
-	$dbname = "piens_un_maize";
-
+	$loginurl = parse_ini_file('/init/login_url.ini');
+	$login = parse_ini_file($loginurl['url']);
 	
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	}
