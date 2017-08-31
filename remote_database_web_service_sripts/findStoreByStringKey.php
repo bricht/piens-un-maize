@@ -1,31 +1,32 @@
  <?php
- 
-	$str_key = str_replace("%20", " ", $_GET['str_key']);
-
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
 	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
-
+	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Return Stores where store name or location is like 'key'
+	**/
 	
-	$sql = "select * from store where s_name like '%$str_key%' or s_location like '%$str_key%' limit 200";
-	$result = $conn->query($sql);
-	if($result) {
-		$jsonData = array();
-	if ($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()) {
-			$jsonData[] = $row;
-		}
-		echo json_encode($jsonData);
-		} else {
-			echo "[]";
-		}
+	$str_key = '%' . str_replace("%20", " ", $_GET['str_key']) . '%';
+
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
+
+	$sql = "select * from store 
+	where 
+	s_name like ? 
+	or 
+	s_location like ? 
+	limit 200";
+	
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('ss', $str_key, $str_key);
+	
+	if($stmt->execute()) {
+		echo parseToJSON($stmt);
 	} else {
-		echo "-Error: sql query failed!";
+		echo "Error: sql query failed!" . $conn->error;
 	}
 	
-
+	$stmt->close();
 	$conn->close();
+?>

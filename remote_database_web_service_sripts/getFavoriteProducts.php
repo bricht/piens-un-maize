@@ -1,35 +1,32 @@
  <?php
  
+	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Return all users favorite products
+	**/
+	
 	$u_id = str_replace("%20", " ", $_GET['u_id']);
 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
-	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 
 	$sql = "select  
 			product.* 
 			from favoriteproduct
 			JOIN product on favoriteproduct.fp_productID = product.p_id
 			JOIN user on favoriteproduct.fp_userID = user.u_id
-			where fp_userID = $u_id";
-	$result = $conn->query($sql);	
-	if($result) {
-		$jsonData = array();
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$jsonData[] = $row;
-			}
-			echo json_encode($jsonData);
-			} else {
-				echo "[]";
-			}
+			where fp_userID = ?";
+			
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('i', $u_id);
+	
+	if($stmt->execute()) {
+		echo parseToJSON($stmt);
 	} else {
-		echo "-Error: sql query failed!";
+		echo "Error: sql query failed!";
 	}
-
+	
+	$stmt->close();
 	$conn->close();
 ?> 

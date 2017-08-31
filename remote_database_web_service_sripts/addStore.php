@@ -1,26 +1,30 @@
  <?php
  
+    /**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Add new store and asign unique id to it. 
+	**/
+ 
 	$name = str_replace("%20", " ", $_GET['s_name']);
 	$location = str_replace("%20", " ", $_GET['s_location']);
 
 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
-	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 
 	$sql = "INSERT INTO store (s_name, s_location)
-	VALUES ('$name', '$location')";
+	VALUES (?, ?)";
 
-	if ($conn->query($sql) === TRUE) {
-		echo "+New record created successfully";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('ss', $name, $location);
+	if($stmt->execute()) {
+		echo "Rows affected: " . $conn->affected_rows;
 	} else {
-		echo "-Error: " . $sql. " " . $conn->error;
+		echo "Error: sql query failed!" . $conn->error;
 	}
-
+	
+	$stmt->close();
 	$conn->close();
 	
 ?> 

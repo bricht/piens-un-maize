@@ -1,28 +1,33 @@
  <?php
  
-	$name = str_replace("%20", " ", $_GET['s_name']);
-	$location = str_replace("%20", " ", $_GET['s_location']);
+	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Find Stores where store name contains 'name' and store location contains 'location'
+	**/
+ 
+	$name = '%' . str_replace("%20", " ", $_GET['s_name']) . '%';
+	$location = '%' . str_replace("%20", " ", $_GET['s_location']) . '%';
 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
-	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 			
-	$sql = "select * from store where s_name like '%$name%' and s_location like '%$location%' limit 200";
-	$result = $conn->query($sql);
-	$jsonData = array();
-	if ($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()) {
-			$jsonData[] = $row;
-		}
-		echo json_encode($jsonData);
+	$sql = "select * from store 
+	where s_name like ? 
+	and 
+	s_location like ? 
+	limit 200";
+	
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('ss', $name, $location);
+	
+	if($stmt->execute()) {
+		echo parseToJSON($stmt);
 	} else {
-		echo "[]";
+		echo "Error: sql query failed!";
 	}
-
+	
+	$stmt->close();
 	$conn->close();
 	
 ?> 

@@ -13,14 +13,20 @@
 		die("Connection failed: " . $conn->connect_error);
 	}
 
-	$sql = "update store set s_name = '$name', s_location = '$location' where s_id = $s_id";
+	$sql = "update store set 
+	s_name = ?, 
+	s_location = ? 
+	where s_id = ?";
 
-	if ($conn->query($sql) === TRUE) {
-		echo "+New record created successfully";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('ssi', $name, $location, $s_id);
+	if($stmt->execute()) {
+		echo "777 Store updated";
 	} else {
-		echo "-Error: " . $sql. " " . $conn->error;
+		echo "Error: " . $sql. " " . $conn->error;
 	}
 
+	$stmt->close();
 	$conn->close();
 	
 ?> 

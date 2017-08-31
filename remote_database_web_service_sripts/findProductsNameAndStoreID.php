@@ -1,37 +1,34 @@
  <?php
  
+	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Find and return products in Store by name.
+	**/
+ 
 	$s_id = str_replace("%20", " ", $_GET['s_id']);
-	$p_name = str_replace("%20", " ", $_GET['p_name']);
+	$p_name = '%' . str_replace("%20", " ", $_GET['p_name']) . '%';
 	
-	
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
-	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 
 	$sql = "select store.*, product.*, storeproductprice.spp_price, storeproductprice.spp_last_update 
 			from
 			store, product, storeproductprice
-            where product.p_name like '%$p_name%' and store.s_id = $s_id
-			limit 200;";
-	$result = $conn->query($sql);	
-	if($result) {
-		$jsonData = array();
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$jsonData[] = $row;
-			}
-			echo json_encode($jsonData);
-			} else {
-				echo "[]";
-			}
+            where product.p_name like ? 
+			and 
+			store.s_id = ?
+			limit 200";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('si', $p_name, $s_id);
+	
+	if($stmt->execute()) {
+		echo parseToJSON($stmt);
 	} else {
-		echo $conn->error;
+		echo "Error: sql query failed! " . $conn->error;
 	}
-
+	
+	$stmt->close();
 	$conn->close();
 	
 ?> 

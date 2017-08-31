@@ -1,4 +1,10 @@
  <?php
+ 
+	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Update product fields if product id is found
+	**/
 	
 	$p_id = str_replace("%20", " ", $_GET['p_id']);
 	$name = str_replace("%20", " ", $_GET['p_name']);
@@ -6,28 +12,25 @@
 	$description = str_replace("%20", " ", $_GET['p_descript']);
 	$price = str_replace("%20", " ", $_GET['p_price']);
 
-
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
-
 	$sql = "update product set 
-	p_name = '$name', 
-	p_category = '$category', 
-	p_descript = '$description' , 
-	p_price = $price
-	where p_id = $p_id";
-
-	if ($conn->query($sql) === TRUE) {
-		echo "+New record created successfully";
+	p_name = ?, 
+	p_category = ?, 
+	p_descript = ?, 
+	p_price = ?
+	where p_id = ?";
+	
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('sssdi', $name, $category, $description, $price, $p_id);
+	if($stmt->execute()) {
+		echo "777 Product updated";
 	} else {
-		echo "-Error: " . $sql. " " . $conn->error;
+		echo "Error: " . $sql. " " . $conn->error;
 	}
 
+	$stmt->close();
 	$conn->close();
 	
 ?> 

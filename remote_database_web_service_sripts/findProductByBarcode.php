@@ -1,27 +1,31 @@
  <?php
  
+    /**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Reutrn products where product barcode is equals 'barcode'
+	**/
+ 
 	$barcode = str_replace("%20", " ", $_GET['b_barcode']);
 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
+
+	$sql = "select * from product 
+	where p_id in
+		(select b_productID from barcode 
+		where 
+		b_barcode = ?)";
+			
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('s', $barcode);
 	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
-
-	$sql = "select * from product where p_id in
-			(select b_productID from barcode where b_barcode = '$barcode')";
-	$result = $conn->query($sql);
-	$jsonData = array();
-	if ($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()) {
-			$jsonData[] = $row;
-		}
-		echo json_encode($jsonData);
+	if($stmt->execute()) {
+		echo parseToJSON($stmt);
 	} else {
-		echo "[]";
+		echo "Error: sql query failed!";
 	}
-
+	
+	$stmt->close();
 	$conn->close();
 ?> 

@@ -1,26 +1,34 @@
  <?php
+ 
+    /**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Delete Product instance and all product references in other tables.
+	**/
 	
 	$p_id = str_replace("%20", " ", $_GET['p_id']);
 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
-	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 
-	$sql = "SET SQL_SAFE_UPDATES=0;
-			delete from product WHERE p_id = 3;
-			delete from storeproductprice WHERE spp_productID = 3;
-			SET SQL_SAFE_UPDATES=1;";
+	$sqls =  array(
+	
+		"delete from storeproductprice WHERE spp_productID = ?",
+		"delete from favoriteproduct where fp_productID = ?",
+		"delete from product WHERE p_id = ?"
+		
+		);
 
-	if ($conn->query($sql) === TRUE) {
-		echo "Sucsess.";
-	} else {
-		echo "-Error: " . $sql. " " . $conn->error;
+	foreach($sqls as &$sql) {
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param('i', $p_id);
+		if($stmt->execute()) {
+			echo "Rows affected: " . $conn->affected_rows . "\n\r";
+		} else {
+			echo "Error: sql query failed!" . $conn->error;
+		}
 	}
 	
+	$stmt->close();
 	$conn->close();
-	
 ?> 

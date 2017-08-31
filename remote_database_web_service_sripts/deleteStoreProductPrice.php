@@ -1,29 +1,33 @@
  <?php
  
+   	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Remove product and its price from store.
+	**/
+ 
 	$s_id = str_replace("%20", " ", $_GET['s_id']);
 	$p_id = str_replace("%20", " ", $_GET['p_id']);
-	$price = str_replace("%20", " ", $_GET['spp_price']);
-	$last_update = str_replace("%20", " ", $_GET['spp_last_update']);
 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
-	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 
 	$sql = "delete from storeproductprice  
-	where spp_storeID = $s_id and spp_productID = $p_id
+			where 
+			spp_storeID = ?
+			and 
+			spp_productID = ?
 	";
 
-	if ($conn->query($sql) === TRUE) {
-		echo "Record deleted";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('ii', $s_id, $p_id);
+	if($stmt->execute()) {
+		echo "affected rows: " . $conn->affected_rows;
 	} else {
-		echo "-Error: " . $sql. " " . $conn->error;
+		echo "Error: sql query failed!" . $conn->error;
 	}
 	
-
+	$stmt->close();
 	$conn->close();
 	
 ?> 

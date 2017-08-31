@@ -1,12 +1,12 @@
  <?php
- 
-	$loginurl = parse_ini_file('/init/login_url.ini');
-	$login = parse_ini_file($loginurl['url']);
 	
-	$conn = new mysqli($login['server'], $login['username'], $login['password'], $login['database']);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	}
+	/**
+	/* Created by Guntars Berzins 2017.08.29
+	/*
+	/* Return all stores in database
+	**/
+	include($_SERVER['DOCUMENT_ROOT']."piens_un_maize_db/lib/mysqlConnection.php");
+	$conn = getMysqlConnection();
 	
 	$sql = "select * from store limit 100000";
 	$result = $conn->query($sql);
