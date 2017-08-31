@@ -739,8 +739,10 @@ public class RemoteDatabase {
     //------------------------------------
 
 
-    // helper class for expected StoreProductPrice response
-    // pack out response and pass it to listeners as array of objects
+    /**
+     * // helper class for expected StoreProductPrice response
+     * // pack out response and pass it to listeners as array of objects
+     */
     private class OnStoreProductPrice implements Response.Listener<String> {
 
         private ArrayList<StoreProductPrice> data;
